@@ -1,4 +1,4 @@
-# dda_com identity — revision 16
+# dda_com identity | revision 16
 
 ## Direction
 
@@ -29,6 +29,8 @@ Earlier visual research included [Oryzo AI / Lusion](https://oryzo.ai/), [Noomo]
 All four pages have Korean and English static routes. Language selection preserves the current page and persists for future homepage visits.
 
 ## Type, palette, and assets
+
+Writing uses plain sentences and avoids em dashes. Page titles separate the page name and team name with `|`. Korean and English pages each have their own concise sharing description, reused across the standard meta description, Open Graph, and Twitter cards.
 
 The user approved a free font resembling Recoleta. Fraunces ExtraBold (800, optical size 72, SOFT 100, WONK 1) supplies the rounded serif wordmark in the header, hero, and footer, and English page titles. It is not Recoleta. The hero wordmark is capped at 92 px on desktop to keep space beside the illustration. Paperlogy Bold/ExtraBold provides Korean headings; Wanted Sans Variable provides body and interface text. Local WOFF2 files and their OFL licenses live in `public/fonts/`.
 

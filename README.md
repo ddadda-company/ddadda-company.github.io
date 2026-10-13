@@ -1,4 +1,4 @@
-# dda_com — CTF TEAM
+# dda_com | CTF TEAM
 
 따따 팀의 한국어·영어 정적 웹사이트. Astro로 HTML을 미리 생성합니다. 서버, 데이터베이스, API 키 없이 `dist/`를 정적 호스팅에 올릴 수 있습니다.
 

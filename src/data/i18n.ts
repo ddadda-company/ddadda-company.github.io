@@ -11,9 +11,14 @@ export const copy = {
   ko: {
     nav: { home: '팀 소개', achievements: '성과', members: '멤버', contact: '문의' },
     meta: {
-      home: '따따 — dda_com CTF TEAM', achievements: '성과 — dda_com',
-      members: '멤버 — dda_com', contact: '문의 — dda_com',
-      description: '대한민국 CTF 팀 dda_com(따따). 팀 소개, 대회 성과, 멤버와 연락처.',
+      home: '따따 (dda_com) | 한국 기반 CTF 팀', achievements: '대회 성과 | dda_com',
+      members: '팀 멤버 | dda_com', contact: '문의 | dda_com',
+      description: {
+        home: '국내외 CTF 대회에 참가하는 한국 기반 팀, 따따(dda_com)의 공식 웹사이트입니다.',
+        achievements: '따따(dda_com)가 참가한 CTF 대회의 날짜와 순위, 공식 결과를 모았습니다.',
+        members: '한국 기반 CTF 팀 따따(dda_com)의 멤버들을 소개합니다.',
+        contact: 'CTF 대회 초청과 협업, 팀 관련 문의를 위한 따따(dda_com)의 연락처 안내입니다.',
+      },
     },
     skip: '본문으로 건너뛰기', menu: '메뉴', close: '닫기', navigation: '주요 메뉴',
     language: '언어 선택', top: '맨 위로',
@@ -51,9 +56,14 @@ export const copy = {
   en: {
     nav: { home: 'About', achievements: 'Achievements', members: 'Members', contact: 'Contact' },
     meta: {
-      home: 'dda_com — CTF TEAM', achievements: 'Achievements — dda_com',
-      members: 'Members — dda_com', contact: 'Contact — dda_com',
-      description: 'dda_com, a CTF team from South Korea. Competition results, members, and contact information.',
+      home: 'dda_com | CTF Team from South Korea', achievements: 'Competition Results | dda_com',
+      members: 'Team Members | dda_com', contact: 'Contact | dda_com',
+      description: {
+        home: 'The official website of dda_com, a CTF team based in South Korea competing in CTFs worldwide.',
+        achievements: 'Explore dda_com’s CTF competition history, with dates, placements, and links to official results.',
+        members: 'Meet the members of dda_com, a CTF team based in South Korea.',
+        contact: 'Get in touch with dda_com about CTF invitations, collaborations, and team enquiries.',
+      },
     },
     skip: 'Skip to content', menu: 'Menu', close: 'Close', navigation: 'Main navigation',
     language: 'Select language', top: 'Back to top',
