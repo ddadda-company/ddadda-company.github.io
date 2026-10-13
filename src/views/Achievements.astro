@@ -1,0 +1,63 @@
+---
+import Arrow from '../components/Arrow.astro';
+import { copy, pageUrl, type Locale } from '../data/i18n';
+import { achievements, rating, team } from '../data/team';
+import '../styles/playroom.css';
+const { locale } = Astro.props as { locale: Locale };
+const t = copy[locale].achievements;
+const records = [...achievements].sort((a, b) => a.date.localeCompare(b.date));
+const years = [...new Set(records.map(a => a.date.slice(0, 4)))];
+const month = (date: string) => new Intl.DateTimeFormat(locale === 'ko' ? 'ko-KR' : 'en-US', { month: 'short', timeZone: 'UTC' }).format(new Date(`${date}T00:00:00Z`));
+const suffix = (rank: number) => locale === 'ko' ? '위' : rank % 100 >= 11 && rank % 100 <= 13 ? 'th' : ({ 1: 'st', 2: 'nd', 3: 'rd' }[rank % 10] ?? 'th');
+---
+<section class="page-intro playroom-intro container enter">
+  <h1>{t.title}</h1>
+  <a class="text-link" href={team.ctftime} target="_blank" rel="noopener noreferrer">CTFtime<Arrow /></a>
+</section>
+<section class="results-playroom" aria-labelledby="archive-heading">
+  <h2 id="archive-heading" class="visually-hidden">{t.archive}</h2>
+  <div class="playroom-filters container">
+    <div class="record-filters" role="group" aria-label={locale === 'ko' ? '결과 필터' : 'Filter results'}>
+      <button class="filter-button" data-result-filter="all" aria-pressed="true">{locale === 'ko' ? '전체 대회' : 'All results'}</button>
+      <button class="filter-button" data-result-filter="podium" aria-pressed="false">{locale === 'ko' ? '입상' : 'Podium'}</button>
+      <label class="year-select"><span class="visually-hidden">{t.all}</span><select data-year-filter><option value="all">{t.all}</option>{years.map(y => <option value={y}>{y}</option>)}</select></label>
+    </div>
+  </div>
+  {years.map(year => {
+    const entries = records.filter(a => a.date.startsWith(year));
+    return <section class="playroom-season" data-result-year={year} data-playroom aria-labelledby={`year-${year}`}>
+      <div class="playroom-room">
+        <div class="playroom-heading container">
+          <h3 id={`year-${year}`}><span>{year}</span></h3>
+          <div class="playroom-controls">
+            <button class="room-step room-step--previous" data-room-step="-1" aria-label={locale === 'ko' ? '이전 대회' : 'Previous competition'} aria-controls={`room-${year}`} disabled><Arrow direction="right" /></button>
+            <button class="room-step" data-room-step="1" aria-label={locale === 'ko' ? '다음 대회' : 'Next competition'} aria-controls={`room-${year}`}><Arrow direction="right" /></button>
+          </div>
+        </div>
+        <ol class="room-track" id={`room-${year}`} data-room-track tabindex="0" aria-label={`${year} ${t.archive}`}>
+          {entries.map((a, index) => <li class:list={['room-station', `room-station--${index % 3}`, { 'room-station--gold': a.rank === 1, 'room-station--silver': a.rank === 2, 'room-station--bronze': a.rank === 3 }]} id={`competition-${year}-${index}`} data-result data-year={year} data-rank={a.rank}>
+            <a class="station-link" href={a.url} target="_blank" rel="noopener noreferrer" aria-labelledby={`event-${year}-${index}`} aria-describedby={`result-${year}-${index}`}>
+              <div class="station-toys" aria-hidden="true">
+                <div class="rank-cube"><span class="cube-top"></span><span class="cube-side"></span><div class="cube-front"><span class="cube-number">{a.rank}</span><span class="cube-suffix">{suffix(a.rank)}</span></div></div>
+                <div class="date-toy"><span class="date-month">{month(a.date)}</span><span class="date-day">{a.date.slice(-2)}</span></div>
+                <span class="station-shadow"></span>
+              </div>
+              <div class="station-caption"><h4 id={`event-${year}-${index}`}>{a.event}</h4><div class="station-details"><span>{a.format}</span><Arrow /></div></div>
+              <span id={`result-${year}-${index}`} class="visually-hidden">{a.placement[locale]} · <time datetime={a.date}>{a.date}</time> · {t.link}</span>
+            </a>
+          </li>)}
+        </ol>
+      </div>
+      <nav class="date-rail container" aria-label={locale === 'ko' ? `${year} 날짜별 대회 선택` : `${year} competitions by date`}>
+        <p class="date-rail-year">{year}</p>
+        <ol>{entries.map((a, index) => <li><a href={`#competition-${year}-${index}`} data-room-date={`competition-${year}-${index}`} aria-label={`${a.date} ${a.event} · ${a.placement[locale]}`}><span class="date-rail-dot" aria-hidden="true"></span><time datetime={a.date}>{a.date.slice(5).replaceAll('-', '.')}</time><span class="date-rail-rank">{a.placement[locale]}</span></a></li>)}</ol>
+      </nav>
+      <p class="visually-hidden" data-room-status role="status" aria-live="polite" aria-atomic="true"></p>
+    </section>;
+  })}
+  <p class="filter-empty container" data-results-empty hidden>{t.noMatch}</p>
+  <div class="playroom-source container"><p>{t.note}</p><span data-results-count aria-live="polite">{records.length} {t.count}</span></div>
+  <div class="playroom-rating container"><span>{locale === 'ko' ? `${rating.year} 세계 ${rating.world}위 · 한국 ${rating.country}위` : `${rating.year} · World #${rating.world} · South Korea #${rating.country}`}</span><span><time datetime={rating.checkedAt}>{rating.checkedAt.replaceAll('-', '.')}</time> {locale === 'ko' ? '기준' : 'snapshot'}</span></div>
+</section>
+<section class="inline-next container"><a class="text-link" href={pageUrl(locale, 'members')}>{t.nextLink}<Arrow /></a></section>
+<script src="../scripts/playroom.ts"></script>

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+  <title>dda_com — rose and serenity DD with bear mascot</title>
+  <defs>
+    <linearGradient id="rose" x1="18" y1="27" x2="60" y2="99" gradientUnits="userSpaceOnUse"><stop stop-color="#FFE6E5"/><stop offset="1" stop-color="#EAA7B3"/></linearGradient>
+    <linearGradient id="blue" x1="64" y1="29" x2="107" y2="95" gradientUnits="userSpaceOnUse"><stop stop-color="#C5D9F2"/><stop offset="1" stop-color="#829BC9"/></linearGradient>
+    <linearGradient id="paper" x2="128" y2="128" gradientUnits="userSpaceOnUse"><stop stop-color="#FFFDFC"/><stop offset="1" stop-color="#F1EAF4"/></linearGradient>
+  </defs>
+  <rect x="3" y="3" width="122" height="122" rx="31" fill="url(#paper)"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M17 29H37C58 29 69 42 69 62C69 82 58 95 37 95H17V29ZM35 46V78H38C47 78 51 72 51 62C51 52 47 46 38 46H35Z" fill="url(#rose)" stroke="#B37488" stroke-width="2.5"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M63 29H83C104 29 115 42 115 62C115 82 104 95 83 95H63V29ZM81 46V78H84C93 78 97 72 97 62C97 52 93 46 84 46H81Z" fill="url(#blue)" stroke="#607CA7" stroke-width="2.5"/>
+  <path d="M22 35H36M69 35H82" stroke="#FFFEFC" stroke-width="3" stroke-linecap="round" opacity=".8"/>
+  <circle cx="51" cy="78" r="9" fill="#FFF0D8" stroke="#A88987" stroke-width="2.5"/>
+  <circle cx="77" cy="78" r="9" fill="#FFF0D8" stroke="#A88987" stroke-width="2.5"/>
+  <circle cx="51" cy="78" r="4" fill="#EDBBC6"/><circle cx="77" cy="78" r="4" fill="#EDBBC6"/>
+  <rect x="43" y="75" width="42" height="35" rx="17.5" fill="#FFF0D8" stroke="#A88987" stroke-width="2.5"/>
+  <ellipse cx="64" cy="98" rx="10" ry="7" fill="#FFFCF5"/>
+  <ellipse cx="55" cy="91" rx="2.6" ry="3.5" fill="#433247"/><ellipse cx="73" cy="91" rx="2.6" ry="3.5" fill="#433247"/>
+  <path d="M61 96Q64 93 67 96Q66 100 64 100Q62 100 61 96Z" fill="#765264"/>
+  <ellipse cx="50" cy="98" rx="4" ry="2.3" fill="#EDBBC6"/><ellipse cx="78" cy="98" rx="4" ry="2.3" fill="#EDBBC6"/>
+</svg>

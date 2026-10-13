@@ -1,0 +1,18 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Home from '../views/Home.astro';
+import Achievements from '../views/Achievements.astro';
+import Members from '../views/Members.astro';
+import Contact from '../views/Contact.astro';
+import { locales, pages, pageUrl, type Locale, type Page } from '../data/i18n';
+export function getStaticPaths() {
+  return locales.flatMap(locale => pages.map(page => ({
+    params: { route: pageUrl(locale, page).replace(/^\/|\/$/g, '') || undefined },
+    props: { locale, page },
+  })));
+}
+const { locale, page } = Astro.props as { locale: Locale; page: Page };
+const views = { home: Home, achievements: Achievements, members: Members, contact: Contact };
+const View = views[page];
+---
+<Layout locale={locale} page={page}><View locale={locale} /></Layout>

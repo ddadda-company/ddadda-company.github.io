@@ -1,0 +1,20 @@
+---
+const { variant = 0 } = Astro.props as { variant?: number };
+---
+<svg class:list={['member-avatar-art', `member-avatar-art--${variant % 4}`]} viewBox="0 0 160 160" fill="none" aria-hidden="true">
+  <circle class="avatar-halo" cx="80" cy="82" r="70" />
+  <g class="avatar-bear">
+    <ellipse class="avatar-body" cx="80" cy="146" rx="41" ry="33"/>
+    <circle class="avatar-fur" cx="44" cy="57" r="19"/><circle class="avatar-fur" cx="116" cy="57" r="19"/>
+    <circle class="avatar-ear" cx="44" cy="57" r="10"/><circle class="avatar-ear" cx="116" cy="57" r="10"/>
+    <path class="avatar-fur" d="M31 89C31 57 49 44 80 44C111 44 129 57 129 89C129 119 109 135 80 135C51 135 31 119 31 89Z"/>
+    <ellipse class="avatar-muzzle" cx="80" cy="110" rx="24" ry="18"/>
+    <ellipse class="avatar-cheek" cx="47" cy="106" rx="10" ry="6"/><ellipse class="avatar-cheek" cx="113" cy="106" rx="10" ry="6"/>
+    <ellipse class="avatar-eye" cx="59" cy="90" rx="6" ry="8"/>
+    {variant % 4 === 2 ? <path class="avatar-wink" d="M95 92Q102 84 109 92"/> : <ellipse class="avatar-eye" cx="101" cy="90" rx="6" ry="8"/>}
+    <circle class="avatar-shine" cx="57" cy="87" r="2"/>{variant % 4 !== 2 && <circle class="avatar-shine" cx="99" cy="87" r="2"/>}
+    <path class="avatar-nose" d="M73 105Q80 99 87 105Q85 113 80 113Q75 113 73 105Z"/>
+    <path class="avatar-mouth" d="M80 113V118M73 118Q80 124 87 118"/>
+  </g>
+  {variant % 4 === 0 && <g class="avatar-hat" transform="rotate(-12 80 43)"><path d="M48 47L54 18L80 26L103 18L112 47Z"/><path d="M43 49Q80 35 121 49Q129 57 116 61Q79 70 43 61Q31 58 43 49Z"/><path class="avatar-hat-band" d="M51 38Q80 48 110 38L112 47Q80 56 48 47Z"/></g>}
+</svg>

@@ -1,0 +1,89 @@
+---
+import { copy, pages, pageUrl, type Locale, type Page } from '../data/i18n';
+import { team } from '../data/team';
+import Arrow from '../components/Arrow.astro';
+import '../../tokens.css';
+import '../styles/global.css';
+import '../styles/studio.css';
+import '../styles/chrome.css';
+interface Props { locale: Locale; page: Page; title?: string; }
+const { locale, page, title } = Astro.props;
+const t = copy[locale];
+---
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content={t.meta.description} />
+    <meta name="theme-color" content="#f7cac9" />
+    <meta property="og:title" content={title ?? t.meta[page]} />
+    <meta property="og:description" content={t.meta.description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content={new URL('/images/team.webp', Astro.site).href} />
+    <link rel="canonical" href={new URL(pageUrl(locale, page), Astro.site)} />
+    <meta property="og:locale" content={locale === 'ko' ? 'ko_KR' : 'en_US'} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=2" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2" />
+    <link rel="alternate" hreflang="ko" href={pageUrl('ko', page)} />
+    <link rel="alternate" hreflang="en" href={pageUrl('en', page)} />
+    <link rel="alternate" hreflang="x-default" href={pageUrl('ko', page)} />
+    <link rel="preload" href="/fonts/Paperlogy-ExtraBold.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/WantedSansVariable.woff2" as="font" type="font/woff2" crossorigin />
+    {page === 'home' && <link rel="preload" href="/fonts/Fraunces-Soft-ExtraBold.woff2" as="font" type="font/woff2" crossorigin />}
+    <title>{title ?? t.meta[page]}</title>
+    <script is:inline>
+      // Only the language-neutral entry point uses a saved preference.
+      // Deep links always retain their explicit language, including without JS.
+      try {
+        if (location.pathname === '/' && localStorage.getItem('dda_com-language') === 'en') {
+          location.replace('/en/' + location.search + location.hash);
+        }
+      } catch { /* Storage may be disabled; language links still work. */ }
+    </script>
+  </head>
+  <body data-page={page} class="identity-v3">
+    <a class="skip-link" href="#main">{t.skip}</a>
+    <header class="site-header" id="top">
+      <div class="header-inner container">
+        <a class="brand" href={pageUrl(locale, 'home')} aria-label={t.meta.home}>
+          <img class="brand-icon" src="/favicon.svg" width="32" height="32" alt="" />
+          <span class="brand-name">dda_com</span>
+        </a>
+        <nav class="studio-nav" aria-label={t.navigation}>{pages.map(p => <a href={pageUrl(locale, p)} aria-current={page === p ? 'page' : undefined}>{t.nav[p]}</a>)}</nav>
+        <div class="header-actions">
+          <nav class="language-switch" aria-label={t.language}>
+            <a href={pageUrl('ko', page)} data-language="ko" aria-current={locale === 'ko' ? 'true' : undefined} aria-label="한국어" lang="ko">KO</a>
+            <span aria-hidden="true">/</span>
+            <a href={pageUrl('en', page)} data-language="en" aria-current={locale === 'en' ? 'true' : undefined} aria-label="English" lang="en">EN</a>
+          </nav>
+          <button class="menu-toggle" aria-expanded="false" aria-controls="mobile-nav" data-open-label={t.menu} data-close-label={t.close}><span data-menu-label>{t.menu}</span><span class="menu-icon" aria-hidden="true"><i></i><i></i></span></button>
+        </div>
+      </div>
+      <nav class="mobile-nav container" id="mobile-nav" aria-label={t.navigation} hidden>
+        {pages.map(p => <a href={pageUrl(locale, p)} aria-current={page === p ? 'page' : undefined}>{t.nav[p]}<Arrow /></a>)}
+      </nav>
+      <noscript><nav class="no-js-nav container" aria-label={t.navigation}>{pages.map(p => <a href={pageUrl(locale, p)}>{t.nav[p]}</a>)}</nav></noscript>
+    </header>
+    <main id="main" tabindex="-1"><slot /></main>
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-main">
+          <div class="footer-identity"><a class="footer-wordmark" href={pageUrl(locale, 'home')}><img src="/favicon.svg" width="44" height="44" alt="" />dda_com</a></div>
+          <nav class="footer-nav" aria-label={locale === 'ko' ? '팀 링크' : 'Team links'}>
+            <a href={team.github} target="_blank" rel="noopener noreferrer">GitHub<Arrow /></a>
+            <a href={team.ctftime} target="_blank" rel="noopener noreferrer">CTFtime<Arrow /></a>
+            <a href={pageUrl(locale, 'contact')}>{t.nav.contact}<Arrow /></a>
+          </nav>
+        </div>
+        <div class="footer-bottom">
+          <span>© {new Date().getFullYear()} dda_com CTF TEAM</span>
+          <div><a href="#top">{t.top}<Arrow direction="up-right" /></a></div>
+        </div>
+      </div>
+    </footer>
+    <script src="../scripts/main.ts"></script>
+    <script src="../scripts/studio.ts"></script>
+  </body>
+</html>

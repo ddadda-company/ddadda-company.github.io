@@ -1,0 +1,15 @@
+---
+import type { Locale } from '../data/i18n';
+interface Props { handle: string; locale: Locale; }
+const { handle, locale } = Astro.props;
+---
+<div class="pass-scene" aria-hidden="true">
+  <svg class="pass-cord" viewBox="0 0 480 490" fill="none"><path d="M172 -40C52 113 111 124 222 148M307 -40C414 56 370 120 246 148" /><path d="M172 -40C52 113 111 124 222 148M307 -40C414 56 370 120 246 148" /></svg>
+  <div class="member-pass" data-tilt>
+    <div class="pass-slot"></div>
+    <div class="pass-top"><img src="/favicon.svg" width="34" height="34" alt="" /><span>dda_com<br /><small>CTF TEAM</small></span></div>
+    <div class="pass-art"><img src="/images/team-scene.webp" alt="" width="1672" height="941" loading="lazy" /></div>
+    <div class="pass-identity"><span>{locale === 'ko' ? '팀 멤버' : 'Team member'}</span><strong>{handle}</strong></div>
+    <div class="pass-base"><span>SOUTH KOREA</span><span class="pass-mark">DD</span></div>
+  </div>
+</div>

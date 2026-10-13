@@ -1,0 +1,44 @@
+/* Open composition: one fabric flag, with the leetspeak reward revealed on capture. */
+.capture-section { position: relative; padding-block: var(--space-2xl) var(--space-3xl); background: var(--color-paper); }
+.capture-layout { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.4fr); align-items: center; gap: 0 var(--space-xl); }
+.identity-v3 .capture-copy h2 { font-family: var(--font-wordmark); font-size: clamp(3rem, 4.5vw, 4.25rem); font-weight: 800; letter-spacing: -.04em; line-height: 1.04; }
+.capture-copy h2 > span { color: var(--color-rose-ink); }
+.capture-instruction { display: none; margin-top: var(--space-xl); font-size: 1.0625rem; color: var(--color-ink-soft); word-break: keep-all; }
+.capture-ready .capture-instruction { display: block; }
+.capture-field { position: relative; height: 460px; }
+.capture-props { position: absolute; width: 100%; height: auto; left: 0; bottom: 0; z-index: 2; pointer-events: none; }
+.capture-piece { --flag-x: 0px; --flag-y: 0px; position: absolute; left: calc(52% - 120px); top: 36px; width: 240px; padding: 0; border: 0; border-radius: 12px; background: none; transform: translate(var(--flag-x), var(--flag-y)) rotate(8deg); transform-origin: 25% 85%; transition: transform 700ms var(--ease-out), filter 700ms var(--ease-out); touch-action: none; cursor: grab; filter: drop-shadow(14px 22px 14px var(--color-shadow)); }
+.capture-piece img { display: block; width: 100%; height: auto; pointer-events: none; }
+.capture-piece:disabled { opacity: 1; cursor: default; }
+.capture-dragging .capture-piece { transition: none; cursor: grabbing; }
+.capture-won .capture-piece { transform: translate(0, -36px) rotate(-6deg); cursor: default; filter: drop-shadow(22px 35px 20px var(--color-shadow)); }
+.capture-result { margin-top: var(--space-xl); }
+.capture-result code { display: block; font-family: ui-monospace, 'SFMono-Regular', Consolas, monospace; font-size: clamp(1rem, 1.7vw, 1.5rem); line-height: 1.5; color: var(--color-accent); overflow-wrap: anywhere; }
+.capture-result-actions { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-xl); margin-top: var(--space-md); }
+.capture-result-actions button { display: inline-flex; align-items: center; gap: var(--space-md); min-height: 44px; padding: 4px 0; border: 0; border-bottom: 1px solid var(--color-line-strong); background: none; color: var(--color-ink); font-size: 1rem; }
+.capture-result-actions .arrow { width: 18px; height: 18px; }
+.capture-links { display: flex; justify-content: flex-start; flex-wrap: wrap; gap: var(--space-xl); margin-top: var(--space-xl); }
+.capture-links a { display: inline-flex; align-items: center; gap: var(--space-xl); min-height: 48px; border-bottom: 1px solid var(--color-line-strong); font-size: 1rem; }
+.capture-links a:hover .arrow { transform: translate(3px, -3px); }
+@media (hover: hover) and (pointer: fine) {
+  .capture-ready:not(.capture-dragging, .capture-won) .capture-piece:hover { transform: translateY(-10px) rotate(5deg); }
+}
+@media (max-width: 59.99rem) {
+  .capture-layout { gap: 0 var(--space-lg); }
+  .identity-v3 .capture-copy h2 { font-size: clamp(2.5rem, 6vw, 4rem); }
+  .capture-piece { width: 190px; left: calc(50% - 95px); top: 35px; }
+  .capture-field { height: 360px; }
+}
+@media (max-width: 39.99rem) {
+  .capture-section { padding-block: var(--space-2xl); }
+  .capture-layout { grid-template-columns: minmax(0, 1fr); }
+  .identity-v3 .capture-copy h2 { font-size: 2.75rem; }
+  .capture-instruction, .capture-result { margin-top: var(--space-lg); }
+  .capture-field { height: 310px; margin-top: var(--space-lg); }
+  .capture-piece { width: 165px; left: calc(50% - 82px); top: 10px; }
+  .capture-links { gap: var(--space-xl); margin-top: var(--space-lg); }
+  .capture-links a { gap: var(--space-lg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .capture-piece { transition: none; }
+}

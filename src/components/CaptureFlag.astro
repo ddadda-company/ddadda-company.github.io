@@ -1,0 +1,36 @@
+---
+import Arrow from './Arrow.astro';
+import { pageUrl, type Locale } from '../data/i18n';
+import '../styles/capture-flag.css';
+const { locale } = Astro.props as { locale: Locale };
+const ko = locale === 'ko';
+const flag = 'dda{y0u_f0und_th3_fl4g}';
+---
+<section class="capture-section" aria-labelledby="capture-heading" data-capture>
+  <div class="capture-layout container">
+    <div class="capture-copy">
+      <h2 id="capture-heading">Capture <br />the flag<span>.</span></h2>
+      <p class="capture-instruction" data-capture-instruction>{ko ? '깃발을 위로 당겨보세요.' : 'Pull the flag up.'}</p>
+      <div class="capture-result" data-capture-result hidden>
+        <code>{flag}</code>
+        <div class="capture-result-actions">
+          <button data-capture-copy data-flag={flag} data-copied={ko ? '복사했어요' : 'Copied'} data-copy-error={ko ? '복사하지 못했습니다. 플래그를 선택해 복사해 주세요.' : 'Could not copy. Select the flag to copy it.'}>{ko ? '플래그 복사' : 'Copy flag'}</button>
+          <button data-capture-reset>{ko ? '한 번 더' : 'Play again'}<Arrow direction="right" /></button>
+        </div>
+      </div>
+      <nav class="capture-links" aria-label={ko ? '따따 더 알아보기' : 'Explore dda_com'}>
+        <a href={pageUrl(locale, 'achievements')}>{ko ? '대회 기록' : 'Competition record'}<Arrow /></a>
+        <a href={pageUrl(locale, 'members')}>{ko ? '팀 멤버' : 'Team members'}<Arrow /></a>
+      </nav>
+    </div>
+    <div class="capture-field">
+      <img class="capture-props" src="/images/capture-props.webp" width="1200" height="800" alt="" loading="lazy" />
+      <button class="capture-piece" data-capture-piece disabled aria-label={ko ? '깃발 잡기. 위로 당기거나 눌러보세요.' : 'Capture the flag. Pull up or press.'} aria-describedby="capture-instructions">
+        <img src="/images/capture-toy-flag.webp" width="720" height="960" alt="" loading="lazy" draggable="false" />
+      </button>
+    </div>
+  </div>
+  <p id="capture-instructions" class="visually-hidden">{ko ? '깃발을 위로 당기거나 누르세요. 키보드 Enter 또는 Space로도 잡을 수 있습니다.' : 'Pull the flag up or press it. Enter or Space also captures it.'}</p>
+  <p class="visually-hidden" data-capture-status role="status" data-success={ko ? `깃발을 잡았습니다. ${flag}` : `Flag captured. ${flag}`}></p>
+</section>
+<script src="../scripts/capture-flag.ts"></script>
