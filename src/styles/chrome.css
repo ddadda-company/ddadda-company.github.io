@@ -1,7 +1,7 @@
 /* Hallmark · macrostructure: keyboard masthead and compact link shelf · design-system: design.md
  * tone: tactile rose / serenity · pre-emit critique: P5 H5 E4 S5 R5 V4
  */
-.identity-v3 { background: var(--color-paper); }
+body.identity-v3:not([data-page='home']) { background: var(--color-paper); }
 .identity-v3[data-page='home'] {
   background:
     radial-gradient(ellipse 76vw 640px at 0 0, var(--color-rose), var(--color-transparent) 85%),
