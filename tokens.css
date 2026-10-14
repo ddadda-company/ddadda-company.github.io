@@ -50,6 +50,8 @@
   --color-room-wall: oklch(89% 0.043 261);
   --color-room-floor: oklch(94% 0.033 80);
   --font-body: 'Wanted Sans', 'Apple SD Gothic Neo', sans-serif;
+  --font-code: ui-monospace, 'SFMono-Regular', Consolas, monospace;
+  --color-puzzle-backdrop: oklch(25% 0.03 270 / 0.4);
   --space-xs: 0.25rem;
   --space-sm: 0.5rem;
   --space-md: 1rem;

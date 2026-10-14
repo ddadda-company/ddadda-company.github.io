@@ -7,7 +7,7 @@ const { locale } = Astro.props as { locale: Locale };
 const t = copy[locale].members;
 const disciplines = [...new Set(members.flatMap(m => m.disciplines))];
 ---
-<section class="page-intro members-intro container enter"><h1>{t.title}</h1></section>
+<section class="page-intro members-intro container enter"><h1>{t.title}</h1><button class="block-stack-trigger" id="puzzle-blocks" data-escape-puzzle="blocks" hidden aria-haspopup="dialog" aria-label={locale === 'ko' ? '작은 블록 뒤집어 보기' : 'Turn over the little blocks'}><span aria-hidden="true">?</span><span aria-hidden="true">{'{}'}</span><span aria-hidden="true">?</span></button></section>
 <section class="members-section members-gallery container enter enter--2" aria-labelledby="roster-heading">
   <h2 id="roster-heading" class="visually-hidden">{t.roster}</h2>
   {disciplines.length > 0 && <div class="archive-toolbar"><div class="member-filters" role="group" aria-label={locale === 'ko' ? '전문 분야' : 'Specialization'}><button class="filter-button" data-member-filter="all" aria-pressed="true">{t.all}</button>{disciplines.map(d => <button class="filter-button" data-member-filter={d} aria-pressed="false">{d}</button>)}</div></div>}

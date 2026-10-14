@@ -1,4 +1,4 @@
-# dda_com identity | revision 16
+# dda_com identity | revision 17
 
 ## Direction
 
@@ -28,6 +28,8 @@ Earlier visual research included [Oryzo AI / Lusion](https://oryzo.ai/), [Noomo]
 
 All four pages have Korean and English static routes. Language selection preserves the current page and persists for future homepage visits.
 
+Seven optional flag puzzles are embedded in the existing objects, not introduced as a new card section. The home keyboard opens a letter-shift cipher and the padlock opens three binary combination dials. The achievement year plaque opens a chronological calendar puzzle using actual archive data. A small stack beside the members heading opens a three-pair memory game, without touching member photos or bios. The contact envelope opens a mirror letter that turns with a range input or a button. The original liftable flag and transparent text remain independent puzzles. A footer collection control shows the seven discoveries, location clues, and copy actions. Progress is stored locally and shared between languages. Native dialogs preserve keyboard focus and close with Escape; no modal opens automatically. All puzzles remain usable by touch and keyboard. The design uses the existing cream paper, rose, serenity, and wooden-toy tokens. Motion is limited to presses, block flips, and user-controlled letter rotation, with a reduced-motion alternative.
+
 ## Type, palette, and assets
 
 Writing uses plain sentences and avoids em dashes. Page titles separate the page name and team name with `|`. Korean and English pages each have their own concise sharing description, reused across the standard meta description, Open Graph, and Twitter cards.
@@ -47,3 +49,76 @@ Member blocks use the existing pointer tilt handler, with all three faces moving
 Shared styling is `src/styles/studio.css` and `src/styles/chrome.css`, loaded after `global.css`; the homepage interaction uses `src/components/CaptureFlag.astro`, `src/styles/capture-flag.css`, and `src/scripts/capture-flag.ts`; the achievement room uses `src/styles/playroom.css` and `src/scripts/playroom.ts`. The earlier `identity.css` is preserved but not imported. Previous chart and member-pass components are also unreferenced. Factual data lives in `src/data/team.ts`; common translated copy lives in `src/data/i18n.ts`.
 
 Responsive verification covers 320, 375, 414, 768, 1280, 1440, 1600, and 1920 px. Check all eight language routes, keyboard navigation, result filters, missing contact state, reduced motion, and no-JavaScript navigation when changing the layout.
+
+## Exports
+
+The complete source of truth remains `tokens.css`. These portable excerpts cover the puzzle additions and the existing colors and fonts they use. They are documentation, not extra runtime stylesheets.
+
+CSS custom properties:
+
+```css
+:root {
+  --color-paper: oklch(97.56% 0.0057 88);
+  --color-ink: oklch(25% 0.063 270);
+  --color-rose: oklch(87.7667% 0.05122 19.669);
+  --color-serenity: oklch(72.9335% 0.06473 262.745);
+  --color-puzzle-backdrop: oklch(25% 0.03 270 / 0.4);
+  --font-display: 'Paperlogy', 'Wanted Sans', sans-serif;
+  --font-body: 'Wanted Sans', 'Apple SD Gothic Neo', sans-serif;
+  --font-code: ui-monospace, 'SFMono-Regular', Consolas, monospace;
+}
+```
+
+Tailwind v4:
+
+```css
+@theme {
+  --color-paper: oklch(97.56% 0.0057 88);
+  --color-ink: oklch(25% 0.063 270);
+  --color-rose: oklch(87.7667% 0.05122 19.669);
+  --color-serenity: oklch(72.9335% 0.06473 262.745);
+  --color-puzzle-backdrop: oklch(25% 0.03 270 / 0.4);
+  --font-display: 'Paperlogy', 'Wanted Sans', sans-serif;
+  --font-body: 'Wanted Sans', 'Apple SD Gothic Neo', sans-serif;
+  --font-code: ui-monospace, 'SFMono-Regular', Consolas, monospace;
+}
+```
+
+DTCG token excerpt:
+
+```json
+{
+  "color": {
+    "paper": { "$type": "color", "$value": "oklch(97.56% 0.0057 88)" },
+    "ink": { "$type": "color", "$value": "oklch(25% 0.063 270)" },
+    "rose": { "$type": "color", "$value": "oklch(87.7667% 0.05122 19.669)" },
+    "serenity": { "$type": "color", "$value": "oklch(72.9335% 0.06473 262.745)" },
+    "puzzle-backdrop": { "$type": "color", "$value": "oklch(25% 0.03 270 / 0.4)" }
+  },
+  "font": {
+    "display": { "$type": "fontFamily", "$value": ["Paperlogy", "Wanted Sans", "sans-serif"] },
+    "body": { "$type": "fontFamily", "$value": ["Wanted Sans", "Apple SD Gothic Neo", "sans-serif"] },
+    "code": { "$type": "fontFamily", "$value": ["ui-monospace", "SFMono-Regular", "Consolas", "monospace"] }
+  }
+}
+```
+
+shadcn/ui semantic color mapping, with the same imported `tokens.css`:
+
+```css
+:root {
+  --background: var(--color-paper);
+  --foreground: var(--color-ink);
+  --popover: var(--color-paper);
+  --popover-foreground: var(--color-ink);
+  --primary: var(--color-ink);
+  --primary-foreground: var(--color-on-ink);
+  --secondary: var(--color-blue-light);
+  --secondary-foreground: var(--color-ink);
+  --accent: var(--color-rose);
+  --accent-foreground: var(--color-ink);
+  --border: var(--color-line-strong);
+  --input: var(--color-line-strong);
+  --ring: var(--color-focus);
+}
+```

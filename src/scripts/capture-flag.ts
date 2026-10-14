@@ -1,3 +1,5 @@
+import { collectFlag } from './flag-store';
+
 const game = document.querySelector<HTMLElement>('[data-capture]');
 if (game) {
   const piece = game.querySelector<HTMLButtonElement>('[data-capture-piece]')!;
@@ -17,6 +19,7 @@ if (game) {
   const capture = () => {
     if (won) return;
     won = true;
+    collectFlag('capture');
     game.classList.add('capture-won');
     piece.setAttribute('aria-pressed', 'true');
     instruction.hidden = true;
@@ -89,6 +92,7 @@ if (secret) {
   const reveal = () => {
     if (flag.hasAttribute('data-found')) return;
     flag.setAttribute('data-found', '');
+    collectFlag('invisible');
     actions.hidden = false;
     status.textContent = status.dataset.success!;
   };

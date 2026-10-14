@@ -28,7 +28,7 @@ const suffix = (rank: number) => locale === 'ko' ? '위' : rank % 100 >= 11 && r
     return <section class="playroom-season" data-result-year={year} data-playroom aria-labelledby={`year-${year}`}>
       <div class="playroom-room">
         <div class="playroom-heading container">
-          <h3 id={`year-${year}`}><span>{year}</span></h3>
+          <h3 id={`year-${year}`}><span data-puzzle-fallback>{year}</span><button class="puzzle-year" id={year === years[0] ? 'puzzle-timeline' : undefined} data-escape-puzzle="timeline" hidden aria-haspopup="dialog" aria-label={locale === 'ko' ? `${year} 팻말 살펴보기` : `Inspect the ${year} plaque`}>{year}</button></h3>
           <div class="playroom-controls">
             <button class="room-step room-step--previous" data-room-step="-1" aria-label={locale === 'ko' ? '이전 대회' : 'Previous competition'} aria-controls={`room-${year}`} disabled><Arrow direction="right" /></button>
             <button class="room-step" data-room-step="1" aria-label={locale === 'ko' ? '다음 대회' : 'Next competition'} aria-controls={`room-${year}`}><Arrow direction="right" /></button>

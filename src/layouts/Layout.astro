@@ -2,6 +2,7 @@
 import { copy, pages, pageUrl, type Locale, type Page } from '../data/i18n';
 import { team } from '../data/team';
 import Arrow from '../components/Arrow.astro';
+import EscapeRoom from '../components/EscapeRoom.astro';
 import '../../tokens.css';
 import '../styles/global.css';
 import '../styles/studio.css';
@@ -91,10 +92,12 @@ const shareImage = new URL('/images/team.webp', Astro.site).href;
         </div>
         <div class="footer-bottom">
           <span>© {new Date().getFullYear()} dda_com CTF TEAM</span>
+          <button class="flag-collection-trigger" data-open-collection hidden>{locale === 'ko' ? '숨은 플래그' : 'Hidden flags'} <strong data-flag-count>0/7</strong></button>
           <div><a href="#top">{t.top}<Arrow direction="up-right" /></a></div>
         </div>
       </div>
     </footer>
+    <EscapeRoom locale={locale} />
     <script src="../scripts/main.ts"></script>
     <script src="../scripts/studio.ts"></script>
   </body>

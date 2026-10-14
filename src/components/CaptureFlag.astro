@@ -1,11 +1,12 @@
 ---
 import Arrow from './Arrow.astro';
+import { flags } from '../data/escape';
 import { pageUrl, type Locale } from '../data/i18n';
 import '../styles/capture-flag.css';
 const { locale } = Astro.props as { locale: Locale };
 const ko = locale === 'ko';
-const flag = 'dda{y0u_f0und_th3_fl4g}';
-const secretFlag = 'dda{n0w_y0u_s33_m3}';
+const flag = flags.find(flag => flag.id === 'capture')!.flag;
+const secretFlag = flags.find(flag => flag.id === 'invisible')!.flag;
 ---
 <section class="capture-section" aria-labelledby="capture-heading" data-capture>
   <div class="capture-layout container">
@@ -35,6 +36,10 @@ const secretFlag = 'dda{n0w_y0u_s33_m3}';
     </div>
     <div class="capture-field">
       <img class="capture-props" src="/images/capture-props.webp" width="1200" height="800" alt="" loading="lazy" />
+      <div class="capture-puzzle-map">
+        <button class="capture-hotspot capture-hotspot--keyboard" id="puzzle-keyboard" data-escape-puzzle="keyboard" hidden aria-haspopup="dialog"><span>{ko ? '키보드 살펴보기' : 'Inspect keyboard'}</span></button>
+        <button class="capture-hotspot capture-hotspot--binary" id="puzzle-binary" data-escape-puzzle="binary" hidden aria-haspopup="dialog"><span>{ko ? '자물쇠 살펴보기' : 'Inspect padlock'}</span></button>
+      </div>
       <button class="capture-piece" data-capture-piece disabled aria-label={ko ? '깃발 잡기. 위로 당기거나 눌러보세요.' : 'Capture the flag. Pull up or press.'} aria-describedby="capture-instructions">
         <img src="/images/capture-toy-flag.webp" width="720" height="960" alt="" loading="lazy" draggable="false" />
       </button>
