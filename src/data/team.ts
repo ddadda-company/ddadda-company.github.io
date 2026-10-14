@@ -77,4 +77,14 @@ export const members: Member[] = [
     disciplines: [],
     bio: { ko: '', en: '' },
   },
+  {
+    handle: 'Dbi',
+    disciplines: [],
+    bio: { ko: '', en: '' },
+  },
+  {
+    handle: 'love09010224',
+    disciplines: [],
+    bio: { ko: '', en: '' },
+  },
 ];
