@@ -1,4 +1,4 @@
-/* Open composition: one fabric flag, with the leetspeak reward revealed on capture. */
+/* Toy scene with a liftable flag and a selectable invisible-text secret. */
 .capture-section { position: relative; padding-block: var(--space-2xl) var(--space-3xl); background: var(--color-paper); }
 .capture-layout { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.4fr); align-items: center; gap: 0 var(--space-xl); }
 .identity-v3 .capture-copy h2 { font-family: var(--font-wordmark); font-size: clamp(3rem, 4.5vw, 4.25rem); font-weight: 800; letter-spacing: -.04em; line-height: 1.04; }
@@ -17,6 +17,12 @@
 .capture-result-actions { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-xl); margin-top: var(--space-md); }
 .capture-result-actions button { display: inline-flex; align-items: center; gap: var(--space-md); min-height: 44px; padding: 4px 0; border: 0; border-bottom: 1px solid var(--color-line-strong); background: none; color: var(--color-ink); font-size: 1rem; }
 .capture-result-actions .arrow { width: 18px; height: 18px; }
+.capture-secret { margin-top: var(--space-xl); }
+.capture-secret-hint { margin: 0; font-size: 1rem; color: var(--color-ink-soft); }
+.capture-secret-flag { display: block; width: fit-content; max-width: 100%; min-height: 44px; padding-block: 8px; color: transparent; font-family: ui-monospace, 'SFMono-Regular', Consolas, monospace; font-size: clamp(1rem, 1.5vw, 1.125rem); line-height: 1.5; overflow-wrap: anywhere; -webkit-user-select: all; user-select: all; cursor: text; }
+.capture-secret-flag::selection { color: var(--color-ink); background: var(--color-rose); }
+.capture-secret-flag:focus-visible, .capture-secret-flag[data-found] { color: var(--color-accent); }
+.capture-secret .capture-result-actions { margin-top: 0; }
 .capture-links { display: flex; justify-content: flex-start; flex-wrap: wrap; gap: var(--space-xl); margin-top: var(--space-xl); }
 .capture-links a { display: inline-flex; align-items: center; gap: var(--space-xl); min-height: 48px; border-bottom: 1px solid var(--color-line-strong); font-size: 1rem; }
 .capture-links a:hover .arrow { transform: translate(3px, -3px); }

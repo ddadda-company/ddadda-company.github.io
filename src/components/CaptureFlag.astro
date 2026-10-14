@@ -5,6 +5,7 @@ import '../styles/capture-flag.css';
 const { locale } = Astro.props as { locale: Locale };
 const ko = locale === 'ko';
 const flag = 'dda{y0u_f0und_th3_fl4g}';
+const secretFlag = 'dda{n0w_y0u_s33_m3}';
 ---
 <section class="capture-section" aria-labelledby="capture-heading" data-capture>
   <div class="capture-layout container">
@@ -17,6 +18,15 @@ const flag = 'dda{y0u_f0und_th3_fl4g}';
           <button data-capture-copy data-flag={flag} data-copied={ko ? '복사했어요' : 'Copied'} data-copy-error={ko ? '복사하지 못했습니다. 플래그를 선택해 복사해 주세요.' : 'Could not copy. Select the flag to copy it.'}>{ko ? '플래그 복사' : 'Copy flag'}</button>
           <button data-capture-reset>{ko ? '한 번 더' : 'Play again'}<Arrow direction="right" /></button>
         </div>
+      </div>
+      <div class="capture-secret" data-secret>
+        <p class="capture-secret-hint" id="secret-hint">{ko ? '여긴 정말 빈칸일까요?' : 'Is this space really empty?'}</p>
+        <code class="capture-secret-flag" data-secret-flag tabindex="0" aria-describedby="secret-hint secret-help">{secretFlag}</code>
+        <p class="visually-hidden" id="secret-help">{ko ? '글자를 드래그하거나 길게 눌러 선택해 보세요. 키보드로 이 글씨에 초점을 옮겨도 확인할 수 있습니다.' : 'Select the text by dragging or pressing and holding. You can also reveal it by moving keyboard focus here.'}</p>
+        <div class="capture-result-actions" data-secret-actions hidden>
+          <button data-secret-copy data-flag={secretFlag} data-copied={ko ? '복사했어요' : 'Copied'} data-copy-error={ko ? '복사하지 못했습니다. 플래그를 선택해 복사해 주세요.' : 'Could not copy. Select the flag to copy it.'}>{ko ? '숨은 플래그 복사' : 'Copy hidden flag'}</button>
+        </div>
+        <p class="visually-hidden" data-secret-status role="status" data-success={ko ? '숨은 플래그를 찾았습니다.' : 'Hidden flag found.'}></p>
       </div>
       <nav class="capture-links" aria-label={ko ? '따따 더 알아보기' : 'Explore dda_com'}>
         <a href={pageUrl(locale, 'achievements')}>{ko ? '대회 기록' : 'Competition record'}<Arrow /></a>
