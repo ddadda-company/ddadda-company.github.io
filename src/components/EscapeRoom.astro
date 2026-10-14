@@ -1,6 +1,7 @@
 ---
-import { flags, calendarCards } from '../data/escape';
+import { flags } from '../data/escape';
 import { pageUrl, type Locale } from '../data/i18n';
+import materials from '../data/challenge-materials.json';
 import '../styles/escape-room.css';
 const { locale } = Astro.props as { locale: Locale };
 const ko = locale === 'ko';
@@ -13,65 +14,48 @@ const ko = locale === 'ko';
     </div>
     <div data-escape-collection hidden>
       <p class="escape-intro" data-collection-summary></p>
+      <button class="escape-button escape-button--primary" data-replay-finale hidden>{ko ? '탈출 장면 다시 보기' : 'Replay your escape'}</button>
       <ol class="flag-collection">
         {flags.map(flag => <li data-collection-item={flag.id}>
           <span class="collection-mark" aria-hidden="true">?</span>
           <div><h3>{flag.title[locale]}</h3>
-            <a class="collection-clue" data-collection-clue href={`${pageUrl(locale, flag.page)}#${flag.anchor}`}>{flag.clue[locale]} <span aria-hidden="true">↗</span></a>
-            <code data-collection-code hidden>{flag.flag}</code>
+            <a class="collection-clue" data-collection-clue href={`${pageUrl(locale, flag.page)}#${flag.anchor}`}>{flag.location[locale]} <span aria-hidden="true">↗</span></a>
+            <code data-collection-code hidden></code>
           </div>
           <button class="escape-button" data-collection-copy={flag.id} hidden>{ko ? '복사' : 'Copy'}</button>
         </li>)}
       </ol>
     </div>
-    <section data-puzzle-panel="keyboard" hidden>
-      <p class="escape-intro">{ko ? '쪽지의 네 글자를 풀어 키보드에 입력하세요.' : 'Decode the four letters on the note and type the answer.'}</p>
-      <div class="cipher-note" aria-label={ko ? '암호문 G M B H' : 'Ciphertext G M B H'}>G M B H</div>
-      <form data-keyboard-form class="puzzle-keyboard">
-        <label for="cipher-answer">{ko ? '네 글자 정답' : 'Four-letter answer'}</label>
-        <input id="cipher-answer" name="answer" maxlength="4" autocomplete="off" spellcheck="false" autocapitalize="characters" aria-describedby="keyboard-hint" />
-        <div class="puzzle-keys">{['A', 'G', 'F', 'L'].map(letter => <button type="button" data-letter={letter}>{letter}</button>)}</div>
-        <div class="escape-actions"><button class="escape-button" type="button" data-keyboard-clear>{ko ? '지우기' : 'Clear'}</button><button class="escape-button escape-button--primary" type="submit">{ko ? '입력' : 'Enter'}</button></div>
-      </form>
-      <details class="escape-hint"><summary>{ko ? '힌트 보기' : 'A little hint'}</summary><p id="keyboard-hint">{ko ? '알파벳 순서에서 한 글자씩 뒤로. B는 A, A는 Z가 됩니다.' : 'Move each letter one place back in the alphabet. B becomes A, and A becomes Z.'}</p></details>
-    </section>
-    <section data-puzzle-panel="binary" hidden>
-      <p class="escape-intro">{ko ? '자물쇠에 새겨진 세 숫자를 읽어보세요.' : 'Read the three numbers engraved on the lock.'}</p>
-      <form data-binary-form>
-        <div class="binary-lock"><div class="lock-shackle" aria-hidden="true"></div><div class="lock-body">
-          <div class="lock-dials">{['001', '101', '011'].map((bits, index) => <label><code>{bits}</code><span class="visually-hidden">{ko ? `${index + 1}번째 다이얼` : `Dial ${index + 1}`}</span><select name={`digit-${index}`} aria-describedby="binary-hint">{Array.from({ length: 8 }, (_, digit) => <option value={digit}>{digit}</option>)}</select></label>)}</div>
-          <button class="escape-button escape-button--primary" type="submit">{ko ? '열어보기' : 'Unlock'}</button>
-        </div></div>
-      </form>
-      <details class="escape-hint"><summary>{ko ? '힌트 보기' : 'A little hint'}</summary><p id="binary-hint">{ko ? '왼쪽부터 4, 2, 1. 숫자 1이 있는 자리만 더해보세요. 110이라면 4 + 2 = 6.' : 'The positions are worth 4, 2, 1. Add only the positions with a 1. For example, 110 is 4 + 2 = 6.'}</p></details>
-    </section>
-    <section data-puzzle-panel="timeline" hidden>
-      <p class="escape-intro">{ko ? '가장 먼저 열린 대회부터 차례로 골라주세요.' : 'Pick the competitions in order, starting with the earliest.'}</p>
-      <ol class="calendar-picks" aria-label={ko ? '선택한 순서' : 'Your order'}>{[1, 2, 3].map(n => <li data-calendar-slot><span aria-hidden="true">{n}</span><span data-calendar-name></span></li>)}</ol>
-      <div class="calendar-options">{calendarCards.map(card => <button data-calendar-event={card.event} class="calendar-card"><span class="calendar-pin" aria-hidden="true"></span>{card.event}</button>)}</div>
-      <div class="escape-actions"><button class="escape-button" data-calendar-reset>{ko ? '순서 다시 고르기' : 'Start over'}</button></div>
-      <details class="escape-hint"><summary>{ko ? '날짜 확인하기' : 'Check the dates'}</summary><ul>{calendarCards.map(card => <li>{card.event} · <time datetime={card.date}>{card.date}</time></li>)}</ul></details>
-    </section>
-    <section data-puzzle-panel="blocks" hidden>
-      <p class="escape-intro">{ko ? '두 개씩 뒤집어서 같은 기호 세 쌍을 찾아보세요.' : 'Turn over two blocks at a time. Find all three matching pairs.'}</p>
-      <div class="memory-blocks" role="group" aria-label={ko ? '짝 맞추기 블록' : 'Matching blocks'}>
-        {['{ }', '< >', '[ ]', '< >', '{ }', '[ ]'].map((symbol, index) => <button class="memory-block" data-memory-block={symbol} aria-label={ko ? `${index + 1}번 블록 뒤집기` : `Turn over block ${index + 1}`} aria-pressed="false"><span class="memory-block-inner" aria-hidden="true"><span class="memory-front">?</span><span class="memory-back">{symbol}</span></span></button>)}
+    <section class="challenge-room" data-challenge-room hidden>
+      <p class="escape-intro" data-challenge-description></p>
+      <div class="challenge-materials">
+        {Object.entries(materials).map(([id, entries]) => <div data-materials-for={id} hidden>
+          {entries.map((material, index) => <details class="challenge-material" name={`materials-${id}`} open={index === 0}>
+            <summary>{material.label}</summary>
+            <div class="material-actions"><button class="escape-button" data-material-copy={`material-${id}-${index}`} aria-label={ko ? `${material.label} 복사` : `Copy ${material.label}`}>{ko ? '복사' : 'Copy'}</button></div>
+            <pre tabindex="0" aria-label={`${material.label}, ${material.language}`}><code id={`material-${id}-${index}`}>{material.content}</code></pre>
+          </details>)}
+        </div>)}
       </div>
-      <p class="memory-progress" data-memory-progress></p>
-      <div class="escape-actions"><button class="escape-button" data-memory-reset>{ko ? '다시 섞기' : 'Shuffle again'}</button></div>
-    </section>
-    <section data-puzzle-panel="mirror" hidden>
-      <p class="escape-intro">{ko ? '거꾸로 쓰인 편지. 반대쪽에서 보면 어떨까요?' : 'A letter written backwards. What if you looked from the other side?'}</p>
-      <div class="mirror-stage"><div class="mirror-letter" data-mirror-letter><span aria-hidden="true">↶</span><code aria-hidden="true">{flags.find(flag => flag.id === 'mirror')!.flag}</code><span aria-hidden="true">↷</span></div></div>
-      <label class="mirror-control" for="mirror-angle">{ko ? '편지 돌리기' : 'Turn the letter'}<input id="mirror-angle" data-mirror-angle type="range" min="0" max="180" step="5" value="0" /></label>
-      <div class="escape-actions"><button class="escape-button" data-mirror-turn>{ko ? '반대편 보기' : 'Look at the other side'}</button></div>
+      <form class="challenge-submit" data-challenge-form>
+        <label for="challenge-answer">{ko ? '플래그 제출' : 'Submit a flag'}</label>
+        <div class="challenge-input-row"><input id="challenge-answer" name="flag" type="text" placeholder="dda{...}" autocomplete="off" autocapitalize="off" spellcheck="false" required maxlength="133" aria-errormessage="escape-feedback" /><button class="escape-button escape-button--primary" type="submit" data-challenge-submit>{ko ? '제출' : 'Submit'}</button></div>
+      </form>
     </section>
     <div class="escape-solved" data-escape-solved hidden>
-      <p>{ko ? '플래그를 찾았어요!' : 'You found a flag!'}</p>
+      <p>{ko ? '플래그 확보' : 'Flag captured'}</p>
       <code data-escape-flag></code>
-      <div class="escape-actions"><button class="escape-button" data-escape-copy>{ko ? '플래그 복사' : 'Copy flag'}</button><button class="escape-button" data-open-collection>{ko ? '모은 플래그 보기' : 'Your collection'}</button></div>
+      <div class="escape-actions"><button class="escape-button" data-escape-copy>{ko ? '플래그 복사' : 'Copy flag'}</button><button class="escape-button" data-open-collection>{ko ? '수집함' : 'Your flags'}</button></div>
     </div>
-    <p class="escape-feedback visually-hidden" data-escape-feedback role="status" aria-live="polite" aria-atomic="true"></p>
+    <section class="escape-finale" data-escape-finale hidden aria-labelledby="finale-heading">
+      <div class="finale-burst" data-finale-burst aria-hidden="true"></div>
+      <div class="finale-vault" aria-hidden="true"><span class="vault-door vault-door--left"></span><span class="vault-door vault-door--right"></span><span class="finale-flag"><svg viewBox="0 0 100 120" fill="none"><path d="M22 113V9" stroke="currentColor" stroke-width="7" stroke-linecap="round"/><path d="M27 13C49 0 61 31 89 16V69C61 84 49 53 27 66Z" fill="currentColor"/></svg></span></div>
+      <p class="finale-count">7 / 7</p>
+      <h3 id="finale-heading">ALL FLAGS<br />CAPTURED.</h3>
+      <p class="finale-message">{ko ? '따따의 숨은 플래그를 모두 확보했습니다.' : 'Every hidden flag in dda_com is yours.'}</p>
+      <div class="escape-actions"><button class="escape-button escape-button--primary" data-open-collection>{ko ? '수집함 보기' : 'View your flags'}</button><button class="escape-button" data-finale-again>{ko ? '한 번 더' : 'Play it again'}</button></div>
+    </section>
+    <p id="escape-feedback" class="escape-feedback visually-hidden" data-escape-feedback role="status" aria-live="polite" aria-atomic="true"></p>
   </div>
 </dialog>
 <script src="../scripts/escape-room.ts"></script>

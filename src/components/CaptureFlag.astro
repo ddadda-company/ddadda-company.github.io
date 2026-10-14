@@ -1,33 +1,21 @@
 ---
 import Arrow from './Arrow.astro';
-import { flags } from '../data/escape';
+import { invisibleFlag } from '../data/escape';
 import { pageUrl, type Locale } from '../data/i18n';
 import '../styles/capture-flag.css';
 const { locale } = Astro.props as { locale: Locale };
 const ko = locale === 'ko';
-const flag = flags.find(flag => flag.id === 'capture')!.flag;
-const secretFlag = flags.find(flag => flag.id === 'invisible')!.flag;
 ---
-<section class="capture-section" aria-labelledby="capture-heading" data-capture>
+<section class="capture-section" aria-labelledby="capture-heading">
   <div class="capture-layout container">
     <div class="capture-copy">
       <h2 id="capture-heading">Capture <br />the flag<span>.</span></h2>
-      <p class="capture-instruction" data-capture-instruction>{ko ? '깃발을 위로 당겨보세요.' : 'Pull the flag up.'}</p>
-      <div class="capture-result" data-capture-result hidden>
-        <code>{flag}</code>
-        <div class="capture-result-actions">
-          <button data-capture-copy data-flag={flag} data-copied={ko ? '복사했어요' : 'Copied'} data-copy-error={ko ? '복사하지 못했습니다. 플래그를 선택해 복사해 주세요.' : 'Could not copy. Select the flag to copy it.'}>{ko ? '플래그 복사' : 'Copy flag'}</button>
-          <button data-capture-reset>{ko ? '한 번 더' : 'Play again'}<Arrow direction="right" /></button>
-        </div>
-      </div>
       <div class="capture-secret" data-secret>
-        <p class="capture-secret-hint" id="secret-hint">{ko ? '여긴 정말 빈칸일까요?' : 'Is this space really empty?'}</p>
-        <code class="capture-secret-flag" data-secret-flag tabindex="0" aria-describedby="secret-hint secret-help">{secretFlag}</code>
-        <p class="visually-hidden" id="secret-help">{ko ? '글자를 드래그하거나 길게 눌러 선택해 보세요. 키보드로 이 글씨에 초점을 옮겨도 확인할 수 있습니다.' : 'Select the text by dragging or pressing and holding. You can also reveal it by moving keyboard focus here.'}</p>
+        <code id="trace" class="capture-secret-flag" data-secret-flag tabindex="0">{invisibleFlag}</code>
         <div class="capture-result-actions" data-secret-actions hidden>
-          <button data-secret-copy data-flag={secretFlag} data-copied={ko ? '복사했어요' : 'Copied'} data-copy-error={ko ? '복사하지 못했습니다. 플래그를 선택해 복사해 주세요.' : 'Could not copy. Select the flag to copy it.'}>{ko ? '숨은 플래그 복사' : 'Copy hidden flag'}</button>
+          <button data-secret-copy data-flag={invisibleFlag} data-copied={ko ? '복사했어요' : 'Copied'} data-copy-error={ko ? '복사하지 못했습니다. 플래그를 선택해 복사해 주세요.' : 'Could not copy. Select the flag to copy it.'}>{ko ? '플래그 복사' : 'Copy flag'}</button>
         </div>
-        <p class="visually-hidden" data-secret-status role="status" data-success={ko ? '숨은 플래그를 찾았습니다.' : 'Hidden flag found.'}></p>
+        <p class="visually-hidden" data-secret-status role="status" data-success={ko ? '플래그를 찾았습니다.' : 'Flag found.'}></p>
       </div>
       <nav class="capture-links" aria-label={ko ? '따따 더 알아보기' : 'Explore dda_com'}>
         <a href={pageUrl(locale, 'achievements')}>{ko ? '대회 기록' : 'Competition record'}<Arrow /></a>
@@ -40,12 +28,10 @@ const secretFlag = flags.find(flag => flag.id === 'invisible')!.flag;
         <button class="capture-hotspot capture-hotspot--keyboard" id="puzzle-keyboard" data-escape-puzzle="keyboard" hidden aria-haspopup="dialog"><span>{ko ? '키보드 살펴보기' : 'Inspect keyboard'}</span></button>
         <button class="capture-hotspot capture-hotspot--binary" id="puzzle-binary" data-escape-puzzle="binary" hidden aria-haspopup="dialog"><span>{ko ? '자물쇠 살펴보기' : 'Inspect padlock'}</span></button>
       </div>
-      <button class="capture-piece" data-capture-piece disabled aria-label={ko ? '깃발 잡기. 위로 당기거나 눌러보세요.' : 'Capture the flag. Pull up or press.'} aria-describedby="capture-instructions">
+      <button class="capture-piece" id="puzzle-capture" data-escape-puzzle="capture" disabled aria-haspopup="dialog" aria-label={ko ? '깃발 살펴보기' : 'Inspect flag'}>
         <img src="/images/capture-toy-flag.webp" width="720" height="960" alt="" loading="lazy" draggable="false" />
       </button>
     </div>
   </div>
-  <p id="capture-instructions" class="visually-hidden">{ko ? '깃발을 위로 당기거나 누르세요. 키보드 Enter 또는 Space로도 잡을 수 있습니다.' : 'Pull the flag up or press it. Enter or Space also captures it.'}</p>
-  <p class="visually-hidden" data-capture-status role="status" data-success={ko ? `깃발을 잡았습니다. ${flag}` : `Flag captured. ${flag}`}></p>
 </section>
 <script src="../scripts/capture-flag.ts"></script>

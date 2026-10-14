@@ -1,0 +1,23 @@
+{
+  "capture": {
+    "digest": "a0f180f63c9eeeefffc89e113ebd2c162a679e316a00ee62df99511678ab8b30"
+  },
+  "keyboard": {
+    "digest": "2239e8e4cb01c68f16d0999ea630d8ff4931fc2e9fbfbb2965f39cc20e46e906"
+  },
+  "binary": {
+    "digest": "725d22ac20b0c22167106eafdace44cb6e7da40662ab6b37b097b6e888e64840"
+  },
+  "timeline": {
+    "digest": "852ee991edbb023ea599f52aba45d7bd98200bc43dda8c4fdb8d5e2a1278951e"
+  },
+  "blocks": {
+    "digest": "55c4a6b0efa5c810db4ca782618a115bcb66bece6dbbc8ecd18240ace46459d2"
+  },
+  "invisible": {
+    "digest": "9ec17fcb81451964883099f29e80ca071129836703a952891f74da39977a29b9"
+  },
+  "mirror": {
+    "digest": "9b28b433fd08a01bea25f0fa08abc0e7cdc23d58256df8ba1694f18bc836e4d8"
+  }
+}

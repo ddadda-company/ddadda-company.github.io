@@ -1,10 +1,10 @@
-/* Hallmark · macrostructure: object-led puzzles · tone: playful · anchor hue: rose / serenity
- * Component extension of design.md. Native controls, tactile objects, no new page surfaces.
+/* Hallmark · macrostructure: artifact-based challenges · tone: playful · anchor hue: rose / serenity
+ * Component extension of design.md. Inline code and evidence, validated submissions, and a seven-flag completion scene.
  */
 .escape-open { overflow: hidden; }
 .escape-dialog { width: min(640px, calc(100% - 32px)); max-height: calc(100dvh - 32px); margin: auto; padding: 0; border: 1px solid var(--color-toy-wood-edge); border-radius: 16px; color: var(--color-ink); background: var(--color-paper); box-shadow: 8px 12px 0 var(--color-toy-wood), 0 24px 80px var(--color-shadow); overscroll-behavior: contain; }
 .escape-dialog::backdrop { background: var(--color-puzzle-backdrop); }
-.escape-dialog button { -webkit-tap-highlight-color: var(--color-transparent); }
+.escape-dialog button, .escape-dialog summary, [data-escape-puzzle] { -webkit-tap-highlight-color: var(--color-transparent); }
 .escape-sheet { padding: var(--space-xl); }
 .escape-heading { position: sticky; top: 0; z-index: 4; display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-md); margin-bottom: var(--space-lg); padding-block: var(--space-sm); background: var(--color-paper); }
 .identity-v3 .escape-heading h2 { font: 800 clamp(1.5rem, 4vw, 2rem)/1.3 var(--font-display); margin: 0; padding-block: var(--space-xs); overflow-wrap: anywhere; }
@@ -17,10 +17,6 @@
 .escape-button:active:not(:disabled) { transform: translateY(2px); }
 .escape-button:disabled { opacity: .55; cursor: wait; }
 .escape-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-md); margin-top: var(--space-lg); }
-.escape-hint { margin-top: var(--space-xl); font-size: var(--text-base); }
-.escape-hint summary { cursor: pointer; min-height: 44px; padding-block: var(--space-sm); color: var(--color-accent); text-decoration: underline; text-underline-offset: 4px; }
-.escape-hint p, .escape-hint ul { margin-top: var(--space-sm); line-height: 1.7; }
-.escape-hint ul { padding-left: var(--space-lg); }
 .escape-feedback { margin: var(--space-lg) 0 0; font-size: var(--text-base); color: var(--color-accent); line-height: 1.6; }
 .escape-feedback[data-error='true'] { color: var(--color-rose-ink); }
 .escape-solved { margin-top: var(--space-xl); padding-top: var(--space-lg); border-top: 2px dashed var(--color-line-strong); text-align: center; }
@@ -63,49 +59,55 @@
 .collection-clue { display: block; font-size: var(--text-base); line-height: 1.6; color: var(--color-ink-soft); text-decoration: underline; text-underline-offset: 4px; }
 .flag-collection code { display: block; font: 500 var(--text-base)/1.6 var(--font-code); color: var(--color-accent); overflow-wrap: anywhere; user-select: all; }
 
-/* Paper note and a small, usable keyboard. */
-.cipher-note { width: fit-content; margin: var(--space-xl) auto; padding: var(--space-lg) var(--space-xl); transform: rotate(-4deg); background: var(--color-butter); box-shadow: 2px 5px 0 var(--color-toy-wood), 0 12px 24px var(--color-shadow); color: var(--color-ink); font: 800 2rem var(--font-code); }
-.puzzle-keyboard { max-width: 400px; margin: auto; padding: var(--space-lg); border: 2px solid var(--color-serenity); border-bottom-width: 8px; border-radius: 16px; background: var(--color-blue-light); }
-.puzzle-keyboard label { display: block; margin-bottom: var(--space-sm); font-size: var(--text-base); }
-.puzzle-keyboard input { display: block; width: 100%; min-width: 0; padding: var(--space-sm); border: 1px solid var(--color-line-strong); border-radius: 4px; background: var(--color-white); color: var(--color-ink); font: 750 1.75rem var(--font-code); letter-spacing: .25em; text-align: center; text-transform: uppercase; }
-.puzzle-keys { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-sm); margin-top: var(--space-md); }
-.puzzle-keys button { min-height: 52px; padding: var(--space-sm); border: 1px solid var(--color-line-strong); border-radius: 8px; background: var(--color-white); color: var(--color-ink); box-shadow: 0 4px 0 var(--color-serenity); font: 750 1.5rem var(--font-code); }
-.puzzle-keys button:nth-child(even) { background: var(--color-rose); }
-.puzzle-keys button:hover { background: var(--color-butter); }
-.puzzle-keys button:active { transform: translateY(3px); }
-.binary-lock { max-width: 320px; margin: var(--space-xl) auto 0; }
-.lock-shackle { width: 56%; height: 100px; margin: auto auto -4px; border: 16px solid var(--color-silver); border-bottom: 0; border-radius: 80px 80px 0 0; box-shadow: inset 4px 0 0 var(--color-silver-light); }
-.lock-body { position: relative; padding: var(--space-lg); background: var(--color-rose); border: 2px solid var(--color-rose-deep); border-radius: 20px; box-shadow: 6px 8px 0 var(--color-rose-deep); text-align: center; }
-.lock-dials { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-sm); margin-bottom: var(--space-lg); }
-.lock-dials label { display: flex; flex-direction: column; align-items: center; gap: var(--space-sm); }
-.lock-dials code { font: 750 1.2rem var(--font-code); }
-.lock-dials select { width: 100%; min-height: 60px; padding: var(--space-sm); border: 1px solid var(--color-rose-deep); border-radius: 8px; background: var(--color-white); color: var(--color-ink); font: 800 1.75rem var(--font-code); }
-.calendar-picks { padding: 0; list-style: none; margin: var(--space-lg) 0; }
-.calendar-picks li { display: flex; gap: var(--space-md); align-items: center; min-height: 48px; border-bottom: 1px dashed var(--color-line-strong); font-size: var(--text-base); }
-.calendar-picks li > span:first-child { color: var(--color-accent); font: 800 1.5rem var(--font-wordmark); min-width: 24px; }
-.calendar-options { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-md); padding-top: var(--space-sm); }
-.calendar-card { position: relative; flex: 1 1 130px; min-height: 96px; padding: var(--space-lg) var(--space-sm) var(--space-sm); border: 1px solid var(--color-toy-wood-edge); border-top: 14px solid var(--color-rose); border-radius: 4px; background: var(--color-white); box-shadow: 3px 4px 0 var(--color-toy-wood); color: var(--color-ink); font: 750 var(--text-base)/1.5 var(--font-body); }
-.calendar-card:nth-child(2) { border-top-color: var(--color-serenity); }
-.calendar-card:nth-child(3) { border-top-color: var(--color-lilac); }
-.calendar-pin { position: absolute; top: -22px; left: calc(50% - 3px); width: 6px; height: 20px; border: 1px solid var(--color-muted); background: var(--color-silver-light); border-radius: 4px; }
-.calendar-card:hover:not(:disabled) { transform: rotate(-3deg); }
-.calendar-card:disabled { opacity: .45; cursor: default; }
-.memory-blocks { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-lg); max-width: 400px; margin: var(--space-xl) auto var(--space-lg); padding-right: var(--space-sm); }
-.memory-block { padding: 0; border: 0; border-radius: 8px; background: none; aspect-ratio: 1; perspective: 600px; }
-.memory-block-inner { position: relative; display: block; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform var(--dur-medium) var(--ease-out); }
-.memory-block[aria-pressed='true'] .memory-block-inner { transform: rotateY(180deg); }
-.memory-front, .memory-back { position: absolute; inset: 0; display: grid; place-items: center; border: 3px solid var(--color-toy-wood-edge); border-radius: 8px; box-shadow: inset 0 0 0 4px var(--color-toy-wood-light), 4px 5px 0 var(--color-toy-wood); background: var(--color-blue-light); color: var(--color-ink); backface-visibility: hidden; font: 800 clamp(1.25rem, 5vw, 2rem) var(--font-code); }
-.memory-block:nth-child(even) .memory-front { background: var(--color-rose-light); }
-.memory-back { transform: rotateY(180deg); background: var(--color-lilac-light); }
-.memory-block[data-matched='true'] .memory-back { background: var(--color-mint); border-color: var(--color-accent); }
-.memory-block:hover .memory-front { background: var(--color-butter); }
-.memory-progress { text-align: center; font-size: var(--text-base); }
-.mirror-stage { perspective: 1000px; padding: var(--space-lg) 0; }
-.mirror-letter { --letter-angle: 0deg; display: flex; flex-direction: column; justify-content: space-between; align-items: center; gap: var(--space-xl); min-height: 220px; padding: var(--space-lg); background: var(--color-white); border: 1px solid var(--color-line); box-shadow: 0 8px 20px var(--color-shadow); transform: rotateY(var(--letter-angle)) scaleX(-1); }
-.mirror-letter > span { color: var(--color-rose-ink); font-size: 2rem; }
-.mirror-letter code { font: 750 clamp(.875rem, 3.5vw, 1.5rem) var(--font-code); overflow-wrap: anywhere; text-align: center; }
-.mirror-control { display: flex; flex-direction: column; gap: var(--space-sm); font-size: var(--text-base); }
-.mirror-control input { width: 100%; min-height: 44px; accent-color: var(--color-accent); cursor: ew-resize; }
+/* The objects open code-analysis challenges. */
+.capture-piece[data-escape-puzzle] { cursor: pointer; touch-action: manipulation; }
+/* Code is inert text, with native disclosure and scrolling controls. */
+.escape-dialog[data-mode='challenge'] { width: min(960px, calc(100% - 32px)); }
+.challenge-materials { margin-top: var(--space-lg); border-top: 1px solid var(--color-line-strong); }
+.challenge-material { border-bottom: 1px solid var(--color-line-strong); }
+.challenge-material summary { min-height: 52px; padding: var(--space-md) var(--space-sm); cursor: pointer; color: var(--color-ink); font: 700 var(--text-base)/1.5 var(--font-code); overflow-wrap: anywhere; }
+.challenge-material summary:hover { background: var(--color-blue-light); }
+.material-actions { display: flex; justify-content: flex-end; padding: 0 var(--space-sm) var(--space-sm); }
+.challenge-material pre { max-height: 360px; margin: 0 0 var(--space-md); padding: var(--space-md); overflow: auto; overscroll-behavior: contain; border: 1px solid var(--color-line); border-radius: 4px; background: var(--color-white); color: var(--color-ink); font: 450 var(--text-sm)/1.8 var(--font-code); tab-size: 4; white-space: pre; }
+.challenge-material pre:focus-visible { outline-offset: -3px; }
+.challenge-material code { font: inherit; }
+.challenge-submit { margin-top: var(--space-xl); }
+.challenge-submit label { display: block; font-size: var(--text-base); font-weight: 700; margin-bottom: var(--space-md); }
+.challenge-input-row { display: flex; gap: var(--space-md); align-items: stretch; }
+.challenge-input-row input { width: 100%; min-width: 0; min-height: 48px; padding: var(--space-sm) var(--space-md); border: 1px solid var(--color-line-strong); border-radius: 6px; background: var(--color-white); color: var(--color-ink); font: 500 var(--text-base)/1.6 var(--font-code); }
+.challenge-input-row input::placeholder { color: var(--color-muted); }
+.challenge-input-row input[aria-invalid='true'] { border: 2px solid var(--color-rose-ink); }
+.challenge-input-row button { flex-shrink: 0; min-width: 72px; white-space: nowrap; }
+.escape-dialog[data-mode='complete'] { width: min(800px, calc(100% - 32px)); }
+.escape-finale { position: relative; isolation: isolate; text-align: center; padding-block: var(--space-md) var(--space-xl); }
+.finale-vault { position: relative; isolation: isolate; width: min(240px, 70%); height: 148px; margin: var(--space-md) auto var(--space-xl); perspective: 800px; }
+.vault-door { position: absolute; inset: 0 50% 0 0; z-index: 2; background: var(--color-serenity); border: 3px solid var(--color-accent); border-radius: 12px 0 0 12px; box-shadow: inset 0 0 0 6px var(--color-blue-light), 0 8px 0 var(--color-accent); transform-origin: left center; }
+.vault-door::after { content: ''; position: absolute; width: 12px; height: 32px; right: 12px; top: calc(50% - 16px); border-radius: 4px; background: var(--color-ink); }
+.vault-door--right { inset: 0 0 0 50%; border-radius: 0 12px 12px 0; transform-origin: right center; background: var(--color-rose); border-color: var(--color-rose-ink); box-shadow: inset 0 0 0 6px var(--color-rose-light), 0 8px 0 var(--color-rose-ink); }
+.vault-door--right::after { right: auto; left: 12px; }
+.finale-flag { display: block; width: 120px; margin: auto; color: var(--color-accent); filter: drop-shadow(8px 10px 0 var(--color-rose)); }
+.finale-flag svg { display: block; width: 100%; height: 148px; }
+.finale-count { width: fit-content; margin: 0 auto var(--space-md); padding: var(--space-sm) var(--space-lg); border-radius: 8px; background: var(--color-ink); color: var(--color-on-ink); font: 750 var(--text-xl) var(--font-code); transform: rotate(-4deg); }
+.identity-v3 .escape-finale h3 { margin: 0; font: 800 clamp(2.1rem, 7vw, 4.5rem)/1.05 var(--font-wordmark); letter-spacing: -.035em; text-shadow: 3px 4px 0 var(--color-rose); overflow-wrap: anywhere; }
+.finale-message { margin: var(--space-lg) auto 0; max-width: 40ch; font-size: var(--text-base); line-height: 1.7; word-break: keep-all; }
+.finale-burst { position: fixed; inset: 0; pointer-events: none; z-index: 5; overflow: hidden; }
+.burst-piece { position: absolute; top: 42%; left: 50%; width: 12px; height: 24px; background: var(--color-rose); border: 1px solid var(--color-rose-deep); border-radius: 3px; opacity: 0; }
+.burst-piece--1 { width: 16px; height: 16px; background: var(--color-serenity); border-color: var(--color-accent); }
+.burst-piece--2 { width: 10px; height: 20px; background: var(--color-gold); border-color: var(--color-toy-wood-edge); }
+.burst-piece--3 { width: 12px; height: 12px; background: var(--color-lilac); border-color: var(--color-accent); border-radius: 50%; }
+.is-celebrating .vault-door--left { animation: vault-left 850ms var(--ease-out) both; }
+.is-celebrating .vault-door--right { animation: vault-right 850ms var(--ease-out) both; }
+.is-celebrating .finale-flag { animation: flag-emerge 950ms var(--ease-out) both; }
+.is-celebrating .burst-piece { animation: flag-burst 2300ms var(--ease-out) var(--burst-delay) both; }
+@keyframes vault-left { from { transform: rotateY(0); } to { transform: rotateY(-115deg) translateX(-8px); } }
+@keyframes vault-right { from { transform: rotateY(0); } to { transform: rotateY(115deg) translateX(8px); } }
+@keyframes flag-emerge { from { transform: translateY(48px) scale(.6); opacity: 0; } to { transform: translateY(-12px) scale(1); opacity: 1; } }
+@keyframes flag-burst {
+  0% { transform: translate3d(0, 0, 0) rotate(0); opacity: 0; }
+  10% { opacity: 1; }
+  50% { transform: translate3d(var(--burst-x), var(--burst-y), 0) rotate(var(--burst-spin)); opacity: 1; }
+  100% { transform: translate3d(var(--burst-x), 80vh, 0) rotate(var(--burst-spin)); opacity: 0; }
+}
 @media (max-width: 39.99rem) {
   .escape-sheet { padding: var(--space-lg) var(--space-md); }
   .escape-dialog { box-shadow: 4px 6px 0 var(--color-toy-wood); }
@@ -115,13 +117,13 @@
   .block-stack-trigger { right: var(--page-gutter); bottom: 4px; transform: scale(.8) rotate(7deg); transform-origin: right bottom; }
   .members-intro h1 { padding-right: 96px; }
   .puzzle-year { padding: 2px 16px 6px; }
-  .memory-blocks { gap: var(--space-md); }
-  .puzzle-keyboard { padding: var(--space-md); }
+  .challenge-material pre { max-height: 280px; }
+  .challenge-input-row { flex-direction: column; }
+  .challenge-input-row button { align-self: flex-end; min-width: 88px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .escape-dialog *, .capture-hotspot span { transition: none; }
-  .mirror-letter { transform: none; }
-  .mirror-letter code { transform: scaleX(-1); }
-  .mirror-letter[data-readable='true'] code { transform: none; }
-  .escape-button:active:not(:disabled), .puzzle-year:hover, .puzzle-year:active, .block-stack-trigger:hover, .block-stack-trigger:active, .mirror-trigger:active, .calendar-card:hover:not(:disabled), .puzzle-keys button:active { transform: none; }
+  .escape-dialog *, .capture-hotspot span { transition: none; animation: none !important; }
+  .burst-piece { display: none; }
+  .vault-door { display: none; }
+  .finale-flag { transform: none; opacity: 1; }
 }

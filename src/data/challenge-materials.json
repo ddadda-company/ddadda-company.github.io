@@ -1,0 +1,94 @@
+{
+  "capture": [
+    {
+      "label": "gateway.py",
+      "language": "Python",
+      "content": "\"\"\"Gateway verification code. Python 3. No network requests.\"\"\"\nimport base64, hashlib, hmac, json\ndef decode(value):\n    return base64.urlsafe_b64decode(value + '=' * (-len(value) % 4))\ndef canonical(value):\n    return json.dumps(value, sort_keys=True, separators=(',', ':')).encode()\ndef encode(value):\n    return base64.urlsafe_b64encode(canonical(value)).rstrip(b'=').decode()\ndef verify(token, public_key):\n    head, body, signature = token.strip().split('.')\n    header, claims = json.loads(decode(head)), json.loads(decode(body))\n    signed = (head + '.' + body).encode()\n    raw_signature = decode(signature)\n    if header['alg'] == 'RS256':\n        from cryptography.hazmat.primitives import serialization, hashes\n        from cryptography.hazmat.primitives.asymmetric import padding\n        serialization.load_pem_public_key(public_key).verify(raw_signature, signed, padding.PKCS1v15(), hashes.SHA256())\n    elif header['alg'] == 'HS256':\n        assert hmac.compare_digest(raw_signature, hmac.new(public_key, signed, hashlib.sha256).digest()), 'signature rejected'\n    else:\n        raise ValueError('algorithm rejected')\n    assert claims == {'aud': 'dda-vault', 'role': 'admin', 'sub': 'guest'}, 'admin access required'\n    assert head == encode(header) and body == encode(claims), 'use canonical JSON'\n    assert header == {'alg': header['alg'], 'typ': 'JWT'}, 'unexpected header fields'\n    return raw_signature\ndef unwrap(token, public_key_pem, sealed_hex):\n    signature = verify(token, public_key_pem.encode())\n    blob = bytes.fromhex(sealed_hex)\n    key = hashlib.sha256(signature).digest()\n    mask = b''.join(hashlib.sha256(key + i.to_bytes(4, 'big')).digest() for i in range((len(blob)+31)//32))\n    return bytes(a ^ b for a, b in zip(blob, mask)).decode()\n"
+    },
+    {
+      "label": "issued-session",
+      "language": "JSON",
+      "content": "{\n  \"public_key_pem\": \"-----BEGIN PUBLIC KEY-----\\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzHOGNzTVFVN5+FG4qt8L\\nuxFBMv1XlKe4HMLVTiRFADdNw0R8JlVQ8j0uEAuUqy++xL8j8CTBMKjM0IOHqFKF\\n5kGykO2V4H/5hyL9ZMQbW2RwBKta7rRWSayWDld3IGcHYepU8Qn3FWD0ur6byjex\\n1noIMpX5/hEzcEJx864H/PuSx3SRcz3lI46IaqedpnvB25+GBpU3GM4ifJkdxyM9\\nuWoewhbN5iykPO9Kc1ZTLWmjrMtBzR+yHGcGn9s4K8WVKjeFuE8GbZ7gk+2UYZY5\\ne5QpPh+RBZAu6KeUSzrNJNh2G6r6R/xdD5SrmjhlbOC3MNBxPkLM5gixgLjkQnNl\\nzQIDAQAB\\n-----END PUBLIC KEY-----\\n\",\n  \"guest_token\": \"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJkZGEtdmF1bHQiLCJyb2xlIjoiZ3Vlc3QiLCJzdWIiOiJndWVzdCJ9.iQzyrqYIObDG_8Zlutz43A6rHbwDW_mobCmfkyTgrr58fcVryOsAFh-fYSGPOYexKd8AFCB1IUUw2zrBU2D-xfDsfp0e5rM_h0Z-Wna1pIY_PK7W5e1t2kp_FXMm22MIW1RwlwqjpSG-ohCNI-i0jUHuxWKwl_DVD5_eTQgXG850Bn2YYrhlHFEOvodholKLpBP2enXK5O6hG514_9HUVa9dzV3n66issfxENxi9q14MyjKBSQ0o7LAHr3OH94VyRTPsFYcznmVJfmnFKb682olrQviimBSCN1yc8oNhLCJvQAqCy86TvwuhAUeMjMMHKNU2U37DJd1d9SzqBQFAkw\",\n  \"sealed_hex\": \"e8ca3b56fcc8be9fe89e2701a14ee0163cb0b60c39065f6b7e8e1c07590d54334df2b9e5\"\n}"
+    },
+    {
+      "label": "request contract",
+      "language": "Text",
+      "content": "KO: 헤더와 클레임은 gateway.py의 canonical() 규칙을 따릅니다. 원래 RSA 개인키는 없습니다. 관리자 토큰을 구성한 뒤 unwrap(token, public_key_pem, sealed_hex)으로 데이터를 복원하세요. 모든 자료는 가상의 로컬 시나리오입니다.\n\nEN: Headers and claims follow canonical() in gateway.py. The original RSA private key is unavailable. Construct an admin token, then recover the data with unwrap(token, public_key_pem, sealed_hex). This is a fictional offline scenario."
+    }
+  ],
+  "binary": [
+    {
+      "label": "public keys",
+      "language": "JSON",
+      "content": "{\n  \"key_a\": {\n    \"n\": \"139203960924933729234843041662893612755349689042269650253562193484662718128363892720703436457524979790853332648519406682970248227616878038774712700138483403936095224879657660712436317260836934446413200663747478225338779868497852679634676762529795552163490291874387066068623237446940489491424252128026366084581\",\n    \"e\": 65537\n  },\n  \"key_b\": {\n    \"n\": \"169805308301224757145584182875459835844152293349563265839319519664597409278920635684719203389020004271978373319052673826435108617144993272289199460543033105527539959860240041677433587577761249218692453800770688918196293354393931844555470075252141370884309203031598249168619312463611629169388427549420395836499\",\n    \"e\": 65537\n  }\n}\n"
+    },
+    {
+      "label": "ciphertext",
+      "language": "JSON",
+      "content": "{\n  \"key\": \"key_a\",\n  \"ciphertext\": \"124323328591786146379939042615918390640435842880452600163207620702498872629461170036758782594080693067767950807668601601179490527097874582266668585806979845194511573699607075923204699067809939544030050024389657330299795098321342022893300318531116845195908321920517345521136351988875661613028483833367130795893\"\n}\n"
+    },
+    {
+      "label": "encoding",
+      "language": "Text",
+      "content": "KO: 원문은 UTF-8 바이트를 big-endian 정수로 바꿔 패딩 없는 textbook RSA로 암호화했습니다. 암호문은 key_a를 사용합니다.\n\nEN: UTF-8 message bytes were interpreted as a big-endian integer, then encrypted with textbook RSA without padding. The ciphertext uses key_a."
+    }
+  ],
+  "keyboard": [
+    {
+      "label": "checker.c",
+      "language": "C",
+      "content": "#include <stddef.h>\n#include <stdint.h>\n\nstatic const uint8_t expected[] = {\n    0x12, 0xc2, 0x38, 0x37, 0x37, 0xfe, 0x2a, 0xb0,\n    0x25, 0x05, 0x21, 0x74, 0xd3, 0x70, 0x02, 0x67,\n    0x76, 0xd6, 0x6e, 0x1a, 0xc7, 0xfb, 0xdd, 0xb8,\n    0xc2, 0x5d, 0x12, 0x20, 0xaa, 0x7c,\n};\n\nint check_flag(const uint8_t *input, size_t length) {\n    if (length != sizeof(expected)) return 0;\n\n    uint8_t state = 0x6d;\n    unsigned difference = 0;\n    for (size_t i = 0; i < length; i++) {\n        unsigned shift = (i % 7) + 1;\n        uint8_t x = input[i] ^ state;\n        x = (uint8_t)((x << shift) | (x >> (8 - shift)));\n        difference |= (uint8_t)(x + i * 17) ^ expected[i];\n        state = (uint8_t)(state + input[i] + 0x37);\n    }\n    return difference == 0;\n}\n"
+    },
+    {
+      "label": "input contract",
+      "language": "Text",
+      "content": "KO: input은 입력 문자열의 바이트, length는 그 길이입니다. check_flag()가 1을 반환하는 문자열을 복원하세요. 연산은 코드에 표시된 unsigned 정수 폭을 따릅니다.\n\nEN: input contains the string bytes; length is their count. Recover a string for which check_flag() returns 1. Operations use the unsigned integer widths shown."
+    }
+  ],
+  "blocks": [
+    {
+      "label": "dns.log",
+      "language": "CSV",
+      "content": "timestamp,source,destination,type,query\n1791936000.000000,10.77.0.8,192.0.2.53,TXT,status.dda.test\n1791936000.250000,10.77.0.8,192.0.2.53,TXT,s7.0000.pcokwvskzpgesvnskjfmwskm24v2.cache.dda.test\n1791936000.500000,10.77.0.8,192.0.2.53,TXT,s7.0003.ogxhsukmowyyewm5okwvaialxiyv.cache.dda.test\n1791936001.000000,10.77.0.8,192.0.2.53,TXT,s7.0001.skcr2jiuvsspvecivjfeerlkpzav.cache.dda.test\n1791936001.250000,10.77.0.8,192.0.2.53,TXT,s3.0000.mzxw6ytboi.cache.dda.test\n1791936001.500000,10.77.0.8,192.0.2.53,TXT,s7.0001.skcr2jiuvsspvecivjfeerlkpzav.cache.dda.test\n1791936002.000000,10.77.0.8,192.0.2.53,TXT,s7.0004.zu.cache.dda.test\n1791936002.250000,10.77.0.8,192.0.2.53,TXT,cdn.example.test\n1791936002.500000,10.77.0.8,192.0.2.53,TXT,s7.0002.y4tzwfavdenbpr4xmqmmpjyvtgso.cache.dda.test\n1791936003.000000,10.77.0.8,192.0.2.53,TXT,s3.0001.mjqxgzi.cache.dda.test\n1791936003.250000,10.77.0.8,192.0.2.53,TXT,s7.0002.y4tzwfavdenbpr4xmqmmpjyvtgso.cache.dda.test"
+    },
+    {
+      "label": "capture note",
+      "language": "Text",
+      "content": "KO: 캡처에서 DNS 질의만 추출한 기록입니다. 전송된 파일을 복원하세요. 기록에는 재전송과 여러 세션이 섞여 있습니다. 표시된 호스트에 접속할 필요는 없습니다.\n\nEN: DNS queries extracted from a capture. Recover the transferred file. Retransmissions and multiple sessions are mixed in. No connection to the listed hosts is needed."
+    }
+  ],
+  "timeline": [
+    {
+      "label": "refs",
+      "language": "JSON",
+      "content": "{\n  \"HEAD\": \"refs/heads/main\",\n  \"refs\": {\n    \"refs/heads/main\": \"270b28dccc3d04a775fe5a79ab14b878c9578c48\"\n  }\n}"
+    },
+    {
+      "label": "object store",
+      "language": "JSON",
+      "content": "{\n  \"11ef69f5c512dbc513c8965c9120d64703bc0b3f\": \"eAFdTztuwzAM7exTEJooxFAQp/WWO/QEDSibsVnbkiCpBZLTR0o9deMj34929Ra6vn+TLfiYYaY0r2KbW/QbBMoVwH77LLBZ+H6pAypLw/ITTFkobSLTeLX3zAl1M1KmnURxmOWXDbvhP2ujtFysUubbi8M92KSZuo8ei+tBTPa753urrExKazPKxCmjhpuPICAOIrmJEVd2WIP14XzSx+O507oJUVzGv1r0ZV8aastDDh4SXvS21qi+PPiRsYieO41awA==\",\n  \"1b90022e584571ad74af5f04f371dba5ec26a78d\": \"eAErKUpNVTC2YDA0MDAzMVEIcnV08XXVK6koYXDpbVtwzW1r18ySpL0homuu/lhbGAoAUvkRmg==\",\n  \"25ba73bf20068cd3d90012dda9080c93f6ea02ac\": \"eAGdzk1qwzAQhuGudYrZF8Lox5YEobQ36BXG40/EUMdGnRT39qUhJ8juXb08uq3rYhRSfbEOkJTAo6i0SaeE6OcQPDC03EQkK/MYm/oobpeOq5FqStEnKQU+llImTpFDbCnOGlRGrqHxMBQnN7tsnT66XpYfUFsOu3XQ+RHvOGTdv3AyfNsb+Vx9zTXkgV65Mju9Ow3PH9xnxz+acNX+uxtmwrFv3dwf9gBSHw==\",\n  \"270b28dccc3d04a775fe5a79ab14b878c9578c48\": \"eAGdjkEKwjAQAD3nFXsXJImJ24CIHn3GNtnQQGNL3Erx9Yr6Am9zmpk41VoETPAbacxg+qC1tew759FQQkfZZ+3yHk3qyXO0B8IuKVpkmBpcWhzKgyGXVZbGcPzBmVeq88g74bucwGAwAYNFD1v9Lqj46Qr/b1DXW5FCY3ky0PdCvQBNS0HS\",\n  \"397c7b18d04648ba610a74d3f58997481b162d85\": \"eAErKUpNVTA3ZzA0MDAzMVFILErOyCxL1UvNS2ZYv+ffuasz1UptUk8enSSca3FGyOIXVFlRanFJflGqXkElg+D7zK9HhW4fFT4xLWaiwjV35j3c9gBSMiGA\",\n  \"3bef865eb96669ddeece676ff902e6d2ed12e98d\": \"eAErKUpNVTCzYDA0MDAzMVEIcnV08XXVK6koYXDpbVtwzW1r18ySpL0homuu/lhbGGpiAAQK+QXFDOVSwgZT7Br3+/ybzdcuUGHjKj6TFQDtxxsh\",\n  \"448d86a0d646b58a997462bd5415acd5f8ad7155\": \"eAFLyslPUjC1ZAhKTc4vSy1KTVEozy/KLilKTdVTCMlIVUguLSpKzStRSM5ITc7OLwUy8vNKEjPzihXy8hXSchLT9bgAKNwX1g==\",\n  \"771a1330943e81bf4cfe9b0e8710783c45179905\": \"eAErKUpNVTC2YDA0MDAzMVFISkzOLi3Qy06tZDj5VNbzxeNk2ey7n7ctX9WoxDHT1BQAcDMRxw==\",\n  \"a8206acafbcb4e31d221ee5f7faaa7c0063fc13a\": \"eAErKUpNVTCzYDA0MDAzMVEIcnV08XXVK6koYXDpbVtwzW1r18ySpL0homuu/lhbGGpiAAQK+QXFDJY11RIX3Dx2JXKVXP7aOd1DWky3FQD5XxxV\",\n  \"afbcfeced59926753c65c9c592136d38cc1238fa\": \"eAEBJQDa/2Jsb2IgMjkAZiQL85Jr+zedm5MRbw+eoK8QXKhktPkrqjyWZO8ULBBI\",\n  \"c9e51d49e8e3631d6bddf3b6a7aa812208993535\": \"eAFLyslPUjAyYWj92bHheukTrbYmh+xJ9aEr2OYsym8qO5UGAOclDtI=\",\n  \"cc44314a88e13888b043023f43dc2ca6092f0558\": \"eAGdjktuAjEQRLP2KbxHijyesdstoQjESex2OVjKfOQYBLcPQZyATak29erJOs+1a+vGj94APSaU4B0Se+85Z0DgyZfCxsJnizxYcMhqiw3LY0gm2ZBFZMxmikSuwEXimIYpBQrC7hFTUPHSz2vTxybneoUu9dYvDXr/Kgfc4rz94LPjt3/pgXhgYktO7wwbo+Tp2fE+QZ3WpdTv/9P4ksAi7b71ui7qD8OQVG0=\"\n}"
+    },
+    {
+      "label": "object format",
+      "language": "Text",
+      "content": "KO: 객체 키는 Git SHA-1입니다. 각 값은 느슨한 Git 객체의 zlib 압축 바이트를 Base64로 표현했습니다. 압축을 풀면 \"type size\\0payload\" 형식이며 트리 항목의 객체 ID는 20바이트 이진수입니다. 모든 기록은 가상의 시나리오입니다.\n\nEN: Object keys are Git SHA-1 IDs. Each value is Base64 of the zlib-compressed loose Git object. Decompressed data is \"type size\\0payload\". Tree entries store object IDs as 20 binary bytes. All history is fictional."
+    }
+  ],
+  "mirror": [
+    {
+      "label": "receipt",
+      "language": "JSON",
+      "content": "{\n  \"algorithm\": \"SHA-256\",\n  \"construction\": \"SHA256(secret || message)\",\n  \"secret_length\": 24,\n  \"message_utf8\": \"from=guest&to=team&scope=read\",\n  \"mac_hex\": \"37f697e0c88a2e077f75267da9384d76c30d753107622827bec31c9bace2852f\",\n  \"append_utf8\": \"&scope=admin&download=flag\"\n}\n"
+    },
+    {
+      "label": "signer.py",
+      "language": "Python",
+      "content": "import hashlib, os\nSECRET = os.environ[\"SIGNING_KEY\"].encode()\nassert len(SECRET) == 24\ndef sign(message: bytes) -> str:\n    return hashlib.sha256(SECRET + message).hexdigest()\n"
+    },
+    {
+      "label": "submission contract",
+      "language": "Text",
+      "content": "KO: 원본 메시지 뒤에 append_utf8의 정확한 바이트가 붙은 메시지의 MAC을 계산하세요. 알고리즘 패딩 바이트는 중간에 포함할 수 있습니다. 입력 문자열은 UTF-8이며 별도 서명 오라클은 없습니다. 제출: dda{새_MAC의_64자리_소문자_hex}\n\nEN: Calculate a MAC for a message ending with the exact append_utf8 bytes after the original message. Algorithm padding bytes may appear between them. Strings are UTF-8; no signing oracle is available. Submit: dda{new_MAC_as_64_lowercase_hex_characters}"
+    }
+  ]
+}
