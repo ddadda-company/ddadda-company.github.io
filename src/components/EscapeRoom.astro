@@ -33,7 +33,7 @@ const ko = locale === 'ko';
           {entries.map((material, index) => <details class="challenge-material" name={`materials-${id}`} open={index === 0}>
             <summary>{material.label}</summary>
             <div class="material-actions"><button class="escape-button" data-material-copy={`material-${id}-${index}`} aria-label={ko ? `${material.label} 복사` : `Copy ${material.label}`}>{ko ? '복사' : 'Copy'}</button></div>
-            <pre tabindex="0" aria-label={`${material.label}, ${material.language}`}><code id={`material-${id}-${index}`}>{material.content}</code></pre>
+            <pre tabindex="0" aria-label={`${material.label}, ${material.language}`}><code id={`material-${id}-${index}`}>{typeof material.content === 'string' ? material.content : material.content[locale]}</code></pre>
           </details>)}
         </div>)}
       </div>

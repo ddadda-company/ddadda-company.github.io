@@ -13,7 +13,10 @@
     {
       "label": "request contract",
       "language": "Text",
-      "content": "KO: 헤더와 클레임은 gateway.py의 canonical() 규칙을 따릅니다. 원래 RSA 개인키는 없습니다. 관리자 토큰을 구성한 뒤 unwrap(token, public_key_pem, sealed_hex)으로 데이터를 복원하세요. 모든 자료는 가상의 로컬 시나리오입니다.\n\nEN: Headers and claims follow canonical() in gateway.py. The original RSA private key is unavailable. Construct an admin token, then recover the data with unwrap(token, public_key_pem, sealed_hex). This is a fictional offline scenario."
+      "content": {
+        "ko": "헤더와 클레임은 gateway.py의 canonical() 규칙을 따릅니다. 원래 RSA 개인키는 없습니다. 관리자 토큰을 구성한 뒤 unwrap(token, public_key_pem, sealed_hex)으로 데이터를 복원하세요. 모든 자료는 가상의 로컬 시나리오입니다.",
+        "en": "Headers and claims follow canonical() in gateway.py. The original RSA private key is unavailable. Construct an admin token, then recover the data with unwrap(token, public_key_pem, sealed_hex). This is a fictional offline scenario."
+      }
     }
   ],
   "binary": [
@@ -30,7 +33,10 @@
     {
       "label": "encoding",
       "language": "Text",
-      "content": "KO: 원문은 UTF-8 바이트를 big-endian 정수로 바꿔 패딩 없는 textbook RSA로 암호화했습니다. 암호문은 key_a를 사용합니다.\n\nEN: UTF-8 message bytes were interpreted as a big-endian integer, then encrypted with textbook RSA without padding. The ciphertext uses key_a."
+      "content": {
+        "ko": "원문은 UTF-8 바이트를 big-endian 정수로 바꿔 패딩 없는 textbook RSA로 암호화했습니다. 암호문은 key_a를 사용합니다.",
+        "en": "UTF-8 message bytes were interpreted as a big-endian integer, then encrypted with textbook RSA without padding. The ciphertext uses key_a."
+      }
     }
   ],
   "keyboard": [
@@ -42,7 +48,10 @@
     {
       "label": "input contract",
       "language": "Text",
-      "content": "KO: input은 입력 문자열의 바이트, length는 그 길이입니다. check_flag()가 1을 반환하는 문자열을 복원하세요. 연산은 코드에 표시된 unsigned 정수 폭을 따릅니다.\n\nEN: input contains the string bytes; length is their count. Recover a string for which check_flag() returns 1. Operations use the unsigned integer widths shown."
+      "content": {
+        "ko": "input은 입력 문자열의 바이트, length는 그 길이입니다. check_flag()가 1을 반환하는 문자열을 복원하세요. 연산은 코드에 표시된 unsigned 정수 폭을 따릅니다.",
+        "en": "input contains the string bytes; length is their count. Recover a string for which check_flag() returns 1. Operations use the unsigned integer widths shown."
+      }
     }
   ],
   "blocks": [
@@ -54,7 +63,10 @@
     {
       "label": "capture note",
       "language": "Text",
-      "content": "KO: 캡처에서 DNS 질의만 추출한 기록입니다. 전송된 파일을 복원하세요. 기록에는 재전송과 여러 세션이 섞여 있습니다. 표시된 호스트에 접속할 필요는 없습니다.\n\nEN: DNS queries extracted from a capture. Recover the transferred file. Retransmissions and multiple sessions are mixed in. No connection to the listed hosts is needed."
+      "content": {
+        "ko": "캡처에서 DNS 질의만 추출한 기록입니다. 전송된 파일을 복원하세요. 기록에는 재전송과 여러 세션이 섞여 있습니다. 표시된 호스트에 접속할 필요는 없습니다.",
+        "en": "DNS queries extracted from a capture. Recover the transferred file. Retransmissions and multiple sessions are mixed in. No connection to the listed hosts is needed."
+      }
     }
   ],
   "timeline": [
@@ -71,7 +83,10 @@
     {
       "label": "object format",
       "language": "Text",
-      "content": "KO: 객체 키는 Git SHA-1입니다. 각 값은 느슨한 Git 객체의 zlib 압축 바이트를 Base64로 표현했습니다. 압축을 풀면 \"type size\\0payload\" 형식이며 트리 항목의 객체 ID는 20바이트 이진수입니다. 모든 기록은 가상의 시나리오입니다.\n\nEN: Object keys are Git SHA-1 IDs. Each value is Base64 of the zlib-compressed loose Git object. Decompressed data is \"type size\\0payload\". Tree entries store object IDs as 20 binary bytes. All history is fictional."
+      "content": {
+        "ko": "객체 키는 Git SHA-1입니다. 각 값은 느슨한 Git 객체의 zlib 압축 바이트를 Base64로 표현했습니다. 압축을 풀면 \"type size\\0payload\" 형식이며 트리 항목의 객체 ID는 20바이트 이진수입니다. 모든 기록은 가상의 시나리오입니다.",
+        "en": "Object keys are Git SHA-1 IDs. Each value is Base64 of the zlib-compressed loose Git object. Decompressed data is \"type size\\0payload\". Tree entries store object IDs as 20 binary bytes. All history is fictional."
+      }
     }
   ],
   "mirror": [
@@ -88,7 +103,10 @@
     {
       "label": "submission contract",
       "language": "Text",
-      "content": "KO: 원본 메시지 뒤에 append_utf8의 정확한 바이트가 붙은 메시지의 MAC을 계산하세요. 알고리즘 패딩 바이트는 중간에 포함할 수 있습니다. 입력 문자열은 UTF-8이며 별도 서명 오라클은 없습니다. 제출: dda{새_MAC의_64자리_소문자_hex}\n\nEN: Calculate a MAC for a message ending with the exact append_utf8 bytes after the original message. Algorithm padding bytes may appear between them. Strings are UTF-8; no signing oracle is available. Submit: dda{new_MAC_as_64_lowercase_hex_characters}"
+      "content": {
+        "ko": "원본 메시지 뒤에 append_utf8의 정확한 바이트가 붙은 메시지의 MAC을 계산하세요. 알고리즘 패딩 바이트는 중간에 포함할 수 있습니다. 입력 문자열은 UTF-8이며 별도 서명 오라클은 없습니다. 제출: dda{새_MAC의_64자리_소문자_hex}",
+        "en": "Calculate a MAC for a message ending with the exact append_utf8 bytes after the original message. Algorithm padding bytes may appear between them. Strings are UTF-8; no signing oracle is available. Submit: dda{new_MAC_as_64_lowercase_hex_characters}"
+      }
     }
   ]
 }
