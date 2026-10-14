@@ -27,7 +27,7 @@ export interface Member {
 export const team = {
   name: 'dda_com',
   koreanName: '따따',
-  email: '',
+  email: 'ddacom77@gmail.com',
   github: 'https://github.com/ddadda-company',
   ctftime: 'https://ctftime.org/team/425478',
 };
