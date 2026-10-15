@@ -188,7 +188,12 @@ document.querySelectorAll<HTMLElement>('[data-playroom]').forEach(room => {
       else {
         const previousRow = Math.floor((index - 1) / columns);
         const edge = previousRow % 2 ? 4 : bounds.width - 4;
-        d += ` C ${edge} ${previous.y}, ${edge} ${stop.y}, ${stop.x} ${stop.y}`;
+        const direction = previousRow % 2 ? -1 : 1;
+        const radius = Math.min(24, (stop.y - previous.y) / 2, Math.abs(edge - previous.x), Math.abs(edge - stop.x));
+        const turn = edge - direction * radius;
+        // Turn into the outer gutter before passing the event labels below.
+        d += ` L ${turn} ${previous.y} Q ${edge} ${previous.y}, ${edge} ${previous.y + radius}`;
+        d += ` L ${edge} ${stop.y - radius} Q ${edge} ${stop.y}, ${turn} ${stop.y} L ${stop.x} ${stop.y}`;
       }
     });
     dateRoute.setAttribute('viewBox', `0 0 ${bounds.width} ${bounds.height}`);

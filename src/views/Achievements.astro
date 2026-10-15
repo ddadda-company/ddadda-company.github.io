@@ -1,7 +1,7 @@
 ---
 import Arrow from '../components/Arrow.astro';
 import { copy, pageUrl, type Locale } from '../data/i18n';
-import { achievements, rating, team } from '../data/team';
+import { achievements, rating, team, type Achievement } from '../data/team';
 import '../styles/playroom.css';
 const { locale } = Astro.props as { locale: Locale };
 const t = copy[locale].achievements;
@@ -9,6 +9,10 @@ const records = [...achievements].sort((a, b) => a.date.localeCompare(b.date));
 const years = [...new Set(records.map(a => a.date.slice(0, 4)))];
 const month = (date: string) => new Intl.DateTimeFormat(locale === 'ko' ? 'ko-KR' : 'en-US', { month: 'short', timeZone: 'UTC' }).format(new Date(`${date}T00:00:00Z`));
 const suffix = (rank: number) => locale === 'ko' ? '위' : rank % 100 >= 11 && rank % 100 <= 13 ? 'th' : ({ 1: 'st', 2: 'nd', 3: 'rd' }[rank % 10] ?? 'th');
+const timelineName = (record: Achievement) => record.timelineName?.[locale] ?? record.event
+  .replace(/\s+\d{4}\b/g, '')
+  .replace(/\s+(Finals?|Quals|Qualifier|Preliminary)$/, (_, round: string) =>
+    ` ${locale === 'ko' ? (round.startsWith('Final') ? '본선' : '예선') : (round.startsWith('Final') ? 'Finals' : 'Quals')}`);
 ---
 <section class="page-intro playroom-intro container enter">
   <h1>{t.title}</h1>
@@ -56,7 +60,15 @@ const suffix = (rank: number) => locale === 'ko' ? '위' : rank % 100 >= 11 && r
         <p class="date-rail-year">{year}</p>
         <div class="date-trail" data-date-trail>
           <svg class="date-trail-route" data-date-route aria-hidden="true" focusable="false"><path class="date-trail-edge" /><path class="date-trail-fill" /></svg>
-          <ol>{entries.map((a, index) => <li><a href={`#competition-${year}-${index}`} data-room-date={`competition-${year}-${index}`} aria-label={`${a.date} ${a.event} · ${a.placement[locale]}`}><span class="date-rail-dot" aria-hidden="true"></span><time datetime={a.date}>{a.date.slice(5).replaceAll('-', '.')}</time><span class="date-rail-rank">{a.placement[locale]}</span></a></li>)}</ol>
+          <ol>{entries.map((a, index) => <li>
+            <a href={`#competition-${year}-${index}`} data-room-date={`competition-${year}-${index}`} aria-label={`${a.date} ${timelineName(a)} · ${a.placement[locale]}${a.timelineNote ? ` · ${a.timelineNote[locale]}` : ''}`}>
+              <span class="date-rail-dot" aria-hidden="true"></span>
+              <time datetime={a.date}>{a.date.slice(5).replaceAll('-', '.')}</time>
+              <span class="date-rail-event">{timelineName(a)}</span>
+              <span class="date-rail-rank">{a.placement[locale]}</span>
+              {a.timelineNote && <span class="date-rail-note">{a.timelineNote[locale]}</span>}
+            </a>
+          </li>)}</ol>
         </div>
       </nav>
       <p class="visually-hidden" data-room-status role="status" aria-live="polite" aria-atomic="true"></p>

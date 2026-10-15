@@ -10,6 +10,8 @@ export interface Achievement {
   placement: Localized;
   format: 'Jeopardy' | 'Attack & Defense' | 'Hack quest' | 'Other';
   description?: Localized;
+  timelineName?: Localized; // Optional compact name for the date navigator
+  timelineNote?: Localized;
   url?: string; // Result source: scoreboard, organizer, or published report
 }
 
@@ -52,12 +54,6 @@ export const achievements: Achievement[] = [
   },
   result('2026-09-26', 'FAUST CTF 2026', 5, 3312, 'Attack & Defense'),
   {
-    date: '2026-09-17', event: 'CCE 2026 Finals', rank: null,
-    placement: { ko: '본선 진출', en: 'Finalist' }, format: 'Other',
-    description: { ko: '사이버공격방어대회 본선 진출', en: 'Cyber Conflict Exercise finalist' },
-    url: 'https://cybersummit.kr/cce/overview',
-  },
-  {
     ...result('2026-09-05', 'Black Hat MEA CTF 2026 Qualifier', 1, 'https://blackhatmea.com/competition/capture-the-flag'),
     description: { ko: '온라인 예선 1위', en: 'Online qualifier winner' },
   },
@@ -75,10 +71,12 @@ export const achievements: Achievement[] = [
   },
   {
     ...result('2026-07-09', 'HackTheon Sejong 2026 Finals', 1, 'https://www.yna.co.kr/view/AKR20260710119900063'),
+    timelineName: { ko: 'HackTheon 고급부', en: 'HackTheon Advanced' },
     description: { ko: '고급부문 대상 · 정현수의전역을축하합니다', en: 'Advanced division winner · 정현수의전역을축하합니다' },
   },
   {
     ...result('2026-07-09', 'HackTheon Sejong 2026 Finals', 2, 'https://hacktheon.org/y2026/p2/c2/'),
+    timelineName: { ko: 'HackTheon 초급부', en: 'HackTheon Beginner' },
     description: { ko: '초급부문 본선 2위', en: 'Beginner division runner-up' },
   },
   result('2026-06-14', 'SCTF 2026', 1, 3314),
@@ -90,16 +88,20 @@ export const achievements: Achievement[] = [
   result('2026-05-10', 'Midnight Sun CTF 2026 Quals', 11, 2773),
   {
     ...result('2026-05-10', 'Azure Assassin Alliance CTF 2026', 1, 3266),
+    timelineName: { ko: 'ACTF', en: 'ACTF' },
+    timelineNote: { ko: 'XCTF 본선 시드', en: 'XCTF Finals seed' },
     description: { ko: 'ACTF 우승 · 제10회 XCTF 본선 시드 획득', en: 'ACTF winner · Secured a seed for the 10th XCTF Finals' },
   },
   result('2026-04-10', 'UMassCTF 2026', 8, 2937),
   result('2026-03-28', 'Codegate CTF 2026 Preliminary', 12, 3131),
   {
     ...result('2026-03-21', 'ENKI RedTeam CTF 2026', 2, 'https://v.daum.net/v/20260324211343216'),
+    timelineNote: { ko: '8l4nk', en: '8l4nk' },
     description: { ko: '개인전 · 8l4nk', en: 'Individual competition · 8l4nk' },
   },
   {
     ...result('2026-03-21', 'ENKI RedTeam CTF 2026', 4, 'https://v.daum.net/v/20260324211343216'),
+    timelineNote: { ko: 'nobody09', en: 'nobody09' },
     description: { ko: '개인전 · nobody09', en: 'Individual competition · nobody09' },
   },
   result('2026-03-14', 'SUCTF 2026', 2, 3161),
