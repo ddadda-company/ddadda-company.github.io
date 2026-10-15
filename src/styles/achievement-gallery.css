@@ -1,12 +1,14 @@
 html.gallery-open { overflow: hidden; }
-.gallery-dialog { width: min(1180px, calc(100% - 32px)); max-width: none; max-height: calc(100dvh - 32px); margin: auto; padding: 24px; overflow: auto; overscroll-behavior: contain; border: 1px solid var(--color-toy-wood-edge); border-radius: 12px; background: var(--color-paper); color: var(--color-ink); box-shadow: 0 12px 48px var(--color-shadow); }
+.gallery-dialog { inset: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); width: min(1180px, calc(100% - 32px)); max-width: calc(100% - 16px - env(safe-area-inset-left) - env(safe-area-inset-right)); max-height: calc(100dvh - 32px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); margin: auto; padding: 24px; overflow: auto; overscroll-behavior: contain; border: 1px solid var(--color-toy-wood-edge); border-radius: 12px; background: var(--color-paper); color: var(--color-ink); box-shadow: 0 12px 48px var(--color-shadow); }
 .gallery-dialog[open] { display: flex; flex-direction: column; gap: 20px; }
 .gallery-dialog::backdrop { background: var(--color-puzzle-backdrop); }
 .gallery-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; }
+.gallery-header > div { min-width: 0; }
 .gallery-header h2 { margin: 0; font-family: var(--font-body); font-size: clamp(1.125rem, 2.5vw, 1.5rem); font-weight: 750; letter-spacing: -.025em; }
-.gallery-header p { margin-top: 8px; color: var(--color-ink-soft); font-size: .9375rem; overflow-wrap: anywhere; }
+.gallery-header p { margin-top: 8px; color: var(--color-ink-soft); font-size: .9375rem; word-break: keep-all; overflow-wrap: anywhere; }
 .gallery-close { flex: 0 0 44px; width: 44px; height: 44px; border: 1px solid var(--color-line-strong); border-radius: 50%; background: var(--color-blue-light); color: var(--color-ink); font-size: 2rem; line-height: 1; }
 .gallery-slides { min-width: 0; }
+.gallery-slides:focus-visible { outline-offset: -3px; }
 .gallery-slides figure { margin: 0; }
 .gallery-image { --image-height: min(62dvh, 720px); display: grid; place-items: center; height: var(--image-height); border-radius: 4px; overflow: hidden; background: var(--color-ink); touch-action: pan-y pinch-zoom; }
 .gallery-image-window { position: relative; width: 100%; height: 100%; overflow: hidden; }
@@ -31,11 +33,26 @@ html.gallery-open { overflow: hidden; }
 .gallery-links a { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; text-decoration: underline; text-underline-offset: 4px; font-size: .9375rem; }
 .gallery-links .arrow { width: 18px; height: 18px; }
 @media (max-width: 39.99rem) {
-  .gallery-dialog { width: calc(100% - 16px); max-height: calc(100dvh - 16px); padding: 16px; }
-  .gallery-dialog[open] { gap: 16px; }
+  .gallery-dialog { width: calc(100% - 16px); max-height: calc(100dvh - 16px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); padding: 16px; overflow: hidden; }
+  .gallery-dialog[open] { gap: 12px; }
   .gallery-header { gap: 12px; }
   .gallery-header p, .gallery-slides figcaption, .gallery-links a { font-size: .875rem; }
-  .gallery-image { --image-height: 48dvh; }
-  .gallery-footer { justify-content: center; }
+  .gallery-header, .gallery-footer, .gallery-error { flex-shrink: 0; }
+  .gallery-slides { min-height: 0; overflow: auto; overscroll-behavior: contain; }
+  .gallery-image { --image-height: min(48svh, 420px); }
+  .gallery-footer { justify-content: center; gap: 4px; padding-top: 8px; border-top: 1px solid var(--color-line); }
+  .gallery-pager { width: 100%; justify-content: space-between; }
   .gallery-links { justify-content: center; gap: 4px 16px; }
+}
+@media (max-height: 30rem) and (max-width: 59.99rem) and (orientation: landscape) {
+  .gallery-dialog { width: calc(100% - 32px - env(safe-area-inset-left) - env(safe-area-inset-right)); padding: 12px; max-height: calc(100dvh - 16px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); overflow: hidden; }
+  .gallery-dialog[open] { gap: 8px; }
+  .gallery-header, .gallery-footer { flex-shrink: 0; }
+  .gallery-header h2 { font-size: 1rem; }
+  .gallery-header p { margin-top: 2px; font-size: .8125rem; }
+  .gallery-slides { min-height: 0; overflow: auto; overscroll-behavior: contain; }
+  .gallery-image { --image-height: 60svh; }
+  .gallery-footer { justify-content: space-between; gap: 8px; }
+  .gallery-pager { width: auto; }
+  .gallery-links { gap: 8px 16px; }
 }

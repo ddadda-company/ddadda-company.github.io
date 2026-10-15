@@ -13,7 +13,7 @@ const ko = locale === 'ko';
     </div>
     <button type="button" class="gallery-close" data-gallery-close aria-label={ko ? '사진 닫기' : 'Close image'} autofocus><span aria-hidden="true">×</span></button>
   </header>
-  <div class="gallery-slides" data-gallery-slides></div>
+  <div class="gallery-slides" data-gallery-slides tabindex="0" role="region" aria-label={ko ? '대회 사진' : 'Competition photos'}></div>
   <p class="gallery-error" data-gallery-error role="status" hidden>{ko ? '이미지를 불러오지 못했습니다. 전체 크기로 열기를 눌러 다시 확인해 주세요.' : 'The image could not load. Try opening it at full size.'}</p>
   <footer class="gallery-footer">
     <div class="gallery-pager">

@@ -2,7 +2,7 @@
  * Component extension of design.md. Inline code and evidence, validated submissions, and a seven-flag completion scene.
  */
 .escape-open { overflow: hidden; }
-.escape-dialog { width: min(640px, calc(100% - 32px)); max-height: calc(100dvh - 32px); margin: auto; padding: 0; border: 1px solid var(--color-toy-wood-edge); border-radius: 16px; color: var(--color-ink); background: var(--color-paper); box-shadow: 8px 12px 0 var(--color-toy-wood), 0 24px 80px var(--color-shadow); overscroll-behavior: contain; }
+.escape-dialog { inset: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); width: min(640px, calc(100% - 32px)); max-width: calc(100% - 32px - env(safe-area-inset-left) - env(safe-area-inset-right)); max-height: calc(100dvh - 32px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); margin: auto; padding: 0; border: 1px solid var(--color-toy-wood-edge); border-radius: 16px; color: var(--color-ink); background: var(--color-paper); box-shadow: 8px 12px 0 var(--color-toy-wood), 0 24px 80px var(--color-shadow); overscroll-behavior: contain; }
 .escape-dialog::backdrop { background: var(--color-puzzle-backdrop); }
 .escape-dialog button, .escape-dialog summary, [data-escape-puzzle] { -webkit-tap-highlight-color: var(--color-transparent); }
 .escape-sheet { padding: var(--space-xl); }
@@ -111,6 +111,7 @@
 @media (max-width: 39.99rem) {
   .escape-sheet { padding: var(--space-lg) var(--space-md); }
   .escape-dialog { box-shadow: 4px 6px 0 var(--color-toy-wood); }
+  .collection-clue { min-height: 44px; display: flex; align-items: center; }
   .flag-collection li { grid-template-columns: 32px minmax(0, 1fr); gap: var(--space-sm); }
   .collection-mark { width: 32px; height: 36px; }
   .flag-collection li > button { grid-column: 2; justify-self: start; }

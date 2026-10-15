@@ -1,0 +1,59 @@
+/* Shared mobile layout. Keep the toy materials, give content and controls room. */
+.identity-v3 .container {
+  padding-left: max(var(--page-gutter), env(safe-area-inset-left));
+  padding-right: max(var(--page-gutter), env(safe-area-inset-right));
+}
+.identity-v3 .site-footer { padding-bottom: env(safe-area-inset-bottom); }
+.identity-v3 .site-header { padding-top: env(safe-area-inset-top); }
+
+@media (max-width: 59.99rem) {
+  .identity-v3 .header-inner { min-height: 76px; flex-wrap: wrap; padding-block: 12px; }
+  .identity-v3 .header-actions { gap: 8px; flex-shrink: 0; margin-left: auto; }
+  .identity-v3 .language-switch a { min-width: 44px; min-height: 44px; }
+  .identity-v3 .menu-toggle { width: 44px; min-width: 44px; }
+  .identity-v3 .menu-toggle [data-menu-label] { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .identity-v3 .mobile-nav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; padding-bottom: 24px; }
+  .identity-v3 .mobile-nav a { min-height: 56px; margin: 0; padding: 12px; font-size: 1rem; }
+  .identity-v3 .mobile-nav .arrow { width: 18px; height: 18px; }
+  .identity-v3 .no-js-nav { gap: 4px 16px; }
+  .identity-v3 .no-js-nav a { display: inline-flex; align-items: center; min-height: 44px; }
+}
+
+@media (max-width: 39.99rem) {
+  .identity-v3 .header-inner { gap: 6px; }
+  .identity-v3 .brand-name { font-size: 1.35rem; }
+  .identity-v3 .language-switch { gap: 2px; font-size: .75rem; }
+  .identity-v3 .mobile-nav a { font-size: .9375rem; }
+  .identity-v3 .mobile-nav .arrow { display: none; }
+  .identity-v3 .open-hero-copy { padding-top: 24px; }
+  .identity-v3 .capture-section { padding-block: 28px; }
+  .identity-v3 .capture-secret { margin-top: 16px; }
+  .identity-v3 .capture-links { margin-top: 12px; }
+  .identity-v3 .footer-main { gap: 24px; padding-block: 20px 28px; }
+  .identity-v3 .footer-bottom { gap: 8px 16px; }
+
+  /* Seven equal square portraits: three pairs, then a centered final member. */
+  .identity-v3 .member-grid.member-gallery-grid { --member-columns: 2; --member-column-gap: 24px; max-width: 540px; row-gap: 32px; }
+  .identity-v3 .members-section { padding-bottom: 32px; }
+  .identity-v3 .inline-next { padding-bottom: 32px; }
+  .identity-v3 .member-gallery-profile .member-portrait-stage { --block-depth: 8px; width: calc(100% - var(--block-depth)); margin: var(--block-depth) 0 16px; }
+  .identity-v3 .member-monogram > span { font-size: clamp(5rem, 22vw, 8rem); }
+  .identity-v3 .member-gallery-profile .member-info { padding: 0; }
+  .identity-v3 .member-gallery-profile .member-info h3 { font-size: clamp(.9375rem, 3.8vw, 1.125rem); line-height: 1.4; overflow-wrap: anywhere; }
+  .identity-v3 .member-gallery-profile .member-biography,
+  .identity-v3 .member-gallery-profile .member-card-fields,
+  .identity-v3 .member-gallery-profile .member-contacts { margin-inline: 0; }
+  .identity-v3 .member-gallery-profile .member-contacts { gap: 0 12px; padding-top: 4px; }
+  .identity-v3 .member-gallery-profile .member-contact { font-size: .8125rem; gap: 6px; }
+  .identity-v3 .member-gallery-role { font-size: .75rem; padding: 5px 8px; left: -4px; top: 8px; }
+
+  /* Put the address and its actions before a visitor needs to scroll. */
+  .identity-v3 .contact-layout { padding-block: 28px 40px; }
+  .identity-v3 .contact-intro { display: grid; grid-template-columns: minmax(0, 1fr) clamp(88px, 26vw, 132px); column-gap: 12px; align-items: center; }
+  .identity-v3 .contact-intro h1 { align-self: end; }
+  .identity-v3 .contact-intro .page-lead { grid-column: 1; margin-top: 12px; align-self: start; font-size: .9375rem; }
+  .identity-v3 .contact-intro .mirror-trigger { grid-column: 2; grid-row: 1 / 3; }
+  .identity-v3 .contact-intro .mail-illustration { margin: 0; }
+  .identity-v3 .contact-content { margin-top: 28px; }
+  .identity-v3 .email-address { display: flex; align-items: center; min-height: 44px; margin-top: 16px; }
+}

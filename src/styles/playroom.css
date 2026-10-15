@@ -109,7 +109,7 @@ body.identity-v3 .playroom-intro { display: flex; align-items: center; justify-c
   body.identity-v3 .playroom-intro { display: block; padding-bottom: var(--space-sm); }
   .playroom-intro .text-link { margin-top: var(--space-sm); }
   .playroom-filters .filter-button { padding-inline: 12px; }
-  .playroom-filters select { padding-inline: 8px; }
+  .playroom-filters select { padding-inline: 8px; font-size: 1rem; }
   .playroom-heading h3 > span { padding: 2px 16px 6px; }
   .identity-v3 .playroom-heading h3 { font-size: 1.9rem; }
   .playroom-controls { gap: 12px; }

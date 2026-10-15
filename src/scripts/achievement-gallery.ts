@@ -33,6 +33,7 @@ function setupAchievementGallery() {
     if (photo.template.dataset.source) source.href = photo.template.dataset.source;
     else source.removeAttribute('href');
     container.replaceChildren(slide);
+    container.scrollTop = 0;
     const img = slide.querySelector<HTMLImageElement>('img')!;
     error.hidden = true;
     img.addEventListener('error', () => {
