@@ -42,8 +42,12 @@ const suffix = (rank: number) => locale === 'ko' ? '위' : rank % 100 >= 11 && r
                 <div class="date-toy"><span class="date-month">{month(a.date)}</span><span class="date-day">{a.date.slice(-2)}</span></div>
                 <span class="station-shadow"></span>
               </div>
-              <div class="station-caption"><h4 id={`event-${year}-${index}`}>{a.event}</h4><div class="station-details"><span>{a.format}</span><Arrow /></div></div>
-              <span id={`result-${year}-${index}`} class="visually-hidden">{a.placement[locale]} · <time datetime={a.date}>{a.date}</time> · {t.link}</span>
+              <div class="station-caption">
+                <h4 id={`event-${year}-${index}`}>{a.event}</h4>
+                {a.description && <p class="station-description">{a.description[locale]}</p>}
+                <div class="station-details"><span>{a.format}</span><Arrow /></div>
+              </div>
+              <span id={`result-${year}-${index}`} class="visually-hidden">{a.placement[locale]} · <time datetime={a.date}>{a.date}</time> · {a.description && `${a.description[locale]} · `}{t.link}</span>
             </a>
           </li>)}
         </ol>

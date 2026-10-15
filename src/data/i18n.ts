@@ -15,7 +15,7 @@ export const copy = {
       members: '팀 멤버 | dda_com', contact: '문의 | dda_com',
       description: {
         home: '국내외 CTF 대회에 참가하는 한국 기반 팀, 따따(dda_com)의 공식 웹사이트입니다.',
-        achievements: '따따(dda_com)가 참가한 CTF 대회의 날짜와 순위, 공식 결과를 모았습니다.',
+        achievements: '따따(dda_com)의 CTF 대회와 연합팀 참가 기록, 순위, 결과 출처를 모았습니다.',
         members: '한국 기반 CTF 팀 따따(dda_com)의 멤버들을 소개합니다.',
         contact: 'CTF 대회 초청과 협업, 팀 관련 문의를 위한 따따(dda_com)의 연락처 안내입니다.',
       },
@@ -29,11 +29,11 @@ export const copy = {
       recordsLink: '대회 성과',
     },
     achievements: {
-      title: '대회 성과', intro: 'CTFtime에 등록된 따따의 대회 기록입니다.',
+      title: '대회 성과', intro: '따따의 CTF 대회 성과와 연합팀 참가 기록입니다.',
       archive: '전체 기록', all: '전체 연도', count: '개의 기록',
-      date: '일자', event: '대회', format: '방식', result: '순위', link: '공식 결과',
+      date: '일자', event: '대회', format: '방식', result: '순위', link: '결과 출처',
       noMatch: '선택한 조건에 해당하는 기록이 없습니다.',
-      note: '출처: CTFtime. 날짜는 UTC 기준 대회 시작일입니다.',
+      note: '출처: CTFtime, 대회 공식 안내 및 결과 보도. 각 대회에서 출처를 확인할 수 있습니다. 날짜는 UTC 기준 대회 시작일입니다.',
       nextLink: '멤버 소개',
     },
     members: {
@@ -60,7 +60,7 @@ export const copy = {
       members: 'Team Members | dda_com', contact: 'Contact | dda_com',
       description: {
         home: 'The official website of dda_com, a CTF team based in South Korea competing in CTFs worldwide.',
-        achievements: 'Explore dda_com’s CTF competition history, with dates, placements, and links to official results.',
+        achievements: 'Explore dda_com’s CTF results and coalition participation, with dates, placements, and result sources.',
         members: 'Meet the members of dda_com, a CTF team based in South Korea.',
         contact: 'Get in touch with dda_com about CTF invitations, collaborations, and team enquiries.',
       },
@@ -74,11 +74,11 @@ export const copy = {
       recordsLink: 'Our results',
     },
     achievements: {
-      title: 'Achievements', intro: 'dda_com’s competition results, as recorded on CTFtime.',
+      title: 'Achievements', intro: 'dda_com’s CTF results and coalition participation.',
       archive: 'Competition archive', all: 'All years', count: 'records',
-      date: 'Date', event: 'Competition', format: 'Format', result: 'Place', link: 'Official results',
+      date: 'Date', event: 'Competition', format: 'Format', result: 'Place', link: 'Result source',
       noMatch: 'No results match the selected filters.',
-      note: 'Source: CTFtime. Dates indicate the start of each event in UTC.',
+      note: 'Sources: CTFtime, event announcements, and result reports. Each competition links to its source. Dates indicate the start of each event in UTC.',
       nextLink: 'Team members',
     },
     members: {

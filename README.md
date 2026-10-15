@@ -61,7 +61,16 @@ KO / EN은 현재 페이지를 유지하며 언어를 전환합니다. 선택한
 
 ## 성과 출처
 
-[CTFtime 따따 팀 #425478](https://ctftime.org/team/425478)의 2026-10-13 조회 기준 정적 스냅샷입니다. 세계 16위, 한국 3위, 참가 기록 10건을 반영했습니다. 각 대회의 이름·날짜·방식·순위는 해당 CTFtime 대회 페이지에 연결되어 있습니다. 날짜는 대회 시작일의 UTC 기준입니다.
+[CTFtime 따따 팀 #425478](https://ctftime.org/team/425478)의 2026-10-13 조회 기준 세계 16위, 한국 3위와 참가 기록 10건을 반영했습니다. 여기에 2026-10-15 웹 출처로 확인한 아래 4건을 추가해 총 14건을 표시합니다. 각 대회는 순위를 확인할 수 있는 CTFtime 기록 또는 결과 보도로 연결됩니다. 날짜 레일과 달력은 UTC 기준 대회 시작일을 표시합니다.
+
+| 대회 기간 | 대회 | 결과 및 참가 팀명 | 확인 출처 |
+| --- | --- | --- | --- |
+| 2026-05-22–24 | DEF CON 34 CTF Qualifier | Jinddabi’s 연합팀 · 6위, 본선 진출 | [CTFtime 일정·순위](https://ctftime.org/event/3205/), [본선 진출·최종 결과 보도](https://www.dailysecu.com/news/articleView.html?idxno=207969) |
+| 2026-07-09 | HackTheon Sejong 2026 Finals | 고급부문 대상(1위) · 정현수의전역을축하합니다 | [공식 본선 일정·방식](https://hacktheon.org/y2026/p2/c2/), [연합뉴스 수상 결과](https://www.yna.co.kr/view/AKR20260710119900063) |
+| 2026-07-23–24 | CODEGATE 2026 Finals | 일반부 본선 2위 · 따따 | [CTFtime 일정·방식](https://ctftime.org/event/3292/), [ZDNet Korea 수상 결과](https://zdnet.co.kr/view/?no=20260724173734) |
+| 2026-08-07–09 | DEF CON 34 CTF Finals | Jinddabi’s 연합팀 · 본선 7위 | [CTFtime 일정·방식](https://ctftime.org/event/3322), [데일리시큐 최종 결과](https://www.dailysecu.com/news/articleView.html?idxno=207969) |
+
+따따의 참가 관계는 사용자 제공 정보에 근거하며, 대회별 순위·부문·당시 팀명은 위 웹 출처와 대조했습니다. DEF CON은 Jinddabi’s 연합팀 참가로 명시합니다. 핵테온의 7월 10일은 시상식 날짜로, 본선 시작일인 7월 9일과 구분했습니다. CTFtime에 점수표가 없는 본선은 결과 보도를 연결하며, 연합팀 기록이나 추가 본선 성적을 따따의 CTFtime 연간 점수에 합산하지 않습니다.
 
 방문 시 외부 API를 호출하지 않습니다. 새로운 성과나 순위는 `src/data/team.ts`에서 `achievements`, `rating`, `checkedAt`을 함께 수정하고 다시 빌드하세요. `입상` 필터는 1–3위를 표시합니다. 멤버는 요청에 따라 `8l4nk`(팀장), `sane100400`, `Axii`, `nobody09`, `Dbi`, `love09010224`, `snowball` 총 7명을 등록했습니다. 확인 전인 다른 닉네임이나 분야·소개는 추가하지 않았습니다.
 

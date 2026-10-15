@@ -53,6 +53,7 @@ body.identity-v3 .playroom-intro { display: flex; align-items: center; justify-c
 .station-shadow { position: absolute; z-index: -1; width: 280px; height: 30px; border-radius: 50%; background: var(--color-shadow); bottom: 12px; left: 40px; filter: blur(10px); }
 .station-caption { padding-top: var(--space-lg); min-height: 124px; text-align: center; }
 .station-caption h4 { font-family: var(--font-body); font-size: 1.35rem; font-weight: 750; line-height: 1.35; letter-spacing: -.025em; margin: 0; overflow-wrap: anywhere; text-wrap: balance; color: var(--color-ink); }
+.station-description { margin: var(--space-sm) 0 0; font-size: .9375rem; line-height: 1.6; color: var(--color-ink-soft); word-break: keep-all; overflow-wrap: anywhere; text-wrap: balance; }
 .station-details { display: flex; align-items: center; justify-content: center; gap: var(--space-md); min-height: 44px; margin-top: var(--space-sm); font-size: .9375rem; color: var(--color-ink-soft); }
 .station-details .arrow { width: 18px; height: 18px; }
 .station-link:hover .station-details { color: var(--color-accent); }
