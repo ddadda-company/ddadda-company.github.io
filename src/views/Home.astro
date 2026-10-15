@@ -10,6 +10,7 @@ const t = copy[locale];
   <div class="open-hero-inner container">
     <div class="open-hero-copy">
       <h1 id="hero-heading">{team.name}<span>{t.home.greeting}</span></h1>
+      <p>{t.home.lead}</p>
       <div class="hero-links"><a class="studio-button" href={pageUrl(locale, 'achievements')}>{t.home.recordsLink}<Arrow /></a><a class="text-link" href={pageUrl(locale, 'members')}>{locale === 'ko' ? '멤버 소개' : 'Our members'}<Arrow /></a></div>
     </div>
     <figure class="open-hero-art" data-scene-image><img src="/images/team-object-v2.webp" alt={locale === 'ko' ? '따따의 곰 캐릭터와 분홍색·파란색 D, 키보드와 깃발을 표현한 입체 일러스트' : 'dda_com bear mascots with rose quartz and serenity D emblems, keyboards and CTF flags'} width="1600" height="900" fetchpriority="high" /></figure>

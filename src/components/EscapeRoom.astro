@@ -7,7 +7,7 @@ const { locale } = Astro.props as { locale: Locale };
 const ko = locale === 'ko';
 ---
 <dialog class="escape-dialog" data-escape-dialog aria-labelledby="escape-title">
-  <div class="escape-sheet">
+  <div class="escape-sheet" data-nosnippet>
     <div class="escape-heading">
       <h2 id="escape-title" tabindex="-1"></h2>
       <button class="escape-close" data-escape-close aria-label={ko ? '닫기' : 'Close'}>×</button>

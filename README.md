@@ -32,6 +32,36 @@ npm run preview
 
 KO / EN은 현재 페이지를 유지하며 언어를 전환합니다. 선택한 언어는 브라우저에 저장되고 다음 루트 방문에 적용됩니다. 언어가 명시된 링크는 직접 접근할 수 있습니다. 자바스크립트가 꺼져 있어도 모든 내용과 언어 링크를 사용할 수 있습니다.
 
+## SEO와 AI 검색 노출
+
+`astro.config.mjs`의 `site`를 기준으로 검색 설정을 빌드합니다. 도메인을 바꾸면 canonical, 언어별 대체 주소, JSON-LD, 사이트맵과 robots.txt가 함께 바뀝니다.
+
+- 한영 8개 페이지에 고유한 제목·설명, 절대 주소 canonical, 상호 연결된 `ko`·`en`·`x-default` hreflang, Open Graph·Twitter 카드가 들어갑니다.
+- `/sitemap.xml`은 실제 페이지 목록에서 생성하며 `/robots.txt`에 연결됩니다. 404는 사이트맵에서 제외하고 `noindex, follow`를 지정합니다. 404에 홈페이지 canonical이나 구조화 데이터를 붙이지 않습니다.
+- `src/lib/seo.ts`에서 `Organization`, `WebSite`, 페이지 유형별 JSON-LD와 멤버 `Person`·`ItemList`를 생성합니다. 팀의 한영 이름, 공식 GitHub·CTFtime, 이메일과 실제 공개 프로필만 사용합니다. 미확인 수상·전문 분야·주소는 생성하지 않습니다.
+- 홈의 팀 설명과 성과의 출처·기준일은 HTML 본문에서 읽을 수 있습니다. CTFtime 순위는 `rating.checkedAt` 당시의 기록이며 실시간 순위로 표시하지 않습니다. 숨은 퍼즐 코드·플래그는 `data-nosnippet`으로 Google 검색 설명문에서 제외합니다.
+- `User-agent: *` 규칙은 검색·AI 검색 크롤러를 포함해 공개 페이지 수집을 허용합니다. 이는 robots.txt 수준의 설정이며 각 서비스의 수집·인용을 보장하지 않습니다.
+
+[Google의 AI 검색 안내](https://developers.google.com/search/docs/fundamentals/ai-optimization-guide)에 따라 읽을 수 있는 본문, 명확한 출처, 일반 SEO를 중심으로 구성했습니다. `llms.txt`나 AI 전용 마크업은 Google 검색 노출의 요건이 아니며 검색 순위나 AI 답변 인용을 보장하지 않습니다. 구조화 데이터는 [공식 Organization 안내](https://developers.google.com/search/docs/appearance/structured-data/organization), 언어 연결은 [다국어 페이지 안내](https://developers.google.com/search/docs/specialty/international/localized-versions)를 따릅니다.
+
+빌드 결과 검증:
+
+```bash
+npm run check
+npm run build
+npm run check:seo
+```
+
+`check:seo`는 배포할 HTML을 읽어 페이지 누락·중복, 대표 주소, 언어 연결의 상호성, 제목·설명, 공유 이미지 파일, JSON-LD와 실제 멤버 앵커, robots.txt, 404 검색 제외를 검사합니다. GitHub Pages 배포 작업에서도 실행합니다.
+
+### 배포 후 검색 서비스 등록
+
+소유자 계정에서 Google Search Console, 네이버 서치어드바이저, Bing Webmaster Tools에 `https://ddadda-company.github.io/`를 등록합니다. HTML 태그 인증을 선택했다면 발급된 태그의 **content 값만** 각각 `GOOGLE_SITE_VERIFICATION`, `NAVER_SITE_VERIFICATION`, `BING_SITE_VERIFICATION`으로 설정하세요. 로컬 빌드는 `.env.example`을 복사한 `.env`, GitHub Pages는 저장소의 Settings → Secrets and variables → Actions → Variables를 사용합니다. 인증 값은 HTML에 공개되는 토큰입니다. 값이 비어 있으면 태그를 출력하지 않습니다.
+
+Google Search Console은 **URL 접두어** 속성으로 등록하세요. HTML 태그 인증은 DNS 인증이 필요한 도메인 속성에는 사용할 수 없습니다. [Google 소유권 확인 안내](https://support.google.com/webmasters/answer/9008080?hl=ko)
+
+다시 빌드·배포한 다음 해당 서비스에서 소유권 확인을 완료하고 `https://ddadda-company.github.io/sitemap.xml`을 제출하세요. 검색 서비스 계정 등록과 사이트맵 제출은 코드 배포만으로 자동 완료되지 않습니다. 이후 URL 검사와 검색 노출 보고서에서 수집·색인 여부를 확인합니다.
+
 ## 모바일 구성
 
 - 언어·메뉴 버튼은 최소 44×44px이며, 펼친 메뉴는 2열입니다. 큰 글자 설정으로 한 줄에 들어가지 않으면 헤더를 줄바꿈합니다.

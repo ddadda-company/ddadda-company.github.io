@@ -20,9 +20,13 @@ jobs:
         uses: actions/checkout@v7
       - name: Check, build, and upload site
         uses: withastro/action@v6
+        env:
+          GOOGLE_SITE_VERIFICATION: ${{ vars.GOOGLE_SITE_VERIFICATION }}
+          NAVER_SITE_VERIFICATION: ${{ vars.NAVER_SITE_VERIFICATION }}
+          BING_SITE_VERIFICATION: ${{ vars.BING_SITE_VERIFICATION }}
         with:
           node-version: 24
-          build-cmd: npm run check && npm run build
+          build-cmd: npm run check && npm run build && npm run check:seo
 
   deploy:
     needs: build

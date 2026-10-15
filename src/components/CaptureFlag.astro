@@ -10,7 +10,7 @@ const ko = locale === 'ko';
   <div class="capture-layout container">
     <div class="capture-copy">
       <h2 id="capture-heading">Capture <br />the flag<span>.</span></h2>
-      <div class="capture-secret" data-secret>
+      <div class="capture-secret" data-secret data-nosnippet>
         <code id="trace" class="capture-secret-flag" data-secret-flag tabindex="0">{invisibleFlag}</code>
         <div class="capture-result-actions" data-secret-actions hidden>
           <button data-secret-copy data-flag={invisibleFlag} data-copied={ko ? '복사했어요' : 'Copied'} data-copy-error={ko ? '복사하지 못했습니다. 플래그를 선택해 복사해 주세요.' : 'Could not copy. Select the flag to copy it.'}>{ko ? '플래그 복사' : 'Copy flag'}</button>
