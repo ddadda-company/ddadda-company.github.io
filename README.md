@@ -61,7 +61,7 @@ KO / EN은 현재 페이지를 유지하며 언어를 전환합니다. 선택한
 
 ## 성과 출처
 
-[CTFtime 따따 팀 #425478](https://ctftime.org/team/425478)의 2026-10-13 조회 기준 세계 16위, 한국 3위와 참가 기록 10건을 반영했습니다. 여기에 팀이 제공한 누락 기록과 웹 출처로 확인한 결과 11건을 추가해 총 21건을 표시합니다. 각 대회는 CTFtime 기록, 공식 대회 안내 또는 결과 보도로 연결됩니다. 웹에서 개별 순위를 확인하지 못한 항목은 아래 표에 팀 제공 기록임을 명시했습니다. 각 달력은 UTC 기준 대회 시작일을 표시합니다.
+[CTFtime 따따 팀 #425478](https://ctftime.org/team/425478)의 2026-10-13 조회 기준 세계 16위, 한국 3위와 참가 기록 10건을 반영했습니다. 여기에 팀이 제공한 누락 기록과 웹 출처로 확인한 결과 12건을 추가해 총 22건을 표시합니다. 각 대회는 CTFtime 기록, 공식 대회 안내 또는 결과 보도로 연결됩니다. 웹에서 개별 순위를 확인하지 못한 항목은 아래 표에 팀 제공 기록임을 명시했습니다. 각 달력은 UTC 기준 대회 시작일을 표시합니다.
 
 | 대회 기간 | 대회 | 결과 및 참가 팀명 | 확인 출처 |
 | --- | --- | --- | --- |
@@ -74,6 +74,7 @@ KO / EN은 현재 페이지를 유지하며 언어를 전환합니다. 선택한
 | 2026-08-07–09 | DEF CON 34 CTF Finals | Jinddabi’s 연합팀 · 본선 7위 | [CTFtime 일정·방식](https://ctftime.org/event/3322), [데일리시큐 최종 결과](https://www.dailysecu.com/news/articleView.html?idxno=207969) |
 | 2026-08-29–30 | DiceCTF 2026 Finals | 본선 11위 · DDA-com | [CTFtime 공식 등록 일정·점수표](https://ctftime.org/event/3416/). 형식은 Hack quest이며 예선 5위 기록과 별도로 표시합니다. |
 | 2026-09-05 | Black Hat MEA CTF 2026 Qualifier | 온라인 예선 1위 | 순위: 팀 제공. [주최 측 최신 예선 안내](https://blackhatmea.com/competition/capture-the-flag). CTFtime의 8월 29일보다 주최 측이 명시한 9월 5일 일정을 우선했습니다. 참가 당시 팀명은 추가하지 않습니다. |
+| 2026-09-05–06 | TFC CTF 2026 | 10위 · seojin fan club | [CTFtime 주최 측 등록 일정·점수표](https://ctftime.org/event/3344/). UTC 시작일은 9월 5일이며 Jeopardy 방식입니다. 팀 참가 관계는 사용자 제공 정보에 근거합니다. |
 | 2026-09-28 | SCAN 2026 Final | 본선 2위 · hello | [공식 일정·수상 결과](https://scan.sx/), [CTFtime 일정·방식](https://ctftime.org/event/3417/), [디지털애셋 수상 결과](https://www.digitalasset.works/news/articleView.html?idxno=43330) |
 
 따따와 개별 팀원의 참가 관계는 사용자 제공 정보에 근거합니다. 공개 점수표·보도로 확인한 순위와 팀 제공 순위는 표에서 구분합니다. DEF CON은 Jinddabi’s 연합팀 참가로 명시합니다. 핵테온의 7월 10일은 시상식 날짜로, 본선 시작일인 7월 9일과 구분했습니다. SCAN은 hello 팀의 본선 준우승으로 표시하며 10월 1일 시상식과 9월 28일 본선을 구분했습니다. CTFtime에 점수표가 없는 본선은 공식 수상 안내나 결과 보도를 연결하며, 연합팀 기록이나 추가 본선 성적을 따따의 CTFtime 연간 점수에 합산하지 않습니다.

@@ -60,6 +60,11 @@ export const achievements: Achievement[] = [
     description: { ko: '온라인 예선 1위', en: 'Online qualifier winner' },
   },
   {
+    ...result('2026-09-05', 'TFC CTF 2026', 10, 3344),
+    timelineNote: { ko: 'seojin fan club', en: 'seojin fan club' },
+    description: { ko: 'seojin fan club 팀으로 참가', en: 'Competed as seojin fan club' },
+  },
+  {
     ...result('2026-08-29', 'DiceCTF 2026 Finals', 11, 3416, 'Hack quest'),
     description: { ko: '뉴욕 본선 · DDA-com', en: 'New York finals · DDA-com' },
   },
