@@ -45,6 +45,10 @@ function result(date: string, event: string, rank: number, source: number | stri
 // Additional finals and coalition results verified 2026-10-15; see README.md for sources.
 // These entries do not change the separate CTFtime team-rating snapshot above.
 export const achievements: Achievement[] = [
+  {
+    ...result('2026-09-28', 'SCAN 2026 Final', 2, 'https://scan.sx/'),
+    description: { ko: '디지털자산 추적 대회 본선 · hello', en: 'Digital asset tracing finals · hello' },
+  },
   result('2026-09-26', 'FAUST CTF 2026', 5, 3312, 'Attack & Defense'),
   {
     ...result('2026-08-07', 'DEF CON 34 CTF Finals', 7, 'https://www.dailysecu.com/news/articleView.html?idxno=207969', 'Attack & Defense'),

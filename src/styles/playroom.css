@@ -1,29 +1,33 @@
-/* Hallmark · macrostructure: a navigable toy-room diorama · design-system: design.md
- * rank cubes + calendar toys + chronological date rail
- * pre-emit critique: P5 H5 E4 S5 R4 V5
+/* Hallmark · genre: playful · macrostructure: winding chronological trail
+ * Existing Rose Quartz / Serenity system: design.md · CSS toys + measured SVG
+ * pre-emit critique: P5 H4 E4 S5 R4 V4
  */
 body.identity-v3 .playroom-intro { display: flex; align-items: center; justify-content: space-between; gap: var(--space-xl); padding-block: var(--space-2xl) var(--space-lg); }
 .playroom-filters { position: relative; z-index: 1; display: flex; justify-content: flex-end; padding-block: 0 var(--space-xl); }
 .playroom-filters .record-filters { display: flex; align-items: center; gap: var(--space-sm); flex-wrap: wrap; }
 .playroom-filters .filter-button { min-height: 44px; border: 0; border-radius: 6px; padding: 8px 20px; color: var(--color-ink); background: none; font-size: .9375rem; }
 .playroom-filters .filter-button[aria-pressed='true'] { background: var(--color-ink); color: var(--color-on-ink); }
-.playroom-filters .filter-button:not([aria-pressed='true']):hover { background: var(--color-rose-light); }
 .playroom-filters select { min-height: 44px; border: 1px solid var(--color-line); border-radius: 6px; padding: 8px 12px; background: var(--color-white); font-size: .9375rem; }
-.playroom-room { --room-scene: url('/images/achievements-playroom-v2.webp'); position: relative; isolation: isolate; display: flex; flex-direction: column; max-width: 1774px; min-height: clamp(570px, calc(50vw - 96px), 791px); margin-inline: auto; }
-.playroom-room::before { content: ''; position: absolute; inset: -96px 0 0; z-index: -1; background-image: var(--room-scene); background-position: center; background-size: cover; mask-image: linear-gradient(to bottom, var(--color-transparent), oklch(25% 0.063 270 / .12) 48px, oklch(25% 0.063 270 / .6) 148px, var(--color-ink) 260px, var(--color-ink) calc(100% - 84px), var(--color-transparent)); pointer-events: none; }
-.playroom-heading { display: flex; justify-content: space-between; align-items: center; gap: var(--space-xl); padding-top: var(--space-xl); }
+.playroom-room { position: relative; isolation: isolate; padding-bottom: var(--space-xl); }
+.playroom-room::before { content: ''; position: absolute; inset: -64px 0 auto; height: 700px; z-index: -1; background: url('/images/achievements-playroom-v2.webp') center top / 1774px auto no-repeat; mask-image: linear-gradient(to bottom, var(--color-transparent), var(--color-ink) 20%, var(--color-ink) 55%, var(--color-transparent)); opacity: .5; pointer-events: none; }
+.playroom-heading { display: flex; justify-content: center; padding-block: var(--space-lg) var(--space-xl); }
 .identity-v3 .playroom-heading h3 { font-family: var(--font-wordmark); font-size: 2.3rem; font-weight: 800; margin: 0; }
 .playroom-heading h3 > span { display: inline-block; padding: 4px 24px 8px; border: 2px solid var(--color-toy-wood-edge); border-radius: 6px; background: var(--color-toy-wood-light); color: var(--color-toy-wood-ink); box-shadow: 0 4px 0 var(--color-toy-wood-edge), inset 0 0 0 4px var(--color-toy-wood); transform: rotate(-3deg); }
-.playroom-controls { display: none; gap: var(--space-md); align-items: center; }
-.playroom-ready .playroom-controls { display: flex; }
-.room-step { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; background: var(--color-paper); color: var(--color-ink); border: 1px solid var(--color-toy-wood-edge); box-shadow: 0 4px 0 var(--color-toy-wood-edge); transition: transform var(--dur-medium) var(--ease-out); }
-.room-step--previous .arrow { transform: rotate(180deg); }
-.room-step:hover:not(:disabled) { background: var(--color-rose-light); }
-.room-step:active:not(:disabled) { transform: translateY(3px); }
-.room-step:disabled { cursor: not-allowed; opacity: .4; }
-.room-track { --station-width: 360px; position: relative; display: flex; flex: 1; align-items: flex-end; gap: clamp(48px, 7vw, 112px); list-style: none; margin: 0; padding: 48px max(24px, calc((100% - var(--station-width)) / 2)) 40px; overflow-x: auto; overflow-y: clip; scroll-snap-type: x mandatory; scroll-padding-inline: max(24px, calc((100% - var(--station-width)) / 2)); scrollbar-width: thin; scrollbar-color: var(--color-toy-wood-edge) var(--color-room-floor); overscroll-behavior-x: contain; }
-.room-track:focus-visible { outline-offset: -4px; }
-.room-station { --cube-face: var(--color-serenity); --cube-light: var(--color-blue-light); --cube-edge: var(--color-accent); --cube-ink: var(--color-ink); --cube-lean: -6deg; flex: 0 0 var(--station-width); width: var(--station-width); scroll-snap-align: center; scroll-snap-stop: normal; min-width: 0; }
+.room-trail { position: relative; width: min(1120px, calc(100% - 2 * var(--page-gutter))); margin-inline: auto; isolation: isolate; }
+.room-track { display: grid; list-style: none; margin: 0; padding: var(--space-xl) 0 var(--space-2xl); }
+/* A readable, connected archive also works before JS or without it. */
+.room-trail::before { content: ''; position: absolute; left: calc(50% - 3px); top: 0; bottom: 16px; width: 6px; border-radius: 6px; background: var(--color-toy-wood); z-index: -1; }
+.room-trail.trail-ready::before { display: none; }
+.trail-route { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; overflow: visible; pointer-events: none; }
+.trail-route path { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.trail-route-edge { stroke: var(--color-toy-wood-edge); stroke-width: 14px; }
+.trail-route-fill { stroke: var(--color-toy-wood-light); stroke-width: 10px; }
+.trail-route-stitch { stroke: var(--color-toy-wood-edge); stroke-width: 2px; stroke-dasharray: 2 10; }
+.room-station { --cube-face: var(--color-serenity); --cube-light: var(--color-blue-light); --cube-edge: var(--color-accent); --cube-ink: var(--color-ink); --cube-lean: -6deg; position: relative; width: min(360px, calc(50% - 64px)); min-width: 0; justify-self: start; scroll-margin-top: 100px; }
+.room-station:nth-child(even of :not([hidden])) { justify-self: end; }
+.room-station:not(:nth-child(1 of :not([hidden]))) { margin-top: -96px; }
+.trail-stop { position: absolute; top: 140px; right: -56px; width: 24px; height: 24px; border: 5px solid var(--color-paper); border-radius: 50%; background: var(--cube-face); box-shadow: 0 0 0 2px var(--color-toy-wood-edge), 0 3px 0 var(--color-toy-wood); }
+.room-station:nth-child(even of :not([hidden])) .trail-stop { right: auto; left: -56px; }
 .room-station--1 { --cube-face: var(--color-rose); --cube-light: var(--color-rose-light); --cube-edge: var(--color-rose-deep); --cube-lean: 5deg; }
 .room-station--2 { --cube-face: var(--color-lilac); --cube-light: var(--color-lilac-light); --cube-edge: var(--color-serenity); --cube-lean: -3deg; }
 .room-station--gold { --cube-face: var(--color-gold); --cube-light: var(--color-gold-light); --cube-edge: var(--color-toy-wood-edge); --cube-ink: var(--color-gold-ink); }
@@ -31,13 +35,8 @@ body.identity-v3 .playroom-intro { display: flex; align-items: center; justify-c
 .room-station--bronze { --cube-face: var(--color-bronze); --cube-light: var(--color-bronze-light); --cube-edge: var(--color-toy-wood-edge); --cube-ink: var(--color-bronze-ink); }
 .station-link { display: block; position: relative; padding: 8px 12px 16px; border-radius: 8px; }
 .station-toys { position: relative; height: 260px; isolation: isolate; transform-origin: center bottom; }
-.playroom-ready .station-toys { transform: scale(var(--toy-scale, 1)); }
-.room-track.is-dragging, .room-track.is-settling { scroll-snap-type: none; }
-.playroom-ready .station-link { -webkit-user-drag: none; }
-.room-track.is-dragging, .room-track.is-dragging * { cursor: grabbing; user-select: none; }
-.room-track.is-dragging .station-link:active { transform: none; }
-.room-track.is-dragging .rank-cube { transform: rotate(var(--cube-lean)); }
-.rank-cube { --cube-size: 190px; --cube-depth: 25px; position: absolute; left: 122px; top: 30px; width: var(--cube-size); height: var(--cube-size); transform: rotate(var(--cube-lean)); isolation: isolate; transition: transform 500ms var(--ease-out); }
+.rank-cube { transform: rotate(var(--cube-lean)); }
+.rank-cube { --cube-size: 190px; --cube-depth: 25px; position: absolute; right: 16px; top: 30px; width: var(--cube-size); height: var(--cube-size); transform: rotate(var(--cube-lean)); isolation: isolate; transition: transform var(--dur-medium) var(--ease-out); }
 .cube-front { position: absolute; inset: 0; display: flex; justify-content: center; align-items: baseline; padding-top: 36px; border: 4px solid var(--color-toy-wood-edge); border-radius: 8px; background: linear-gradient(125deg, var(--cube-light), var(--cube-face)); box-shadow: inset 0 0 0 8px var(--color-toy-wood), inset 0 0 0 11px var(--cube-edge), inset 0 3px 4px var(--color-white), 0 10px 16px var(--color-shadow); color: var(--cube-ink); }
 .cube-number { font-family: var(--font-wordmark); font-weight: 800; font-size: 6.6rem; line-height: 1; letter-spacing: -.075em; text-shadow: 1px 2px 0 var(--cube-light); }
 .cube-suffix { font-family: var(--font-body); font-size: 1.15rem; font-weight: 650; margin-left: 6px; }
@@ -51,55 +50,38 @@ body.identity-v3 .playroom-intro { display: flex; align-items: center; justify-c
 .date-month { display: block; background: var(--color-rose); padding: 10px 0 6px; border-radius: 6px 6px 0 0; font-size: 1rem; line-height: 1.4; font-weight: 650; }
 .date-day { display: block; font-family: var(--font-wordmark); font-size: 3.25rem; font-weight: 800; line-height: 1.3; padding-top: 5px; }
 .station-shadow { position: absolute; z-index: -1; width: 280px; height: 30px; border-radius: 50%; background: var(--color-shadow); bottom: 12px; left: 40px; filter: blur(10px); }
-.station-caption { padding-top: var(--space-lg); min-height: 124px; text-align: center; }
+.station-caption { padding-top: var(--space-sm); text-align: center; }
 .station-caption h4 { font-family: var(--font-body); font-size: 1.35rem; font-weight: 750; line-height: 1.35; letter-spacing: -.025em; margin: 0; overflow-wrap: anywhere; text-wrap: balance; color: var(--color-ink); }
 .station-description { margin: var(--space-sm) 0 0; font-size: .9375rem; line-height: 1.6; color: var(--color-ink-soft); word-break: keep-all; overflow-wrap: anywhere; text-wrap: balance; }
 .station-details { display: flex; align-items: center; justify-content: center; gap: var(--space-md); min-height: 44px; margin-top: var(--space-sm); font-size: .9375rem; color: var(--color-ink-soft); }
 .station-details .arrow { width: 18px; height: 18px; }
-.station-link:hover .station-details { color: var(--color-accent); }
 .station-link:active { transform: translateY(2px); }
-.date-rail { padding-top: var(--space-2xl); padding-bottom: var(--space-xl); }
-.date-rail-year { margin: 0 0 var(--space-md) 8px; font-family: var(--font-wordmark); font-size: 1.75rem; font-weight: 800; line-height: 1.2; color: var(--color-ink); }
-.date-rail ol { display: flex; list-style: none; padding: 0 8px; margin: 0; overflow-x: auto; scrollbar-width: thin; gap: 0; }
-.date-rail li { flex: 1 0 100px; }
-.date-rail time { white-space: nowrap; }
-.date-rail a { position: relative; display: flex; flex-direction: column; align-items: center; min-height: 100px; gap: 8px; padding: 8px 12px; border-radius: 4px; font-size: 1rem; font-weight: 600; font-variant-numeric: tabular-nums; }
-.date-rail a::before { content: ''; position: absolute; height: 5px; top: 14px; left: 0; right: 0; background: var(--color-toy-wood); box-shadow: inset 0 1px 0 var(--color-toy-wood-light), 0 1px 0 var(--color-toy-wood-edge); }
-.date-rail li:first-child a::before { left: 50%; }
-.date-rail li:last-child a::before { right: 50%; }
-.date-rail-dot { position: relative; z-index: 1; width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--color-serenity); background: var(--color-blue-light); box-shadow: 0 2px 0 var(--color-serenity); }
-.date-rail a[aria-current] .date-rail-dot { background: var(--color-rose); border-color: var(--color-rose-deep); box-shadow: 0 2px 0 var(--color-rose-deep); }
-.date-rail a[aria-current] time { color: var(--color-rose-ink); }
-.date-rail-rank { font-size: .9375rem; color: var(--color-muted); font-weight: 500; }
-.date-rail a:hover { background: var(--color-blue-light); }
+
 .playroom-source, .playroom-rating { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-xl); color: var(--color-muted); font-size: .9375rem; padding-top: var(--space-md); }
 .playroom-source > span { white-space: nowrap; }
-@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .room-track:not(.is-dragging) .station-link:hover .rank-cube { transform: translateY(-6px) rotate(calc(var(--cube-lean) + 3deg)); }
-}
 @media (hover: hover) and (pointer: fine) {
-  .playroom-ready .room-track:not(.is-dragging), .playroom-ready .room-track:not(.is-dragging) .station-link { cursor: grab; }
+  .station-link:hover .station-details { color: var(--color-accent); }
+  .playroom-filters .filter-button:not([aria-pressed='true']):hover { background: var(--color-rose-light); }
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .station-link:hover .rank-cube { transform: translateY(-6px) rotate(calc(var(--cube-lean) + 3deg)); }
 }
 @media (max-width: 59.99rem) {
   body.identity-v3 .playroom-intro { padding-top: var(--space-xl); }
   .playroom-filters { justify-content: flex-start; }
+  .playroom-heading { justify-content: flex-start; }
+  .room-trail::before { left: 21px; }
   .room-track { gap: var(--space-2xl); }
-  .playroom-heading { padding-top: var(--space-lg); }
-  .date-rail { padding-top: var(--space-xl); }
-}
-@media (max-width: 39.99rem) {
-  body.identity-v3 .playroom-intro { display: block; padding-bottom: var(--space-sm); }
-  .playroom-intro .text-link { margin-top: var(--space-sm); }
-  .playroom-filters .filter-button { padding-inline: 12px; }
-  .playroom-filters select { padding-inline: 8px; }
-  .playroom-heading h3 > span { padding: 2px 16px 6px; }
-  .identity-v3 .playroom-heading h3 { font-size: 1.9rem; }
-  .playroom-controls { gap: 12px; }
-  .room-step { width: 44px; height: 44px; }
-  .room-track { --station-width: min(320px, calc(100vw - 48px)); gap: var(--space-xl); padding-top: 32px; padding-bottom: 24px; }
-  .station-link { padding-inline: 4px; }
+  .room-station, .room-station:nth-child(even of :not([hidden])) { width: calc(100% - 64px); justify-self: end; }
+  .room-station:not(:nth-child(1 of :not([hidden]))) { margin-top: 0; }
+  .trail-stop { right: auto; left: -56px; top: 116px; }
+  .room-station:nth-child(even of :not([hidden])) .trail-stop { left: -40px; }
+  .station-link { display: grid; grid-template-columns: minmax(0, 280px) minmax(0, 1fr); align-items: center; gap: var(--space-xl); padding-inline: 4px; }
+  .station-caption { text-align: left; }
+  .station-caption h4, .station-description { text-wrap: pretty; }
+  .station-details { justify-content: flex-start; }
   .station-toys { height: 234px; }
-  .rank-cube { --cube-size: 156px; --cube-depth: 18px; left: auto; right: 12px; top: 32px; }
+  .rank-cube { --cube-size: 156px; --cube-depth: 18px; right: 12px; top: 32px; }
   .cube-front { padding-top: 31px; border-width: 3px; box-shadow: inset 0 0 0 6px var(--color-toy-wood), inset 0 0 0 8px var(--cube-edge), 0 10px 16px var(--color-shadow); }
   .cube-number { font-size: 5.2rem; }
   .cube-suffix { font-size: 1rem; margin-left: 4px; }
@@ -108,17 +90,34 @@ body.identity-v3 .playroom-intro { display: flex; align-items: center; justify-c
   .date-day { font-size: 2.55rem; padding-top: 2px; }
   .date-toy::before { left: 16px; }
   .date-toy::after { right: 16px; }
-  .station-shadow { width: 230px; left: 20px; }
-  .station-caption { padding-top: var(--space-md); min-height: 112px; }
+  .station-shadow { width: 220px; left: 10px; }
+}
+@media (max-width: 39.99rem) {
+  body.identity-v3 .playroom-intro { display: block; padding-bottom: var(--space-sm); }
+  .playroom-intro .text-link { margin-top: var(--space-sm); }
+  .playroom-filters .filter-button { padding-inline: 12px; }
+  .playroom-filters select { padding-inline: 8px; }
+  .playroom-heading h3 > span { padding: 2px 16px 6px; }
+  .identity-v3 .playroom-heading h3 { font-size: 1.9rem; }
+  .room-trail { max-width: 400px; }
+  .room-track { padding-top: var(--space-md); }
+  .room-station, .room-station:nth-child(even of :not([hidden])) { width: calc(100% - 48px); }
+  .trail-stop { left: -44px; width: 20px; height: 20px; border-width: 4px; }
+  .room-station:nth-child(even of :not([hidden])) .trail-stop { left: -28px; }
+  .station-link { display: block; }
+  .station-toys { height: 218px; max-width: 300px; margin-inline: auto; }
+  .rank-cube { --cube-size: clamp(130px, 40vw, 156px); }
+  .cube-number { font-size: clamp(4.4rem, 21vw, 5.2rem); }
+  .cube-front { padding-top: 25px; }
+  .date-toy { width: 76px; height: 104px; }
+  .date-day { font-size: 2.3rem; }
+  .station-caption { padding-top: var(--space-md); text-align: center; }
   .station-caption h4 { font-size: 1.2rem; }
-  .station-details { font-size: .875rem; }
-  .date-rail li { flex-basis: 88px; }
-  .date-rail a { font-size: .9375rem; }
-  .date-rail-rank { font-size: .875rem; }
+  .station-description { font-size: .9375rem; }
+  .station-details { justify-content: center; font-size: .875rem; }
   .playroom-source, .playroom-rating { flex-direction: column; align-items: flex-start; gap: var(--space-sm); font-size: .875rem; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .playroom-ready .station-toys { transform: none; }
-  .station-toys, .rank-cube, .room-step { transition: none; }
-  .room-step:active:not(:disabled), .station-link:active { transform: none; }
+  .rank-cube { transition: none; }
+  .station-link:active { transform: none; }
 }
