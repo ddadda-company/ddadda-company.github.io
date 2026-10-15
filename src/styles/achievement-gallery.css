@@ -8,7 +8,11 @@ html.gallery-open { overflow: hidden; }
 .gallery-close { flex: 0 0 44px; width: 44px; height: 44px; border: 1px solid var(--color-line-strong); border-radius: 50%; background: var(--color-blue-light); color: var(--color-ink); font-size: 2rem; line-height: 1; }
 .gallery-slides { min-width: 0; }
 .gallery-slides figure { margin: 0; }
-.gallery-slides img { width: 100%; height: min(62dvh, 720px); object-fit: contain; border-radius: 4px; background: var(--color-ink); }
+.gallery-slides img { width: 100%; height: min(62dvh, 720px); object-fit: contain; border-radius: 4px; background: var(--color-ink); touch-action: pan-y pinch-zoom; user-select: none; -webkit-user-drag: none; }
+.gallery-slides.is-swiping img { cursor: grabbing; }
+@media (hover: hover) and (pointer: fine) {
+  .gallery-slides:not(.is-swiping) img { cursor: grab; }
+}
 .gallery-slides figcaption { margin-top: 12px; font-size: .9375rem; line-height: 1.5; overflow-wrap: anywhere; }
 .gallery-credit { display: flex; align-items: center; gap: 6px; width: fit-content; min-height: 44px; text-decoration: underline; text-underline-offset: 4px; }
 .gallery-credit .arrow { width: 16px; height: 16px; }

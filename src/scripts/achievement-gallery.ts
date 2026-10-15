@@ -10,27 +10,43 @@ function setupAchievementGallery() {
   const source = dialog.querySelector<HTMLAnchorElement>('[data-gallery-source]')!;
   const error = dialog.querySelector<HTMLElement>('[data-gallery-error]')!;
   const steps = [...dialog.querySelectorAll<HTMLButtonElement>('[data-gallery-step]')];
-  let slides: HTMLElement[] = [];
+  const galleries = [...document.querySelectorAll<HTMLAnchorElement>('a[data-gallery]')].flatMap(link => {
+    const template = document.getElementById(link.dataset.gallery!);
+    return template instanceof HTMLTemplateElement ? [{ link, template }] : [];
+  });
+  let photos: { link: HTMLAnchorElement; template: HTMLTemplateElement; slide: HTMLElement }[] = [];
   let current = 0;
   let opener: HTMLAnchorElement | undefined;
   let backdropPointer = false;
+  let gesture: { pointer: number; x: number; y: number; dragging: boolean } | undefined;
 
   const show = (index: number) => {
-    current = (index + slides.length) % slides.length;
-    slides.forEach((slide, i) => { slide.hidden = i !== current; });
-    const img = slides[current].querySelector<HTMLImageElement>('img')!;
-    // Templates and data-src keep every image off the network until selected.
-    if (!img.hasAttribute('src')) img.src = img.dataset.src!;
+    if (!photos.length) return;
+    current = (index + photos.length) % photos.length;
+    const photo = photos[current];
+    const slide = photo.slide.cloneNode(true) as HTMLElement;
+    slide.hidden = false;
+    title.textContent = photo.template.dataset.title!;
+    summary.textContent = photo.template.dataset.summary!;
+    source.hidden = !photo.template.dataset.source;
+    if (photo.template.dataset.source) source.href = photo.template.dataset.source;
+    else source.removeAttribute('href');
+    container.replaceChildren(slide);
+    const img = slide.querySelector<HTMLImageElement>('img')!;
+    error.hidden = true;
+    img.addEventListener('error', () => {
+      if (dialog.contains(img)) error.hidden = false;
+    });
+    // Only the selected image enters the DOM and starts loading.
+    img.draggable = false;
+    img.src = img.dataset.src!;
     fullSize.href = img.dataset.src!;
-    error.hidden = img.dataset.failed !== 'true';
-    count.textContent = `${current + 1} / ${slides.length}`;
-    count.setAttribute('aria-label', `${count.textContent} · ${img.alt}`);
-    steps.forEach(button => { button.hidden = slides.length < 2; });
+    count.textContent = `${current + 1} / ${photos.length}`;
+    count.setAttribute('aria-label', `${count.textContent} · ${title.textContent} · ${img.alt}`);
+    steps.forEach(button => { button.hidden = photos.length < 2; });
   };
 
-  document.querySelectorAll<HTMLAnchorElement>('a[data-gallery]').forEach(link => {
-    const template = document.getElementById(link.dataset.gallery!);
-    if (!(template instanceof HTMLTemplateElement)) return;
+  galleries.forEach(({ link }) => {
     link.setAttribute('aria-haspopup', 'dialog');
     link.setAttribute('aria-controls', dialog.id);
     link.setAttribute('role', 'button');
@@ -41,23 +57,14 @@ function setupAchievementGallery() {
       // The room's capture-phase drag guard runs before this listener.
       // Modified clicks keep the full-size image link's native behavior.
       if (event.defaultPrevented || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+      // Follow the visible competition order, including every photo of each block.
+      photos = galleries.filter(gallery => !gallery.link.closest('[hidden]')).flatMap(gallery =>
+        [...gallery.template.content.querySelectorAll<HTMLElement>('[data-gallery-slide]')].map(slide => ({ ...gallery, slide })));
+      const start = photos.findIndex(photo => photo.link === link);
+      if (start < 0) return;
       event.preventDefault();
       opener = link;
-      title.textContent = template.dataset.title!;
-      summary.textContent = template.dataset.summary!;
-      source.hidden = !template.dataset.source;
-      if (template.dataset.source) source.href = template.dataset.source;
-      else source.removeAttribute('href');
-      container.replaceChildren(template.content.cloneNode(true));
-      slides = [...container.querySelectorAll<HTMLElement>('[data-gallery-slide]')];
-      slides.forEach(slide => {
-        const img = slide.querySelector<HTMLImageElement>('img')!;
-        img.addEventListener('error', () => {
-          img.dataset.failed = 'true';
-          if (dialog.contains(img) && !slide.hidden) error.hidden = false;
-        });
-      });
-      show(0);
+      show(start);
       dialog.showModal();
       dialog.scrollTop = 0;
       document.documentElement.classList.add('gallery-open');
@@ -67,10 +74,52 @@ function setupAchievementGallery() {
   dialog.querySelector('[data-gallery-close]')?.addEventListener('click', () => dialog.close());
   steps.forEach(button => button.addEventListener('click', () => show(current + Number(button.dataset.galleryStep))));
   dialog.addEventListener('keydown', event => {
-    if (slides.length < 2 || event.ctrlKey || event.metaKey || event.altKey || !['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
+    if (photos.length < 2 || event.ctrlKey || event.metaKey || event.altKey || !['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
     event.preventDefault();
     show(current + (event.key === 'ArrowRight' ? 1 : -1));
   });
+
+  const cancelGesture = () => {
+    const pointer = gesture?.pointer;
+    gesture = undefined;
+    container.classList.remove('is-swiping');
+    if (pointer !== undefined && container.hasPointerCapture(pointer)) container.releasePointerCapture(pointer);
+  };
+  container.addEventListener('pointerdown', event => {
+    // A second finger cancels navigation so native pinch zoom remains available.
+    if (!event.isPrimary) { cancelGesture(); return; }
+    if (event.button !== 0 || photos.length < 2 || !(event.target instanceof HTMLImageElement)) return;
+    gesture = { pointer: event.pointerId, x: event.clientX, y: event.clientY, dragging: false };
+  });
+  container.addEventListener('pointermove', event => {
+    if (!gesture || gesture.pointer !== event.pointerId) return;
+    const dx = event.clientX - gesture.x;
+    const dy = event.clientY - gesture.y;
+    if (!gesture.dragging) {
+      if (Math.max(Math.abs(dx), Math.abs(dy)) < 8) return;
+      if (Math.abs(dx) <= Math.abs(dy) * 1.25) { cancelGesture(); return; }
+      gesture.dragging = true;
+      container.setPointerCapture(event.pointerId);
+      container.classList.add('is-swiping');
+    }
+    event.preventDefault();
+  });
+  container.addEventListener('pointerup', event => {
+    if (!gesture || gesture.pointer !== event.pointerId) return;
+    const dx = event.clientX - gesture.x;
+    const dy = event.clientY - gesture.y;
+    const threshold = Math.min(80, Math.max(40, container.clientWidth * .08));
+    const navigate = gesture.dragging && Math.abs(dx) >= threshold && Math.abs(dx) > Math.abs(dy) * 1.25;
+    cancelGesture();
+    if (navigate) show(current + (dx < 0 ? 1 : -1));
+  });
+  container.addEventListener('pointercancel', cancelGesture);
+  container.addEventListener('lostpointercapture', event => {
+    // Touch starts with implicit capture on the image. Its bubbling loss during
+    // the handover to the container must not cancel the active swipe.
+    if (event.target === container) cancelGesture();
+  });
+  container.addEventListener('pointerleave', () => { if (!gesture?.dragging) cancelGesture(); });
   const outside = (event: MouseEvent) => {
     const rect = dialog.getBoundingClientRect();
     return event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom;
@@ -81,9 +130,10 @@ function setupAchievementGallery() {
     backdropPointer = false;
   });
   dialog.addEventListener('close', () => {
+    cancelGesture();
     document.documentElement.classList.remove('gallery-open');
     container.replaceChildren();
-    slides = [];
+    photos = [];
     backdropPointer = false;
     opener?.focus({ preventScroll: true });
   });
