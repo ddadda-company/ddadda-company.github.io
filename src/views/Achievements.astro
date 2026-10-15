@@ -29,33 +29,37 @@ const suffix = (rank: number) => locale === 'ko' ? '위' : rank % 100 >= 11 && r
       <div class="playroom-room">
         <div class="playroom-heading container">
           <h3 id={`year-${year}`}><span data-puzzle-fallback>{year}</span><button class="puzzle-year" id={year === years[0] ? 'puzzle-timeline' : undefined} data-escape-puzzle="timeline" hidden aria-haspopup="dialog" aria-label={locale === 'ko' ? `${year} 팻말 살펴보기` : `Inspect the ${year} plaque`}>{year}</button></h3>
+          <div class="playroom-controls">
+            <button class="room-step room-step--previous" data-room-step="-1" aria-label={locale === 'ko' ? '이전 대회' : 'Previous competition'} aria-controls={`room-${year}`} disabled><Arrow direction="right" /></button>
+            <button class="room-step" data-room-step="1" aria-label={locale === 'ko' ? '다음 대회' : 'Next competition'} aria-controls={`room-${year}`}><Arrow direction="right" /></button>
+          </div>
         </div>
-        <div class="room-trail" data-room-trail>
-          <svg class="trail-route" data-trail-route aria-hidden="true" focusable="false">
-            <path class="trail-route-edge" />
-            <path class="trail-route-fill" />
-            <path class="trail-route-stitch" />
-          </svg>
-          <ol class="room-track" id={`room-${year}`} aria-label={`${year} ${t.archive}`}>
-            {entries.map((a, index) => <li class:list={['room-station', `room-station--${index % 3}`, { 'room-station--gold': a.rank === 1, 'room-station--silver': a.rank === 2, 'room-station--bronze': a.rank === 3 }]} id={`competition-${year}-${index}`} data-result data-year={year} data-rank={a.rank}>
-              <span class="trail-stop" data-trail-stop aria-hidden="true"></span>
-              <a class="station-link" href={a.url} target="_blank" rel="noopener noreferrer" aria-labelledby={`event-${year}-${index}`} aria-describedby={`result-${year}-${index}`}>
-                <div class="station-toys" aria-hidden="true">
-                  <div class="rank-cube"><span class="cube-top"></span><span class="cube-side"></span><div class="cube-front"><span class="cube-number">{a.rank}</span><span class="cube-suffix">{suffix(a.rank)}</span></div></div>
-                  <div class="date-toy"><span class="date-month">{month(a.date)}</span><span class="date-day">{a.date.slice(-2)}</span></div>
-                  <span class="station-shadow"></span>
-                </div>
-                <div class="station-caption">
-                  <h4 id={`event-${year}-${index}`}>{a.event}</h4>
-                  {a.description && <p class="station-description">{a.description[locale]}</p>}
-                  <div class="station-details"><span>{a.format}</span><Arrow /></div>
-                </div>
-                <span id={`result-${year}-${index}`} class="visually-hidden">{a.placement[locale]} · <time datetime={a.date}>{a.date}</time> · {a.description && `${a.description[locale]} · `}{t.link}</span>
-              </a>
-            </li>)}
-          </ol>
-        </div>
+        <ol class="room-track" id={`room-${year}`} data-room-track tabindex="0" aria-label={`${year} ${t.archive}`}>
+          {entries.map((a, index) => <li class:list={['room-station', `room-station--${index % 3}`, { 'room-station--gold': a.rank === 1, 'room-station--silver': a.rank === 2, 'room-station--bronze': a.rank === 3 }]} id={`competition-${year}-${index}`} data-result data-year={year} data-rank={a.rank}>
+            <a class="station-link" href={a.url} target="_blank" rel="noopener noreferrer" aria-labelledby={`event-${year}-${index}`} aria-describedby={`result-${year}-${index}`}>
+              <div class="station-toys" aria-hidden="true">
+                <div class="rank-cube"><span class="cube-top"></span><span class="cube-side"></span><div class="cube-front">{a.rank !== null ? <><span class="cube-number">{a.rank}</span><span class="cube-suffix">{suffix(a.rank)}</span></> : <span class="cube-label">{locale === 'ko' ? '본선' : 'FINAL'}</span>}</div></div>
+                <div class="date-toy"><span class="date-month">{month(a.date)}</span><span class="date-day">{a.date.slice(-2)}</span></div>
+                <span class="station-shadow"></span>
+              </div>
+              <div class="station-caption">
+                <h4 id={`event-${year}-${index}`}>{a.event}</h4>
+                {a.description && <p class="station-description">{a.description[locale]}</p>}
+                <div class="station-details"><span>{a.format}</span><Arrow /></div>
+              </div>
+              <span id={`result-${year}-${index}`} class="visually-hidden">{a.placement[locale]} · <time datetime={a.date}>{a.date}</time> · {a.description && `${a.description[locale]} · `}{t.link}</span>
+            </a>
+          </li>)}
+        </ol>
       </div>
+      <nav class="date-rail container" aria-label={locale === 'ko' ? `${year} 날짜별 대회 선택` : `${year} competitions by date`}>
+        <p class="date-rail-year">{year}</p>
+        <div class="date-trail" data-date-trail>
+          <svg class="date-trail-route" data-date-route aria-hidden="true" focusable="false"><path class="date-trail-edge" /><path class="date-trail-fill" /></svg>
+          <ol>{entries.map((a, index) => <li><a href={`#competition-${year}-${index}`} data-room-date={`competition-${year}-${index}`} aria-label={`${a.date} ${a.event} · ${a.placement[locale]}`}><span class="date-rail-dot" aria-hidden="true"></span><time datetime={a.date}>{a.date.slice(5).replaceAll('-', '.')}</time><span class="date-rail-rank">{a.placement[locale]}</span></a></li>)}</ol>
+        </div>
+      </nav>
+      <p class="visually-hidden" data-room-status role="status" aria-live="polite" aria-atomic="true"></p>
     </section>;
   })}
   <p class="filter-empty container" data-results-empty hidden>{t.noMatch}</p>

@@ -31,9 +31,9 @@ export const copy = {
     achievements: {
       title: '대회 성과', intro: '따따의 CTF 대회 성과와 연합팀 참가 기록입니다.',
       archive: '전체 기록', all: '전체 연도', count: '개의 기록',
-      date: '일자', event: '대회', format: '방식', result: '순위', link: '결과 출처',
+      date: '일자', event: '대회', format: '방식', result: '순위', link: '대회·결과 안내',
       noMatch: '선택한 조건에 해당하는 기록이 없습니다.',
-      note: '출처: CTFtime, 대회 공식 안내 및 결과 보도. 각 대회에서 출처를 확인할 수 있습니다. 날짜는 UTC 기준 대회 시작일입니다.',
+      note: '팀 제공 기록에 CTFtime, 대회 공식 안내와 결과 보도를 함께 반영했습니다. 각 대회에서 관련 자료를 확인할 수 있습니다. 날짜는 UTC 기준 대회 시작일입니다.',
       nextLink: '멤버 소개',
     },
     members: {
@@ -76,9 +76,9 @@ export const copy = {
     achievements: {
       title: 'Achievements', intro: 'dda_com’s CTF results and coalition participation.',
       archive: 'Competition archive', all: 'All years', count: 'records',
-      date: 'Date', event: 'Competition', format: 'Format', result: 'Place', link: 'Result source',
+      date: 'Date', event: 'Competition', format: 'Format', result: 'Place', link: 'Event and result information',
       noMatch: 'No results match the selected filters.',
-      note: 'Sources: CTFtime, event announcements, and result reports. Each competition links to its source. Dates indicate the start of each event in UTC.',
+      note: 'Team-provided records are supplemented by CTFtime, official event information, and result reports. Each competition links to supporting information. Dates indicate the start of each event in UTC.',
       nextLink: 'Team members',
     },
     members: {

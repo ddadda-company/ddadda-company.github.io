@@ -37,7 +37,8 @@ function filterResults() {
   let visible = 0;
   document.querySelectorAll<HTMLElement>('[data-result]').forEach(row => {
     const yearMatches = !yearSelect || yearSelect.value === 'all' || row.dataset.year === yearSelect.value;
-    const rankMatches = resultFilter === 'all' || Number(row.dataset.rank) <= 3;
+    const rank = Number(row.dataset.rank);
+    const rankMatches = resultFilter === 'all' || (rank >= 1 && rank <= 3);
     row.hidden = !(yearMatches && rankMatches);
     if (!row.hidden) visible++;
   });

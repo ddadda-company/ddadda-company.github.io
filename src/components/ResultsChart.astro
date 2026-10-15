@@ -3,7 +3,7 @@ import { achievements } from '../data/team';
 import type { Locale } from '../data/i18n';
 interface Props { locale: Locale; }
 const { locale } = Astro.props;
-const records = [...achievements].reverse();
+const records = achievements.filter((record): record is typeof record & { rank: number } => record.rank !== null).reverse();
 const points = records.map((record, i) => ({ ...record, x: 34 + i * 48, y: 30 + (record.rank - 1) * 11 }));
 const line = points.map((p, i) => `${i ? 'L' : 'M'} ${p.x} ${p.y}`).join(' ');
 ---
