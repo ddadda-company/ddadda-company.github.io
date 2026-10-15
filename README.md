@@ -85,6 +85,28 @@ KO / EN은 현재 페이지를 유지하며 언어를 전환합니다. 선택한
 
 하단 타임라인 이름은 대회명의 연도를 생략하고 예선/본선을 구분해 표시합니다. `timelineName`과 `timelineNote`로 짧은 대회명·부문·보충 설명을 지정할 수 있으며, 순위는 기존 `placement`를 그대로 사용합니다.
 
+스코어보드가 있는 블록에는 `스코어보드 · N장`을 표시하며, 누르면 이미지 뷰어를 엽니다. 좌우 버튼·방향키로 여러 장을 넘기고 닫기·Escape·배경 클릭으로 닫습니다. 전체 크기 이미지와 기존 대회·결과 안내 링크를 함께 제공합니다. 사진은 선택할 때만 불러오며, JavaScript가 없어도 이미지와 결과 안내 링크를 사용할 수 있습니다.
+
+2026-10-15 팀이 제공한 사진자료에서 스코어보드 **14장**을 선별해 **14개 성과 블록**에 연결했습니다. 사람 얼굴이 있는 단체사진과 순위표가 아닌 프로필 화면은 포함하지 않습니다. 파일은 `public/images/scoreboards/2026/`에 보관하며 Discord의 만료되는 첨부 주소나 대화 원문을 배포하지 않습니다. 이미지 메타데이터·한영 설명은 `src/data/achievement-images.ts`, 성과 연결은 `src/data/team.ts`의 `photos`입니다. 화면 캡처는 원래 해상도의 무손실 WebP로, 모니터를 촬영한 핵테온 초급부·DEF CON 사진은 같은 해상도의 WebP로 압축했습니다.
+
+| 스코어보드 파일 | 연결한 성과 |
+| --- | --- |
+| `hctf.webp` | HCTF 2위 · 손이시립대 |
+| `bitsctf.webp` | BITSCTF 1위 |
+| `dice-quals.webp` | DiceCTF 예선 5위 |
+| `suctf.webp` | SUCTF 2위 |
+| `enki-redteam.webp` | ENKI 8l4nk 2위·nobody09 4위, 같은 순위표 공유 |
+| `codegate-quals.webp` | CODEGATE 예선. 캡처에는 13위가 보여 설명에 명시하고, 기존 확인 기록 12위는 유지 |
+| `actf.webp` | Azure Assassin Alliance CTF 1위 |
+| `sas-quals.webp` | SAS CTF 예선 5위 |
+| `sctf-ranking.webp`, `sctf-dashboard.webp` | SCTF 1위, 순위표·전체 대시보드 2장 |
+| `hacktheon-advanced.webp` | HackTheon 고급부 1위 |
+| `hacktheon-beginner.webp` | HackTheon 초급부 2위 · SHA-4 |
+| `codegate-finals.webp` | CODEGATE 본선 2위 |
+| `defcon-finals.webp` | DEF CON 34 본선 7위 · Jinddabi’s, 화면 표기 JIND |
+
+SCAN은 사용자 요청에 따라 예외로 스코어보드 대신 **hello 팀의 2위 수상 사진 1장**을 사용합니다. [디지털애셋의 2026-10-01 시상식 보도](https://www.digitalasset.works/news/articleView.html?idxno=43330)에 실린 박재연 기자의 [원본 사진](https://cdn.digitalasset.works/news/photo/202610/43330_45089_5347.png)을 크롭하지 않고 600×450 무손실 WebP로 저장했습니다 (`public/images/achievements/2026/scan-award.webp`). 뷰어에 사진 출처·기사 링크와 시상식 날짜를 표시하며, 본선 날짜 9월 28일은 유지합니다. 전체 이미지 수는 **15장**, 사진을 여는 성과 블록은 **15개**입니다.
+
 `rank: null`은 순위가 확인되지 않은 본선 진출 기록입니다. 해당 블록은 `본선`/`FINAL`로 표시하며 `입상` 필터와 순위 그래프에서는 제외합니다. ENKI는 개인전 기록을 팀원별로 분리하고, HackTheon은 고급·초급부문을 구분합니다.
 
 방문 시 외부 API를 호출하지 않습니다. 새로운 성과는 `src/data/team.ts`의 `achievements`에 추가하고 다시 빌드하세요. 연간 순위를 다시 조회했을 때만 `rating`과 그 안의 `checkedAt`을 함께 갱신합니다. `입상` 필터는 1–3위를 표시합니다. 멤버는 요청에 따라 `8l4nk`(팀장), `sane100400`, `Axii`, `nobody09`, `Dbi`, `love09010224`, `snowball` 총 7명을 등록했습니다. 확인 전인 다른 닉네임이나 분야·소개는 추가하지 않았습니다.

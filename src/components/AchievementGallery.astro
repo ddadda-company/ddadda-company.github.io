@@ -1,0 +1,30 @@
+---
+import Arrow from './Arrow.astro';
+import { copy, type Locale } from '../data/i18n';
+import '../styles/achievement-gallery.css';
+const { locale } = Astro.props as { locale: Locale };
+const ko = locale === 'ko';
+---
+<dialog class="gallery-dialog" id="achievement-gallery" aria-labelledby="gallery-title" aria-describedby="gallery-summary">
+  <header class="gallery-header">
+    <div>
+      <h2 id="gallery-title"></h2>
+      <p id="gallery-summary"></p>
+    </div>
+    <button type="button" class="gallery-close" data-gallery-close aria-label={ko ? '사진 닫기' : 'Close image'} autofocus><span aria-hidden="true">×</span></button>
+  </header>
+  <div class="gallery-slides" data-gallery-slides></div>
+  <p class="gallery-error" data-gallery-error role="status" hidden>{ko ? '이미지를 불러오지 못했습니다. 전체 크기로 열기를 눌러 다시 확인해 주세요.' : 'The image could not load. Try opening it at full size.'}</p>
+  <footer class="gallery-footer">
+    <div class="gallery-pager">
+      <button type="button" data-gallery-step="-1" aria-label={ko ? '이전 사진' : 'Previous image'}><Arrow direction="right" /></button>
+      <span data-gallery-count role="status" aria-live="polite" aria-atomic="true"></span>
+      <button type="button" data-gallery-step="1" aria-label={ko ? '다음 사진' : 'Next image'}><Arrow direction="right" /></button>
+    </div>
+    <div class="gallery-links">
+      <a data-gallery-full target="_blank" rel="noopener noreferrer">{ko ? '전체 크기로 열기' : 'Open full size'}<Arrow /></a>
+      <a data-gallery-source target="_blank" rel="noopener noreferrer">{copy[locale].achievements.link}<Arrow /></a>
+    </div>
+  </footer>
+</dialog>
+<script src="../scripts/achievement-gallery.ts"></script>

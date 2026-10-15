@@ -1,5 +1,6 @@
 ---
 import Arrow from '../components/Arrow.astro';
+import AchievementGallery from '../components/AchievementGallery.astro';
 import { copy, pageUrl, type Locale } from '../data/i18n';
 import { achievements, rating, team, type Achievement } from '../data/team';
 import '../styles/playroom.css';
@@ -10,6 +11,10 @@ const years = [...new Set(records.map(a => a.date.slice(0, 4)))];
 const month = (date: string) => new Intl.DateTimeFormat(locale === 'ko' ? 'ko-KR' : 'en-US', { month: 'short', timeZone: 'UTC' }).format(new Date(`${date}T00:00:00Z`));
 const suffix = (rank: number) => locale === 'ko' ? '위' : rank % 100 >= 11 && rank % 100 <= 13 ? 'th' : ({ 1: 'st', 2: 'nd', 3: 'rd' }[rank % 10] ?? 'th');
 const resultDescription = (record: Achievement) => [record.description?.[locale], record.qualifiedForFinals && t.qualifiedForFinals].filter(Boolean).join(' · ');
+const photoLabel = (record: Achievement) => {
+  const award = record.photos?.[0]?.kind === 'award';
+  return locale === 'ko' ? `${award ? '수상 사진' : '스코어보드'} · ${record.photos?.length}장` : `${award ? 'Award photo' : 'Scoreboard'} · ${record.photos?.length}`;
+};
 const timelineName = (record: Achievement) => record.timelineName?.[locale] ?? record.event
   .replace(/\s+\d{4}\b/g, '')
   .replace(/\s+(Finals?|Quals|Qualifier|Preliminary)$/, (_, round: string) =>
@@ -41,7 +46,7 @@ const timelineName = (record: Achievement) => record.timelineName?.[locale] ?? r
         </div>
         <ol class="room-track" id={`room-${year}`} data-room-track tabindex="0" aria-label={`${year} ${t.archive}`}>
           {entries.map((a, index) => <li class:list={['room-station', `room-station--${index % 3}`, { 'room-station--gold': a.rank === 1, 'room-station--silver': a.rank === 2, 'room-station--bronze': a.rank === 3 }]} id={`competition-${year}-${index}`} data-result data-year={year} data-rank={a.rank}>
-            <a class="station-link" href={a.url} target="_blank" rel="noopener noreferrer" aria-labelledby={`event-${year}-${index}`} aria-describedby={`result-${year}-${index}`}>
+            <a class="station-link" href={a.photos?.[0]?.src ?? a.url} data-gallery={a.photos?.length ? `gallery-${year}-${index}` : undefined} target="_blank" rel="noopener noreferrer" aria-labelledby={`event-${year}-${index}`} aria-describedby={`result-${year}-${index}`}>
               <div class="station-toys" aria-hidden="true">
                 <div class="rank-cube"><span class="cube-top"></span><span class="cube-side"></span><div class="cube-front">{a.rank !== null ? <><span class="cube-number">{a.rank}</span><span class="cube-suffix">{suffix(a.rank)}</span></> : <span class="cube-label">{locale === 'ko' ? '본선' : 'FINAL'}</span>}</div></div>
                 <div class="date-toy"><span class="date-month">{month(a.date)}</span><span class="date-day">{a.date.slice(-2)}</span></div>
@@ -50,10 +55,23 @@ const timelineName = (record: Achievement) => record.timelineName?.[locale] ?? r
               <div class="station-caption">
                 <h4 id={`event-${year}-${index}`}>{a.event}</h4>
                 {resultDescription(a) && <p class="station-description">{resultDescription(a)}</p>}
-                <div class="station-details"><span>{a.format}</span><Arrow /></div>
+                <div class="station-details"><span>{a.photos?.length ? photoLabel(a) : a.format}</span><Arrow /></div>
               </div>
-              <span id={`result-${year}-${index}`} class="visually-hidden">{a.placement[locale]} · <time datetime={a.date}>{a.date}</time> · {resultDescription(a) && `${resultDescription(a)} · `}{t.link}</span>
+              <span id={`result-${year}-${index}`} class="visually-hidden">{a.placement[locale]} · <time datetime={a.date}>{a.date}</time> · {resultDescription(a) && `${resultDescription(a)} · `}{a.photos?.length ? photoLabel(a) : t.link}</span>
             </a>
+            {a.photos?.length && <>
+              <template id={`gallery-${year}-${index}`} data-title={a.event} data-summary={`${a.date} · ${a.placement[locale]}${resultDescription(a) ? ` · ${resultDescription(a)}` : ''}`} data-source={a.url}>
+                {a.photos.map(photo => <figure data-gallery-slide hidden>
+                  <img data-src={photo.src} width={photo.width} height={photo.height} alt={photo.caption[locale]} decoding="async" />
+                  <figcaption>{photo.caption[locale]}{photo.credit && <a class="gallery-credit" href={photo.credit.url} target="_blank" rel="noopener noreferrer">{photo.credit.name[locale]}<Arrow /></a>}</figcaption>
+                </figure>)}
+              </template>
+              <noscript><div class="station-details">
+                {a.photos.slice(1).map((photo, photoIndex) => <a href={photo.src} target="_blank" rel="noopener noreferrer">{locale === 'ko' ? `스코어보드 ${photoIndex + 2}` : `Scoreboard ${photoIndex + 2}`}</a>)}
+                <a href={a.url} target="_blank" rel="noopener noreferrer">{t.link}</a>
+                {a.photos[0].credit && <a href={a.photos[0].credit.url} target="_blank" rel="noopener noreferrer">{a.photos[0].credit.name[locale]}</a>}
+              </div></noscript>
+            </>}
           </li>)}
         </ol>
       </div>
@@ -81,4 +99,5 @@ const timelineName = (record: Achievement) => record.timelineName?.[locale] ?? r
   <div class="playroom-rating container"><span>{locale === 'ko' ? `${rating.year} 세계 ${rating.world}위 · 한국 ${rating.country}위` : `${rating.year} · World #${rating.world} · South Korea #${rating.country}`}</span><span><time datetime={rating.checkedAt}>{rating.checkedAt.replaceAll('-', '.')}</time> {locale === 'ko' ? '기준' : 'snapshot'}</span></div>
 </section>
 <section class="inline-next container"><a class="text-link" href={pageUrl(locale, 'members')}>{t.nextLink}<Arrow /></a></section>
+<AchievementGallery locale={locale} />
 <script src="../scripts/playroom.ts"></script>

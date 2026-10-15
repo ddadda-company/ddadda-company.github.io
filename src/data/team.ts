@@ -1,4 +1,6 @@
-// This is the only file needed to add official team records and profiles.
+import { achievementImages, type AchievementImage } from './achievement-images';
+
+// Add official team records and profiles here; image metadata lives in achievement-images.ts.
 // Unconfirmed facts are intentionally left empty. See README.md for examples.
 export type Localized = { ko: string; en: string };
 export type Discipline = 'Web' | 'Pwn' | 'Reverse' | 'Crypto' | 'Forensics' | 'Misc';
@@ -13,6 +15,7 @@ export interface Achievement {
   qualifiedForFinals?: boolean; // Confirmed progression from this qualifier
   timelineName?: Localized; // Optional compact name for the date navigator
   timelineNote?: Localized;
+  photos?: AchievementImage[];
   url?: string; // Result source: scoreboard, organizer, or published report
 }
 
@@ -51,6 +54,7 @@ function result(date: string, event: string, rank: number, source: number | stri
 export const achievements: Achievement[] = [
   {
     ...result('2026-09-28', 'SCAN 2026 Final', 2, 'https://scan.sx/'),
+    photos: achievementImages.scanAward,
     description: { ko: '디지털자산 추적 대회 본선 · hello', en: 'Digital asset tracing finals · hello' },
   },
   result('2026-09-26', 'FAUST CTF 2026', 5, 3312, 'Attack & Defense'),
@@ -70,25 +74,30 @@ export const achievements: Achievement[] = [
   },
   {
     ...result('2026-08-07', 'DEF CON 34 CTF Finals', 7, 'https://www.dailysecu.com/news/articleView.html?idxno=207969', 'Attack & Defense'),
+    photos: achievementImages.defconFinals,
     description: { ko: "Jinddabi’s 연합팀으로 본선 참가", en: 'Finals as part of the Jinddabi’s coalition' },
   },
   {
     ...result('2026-07-23', 'CODEGATE 2026 Finals', 2, 'https://zdnet.co.kr/view/?no=20260724173734'),
+    photos: achievementImages.codegateFinals,
     description: { ko: '일반부 본선 · 따따', en: 'General division finals · dda_com' },
   },
   {
     ...result('2026-07-09', 'HackTheon Sejong 2026 Finals', 1, 'https://www.yna.co.kr/view/AKR20260710119900063'),
+    photos: achievementImages.hacktheonAdvanced,
     timelineName: { ko: 'HackTheon 고급부', en: 'HackTheon Advanced' },
     description: { ko: '고급부문 대상 · 정현수의전역을축하합니다', en: 'Advanced division winner · 정현수의전역을축하합니다' },
   },
   {
     ...result('2026-07-09', 'HackTheon Sejong 2026 Finals', 2, 'https://hacktheon.org/y2026/p2/c2/'),
+    photos: achievementImages.hacktheonBeginner,
     timelineName: { ko: 'HackTheon 초급부', en: 'HackTheon Beginner' },
     description: { ko: '초급부문 본선 2위', en: 'Beginner division runner-up' },
   },
-  result('2026-06-14', 'SCTF 2026', 1, 3314),
+  { ...result('2026-06-14', 'SCTF 2026', 1, 3314), photos: achievementImages.sctf },
   {
     ...result('2026-06-06', 'SAS CTF 2026 Quals', 5, 3109),
+    photos: achievementImages.sasQuals,
     qualifiedForFinals: true,
   },
   {
@@ -99,6 +108,7 @@ export const achievements: Achievement[] = [
   result('2026-05-10', 'Midnight Sun CTF 2026 Quals', 11, 2773),
   {
     ...result('2026-05-10', 'Azure Assassin Alliance CTF 2026', 1, 3266),
+    photos: achievementImages.actf,
     timelineName: { ko: 'ACTF', en: 'ACTF' },
     timelineNote: { ko: 'XCTF 본선 시드', en: 'XCTF Finals seed' },
     description: { ko: 'ACTF 우승 · 제10회 XCTF 본선 시드 획득', en: 'ACTF winner · Secured a seed for the 10th XCTF Finals' },
@@ -106,26 +116,31 @@ export const achievements: Achievement[] = [
   result('2026-04-10', 'UMassCTF 2026', 8, 2937),
   {
     ...result('2026-03-28', 'Codegate CTF 2026 Preliminary', 12, 3131),
+    photos: achievementImages.codegateQuals,
     qualifiedForFinals: true,
   },
   {
     ...result('2026-03-21', 'ENKI RedTeam CTF 2026', 2, 'https://v.daum.net/v/20260324211343216'),
+    photos: achievementImages.enki,
     timelineNote: { ko: '8l4nk', en: '8l4nk' },
     description: { ko: '개인전 · 8l4nk', en: 'Individual competition · 8l4nk' },
   },
   {
     ...result('2026-03-21', 'ENKI RedTeam CTF 2026', 4, 'https://v.daum.net/v/20260324211343216'),
+    photos: achievementImages.enki,
     timelineNote: { ko: 'nobody09', en: 'nobody09' },
     description: { ko: '개인전 · nobody09', en: 'Individual competition · nobody09' },
   },
-  result('2026-03-14', 'SUCTF 2026', 2, 3161),
+  { ...result('2026-03-14', 'SUCTF 2026', 2, 3161), photos: achievementImages.suctf },
   {
     ...result('2026-03-07', 'DiceCTF 2026 Quals', 5, 3110),
+    photos: achievementImages.diceQuals,
     qualifiedForFinals: true,
   },
-  result('2026-02-20', 'BITSCTF 2026', 1, 3122),
+  { ...result('2026-02-20', 'BITSCTF 2026', 1, 3122), photos: achievementImages.bitsctf },
   {
     ...result('2026-02-08', 'HCTF 2026', 2, 'https://forge.hspace.io/competitions/69770d9ac6511438ead39267'),
+    photos: achievementImages.hctf,
     description: { ko: '제5회 한양대학교 해킹방어대회', en: '5th Hanyang University CTF' },
   },
 ];
