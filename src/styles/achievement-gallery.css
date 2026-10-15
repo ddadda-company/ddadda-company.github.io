@@ -8,10 +8,14 @@ html.gallery-open { overflow: hidden; }
 .gallery-close { flex: 0 0 44px; width: 44px; height: 44px; border: 1px solid var(--color-line-strong); border-radius: 50%; background: var(--color-blue-light); color: var(--color-ink); font-size: 2rem; line-height: 1; }
 .gallery-slides { min-width: 0; }
 .gallery-slides figure { margin: 0; }
-.gallery-slides img { width: 100%; height: min(62dvh, 720px); object-fit: contain; border-radius: 4px; background: var(--color-ink); touch-action: pan-y pinch-zoom; user-select: none; -webkit-user-drag: none; }
-.gallery-slides.is-swiping img { cursor: grabbing; }
+.gallery-image { --image-height: min(62dvh, 720px); display: grid; place-items: center; height: var(--image-height); border-radius: 4px; overflow: hidden; background: var(--color-ink); touch-action: pan-y pinch-zoom; }
+.gallery-image-window { position: relative; width: 100%; height: 100%; overflow: hidden; }
+.gallery-slides img { width: 100%; height: 100%; object-fit: contain; touch-action: pan-y pinch-zoom; user-select: none; -webkit-user-drag: none; }
+.gallery-image--focused .gallery-image-window { width: min(100%, calc(var(--image-height) * var(--focus-ratio))); height: auto; aspect-ratio: var(--focus-ratio); }
+.gallery-image--focused img { position: absolute; left: var(--focus-left); top: var(--focus-top); width: var(--focus-width); height: var(--focus-height); max-width: none; object-fit: fill; }
+.gallery-slides.is-swiping .gallery-image, .gallery-slides.is-swiping img { cursor: grabbing; }
 @media (hover: hover) and (pointer: fine) {
-  .gallery-slides:not(.is-swiping) img { cursor: grab; }
+  .gallery-slides:not(.is-swiping) .gallery-image, .gallery-slides:not(.is-swiping) img { cursor: grab; }
 }
 .gallery-slides figcaption { margin-top: 12px; font-size: .9375rem; line-height: 1.5; overflow-wrap: anywhere; }
 .gallery-credit { display: flex; align-items: center; gap: 6px; width: fit-content; min-height: 44px; text-decoration: underline; text-underline-offset: 4px; }
@@ -31,7 +35,7 @@ html.gallery-open { overflow: hidden; }
   .gallery-dialog[open] { gap: 16px; }
   .gallery-header { gap: 12px; }
   .gallery-header p, .gallery-slides figcaption, .gallery-links a { font-size: .875rem; }
-  .gallery-slides img { height: 48dvh; }
+  .gallery-image { --image-height: 48dvh; }
   .gallery-footer { justify-content: center; }
   .gallery-links { justify-content: center; gap: 4px 16px; }
 }

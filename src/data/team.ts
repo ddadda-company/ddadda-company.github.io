@@ -121,13 +121,13 @@ export const achievements: Achievement[] = [
   },
   {
     ...result('2026-03-21', 'ENKI RedTeam CTF 2026', 2, 'https://v.daum.net/v/20260324211343216'),
-    photos: achievementImages.enki,
+    photos: achievementImages.enkiSecond,
     timelineNote: { ko: '8l4nk', en: '8l4nk' },
     description: { ko: '개인전 · 8l4nk', en: 'Individual competition · 8l4nk' },
   },
   {
     ...result('2026-03-21', 'ENKI RedTeam CTF 2026', 4, 'https://v.daum.net/v/20260324211343216'),
-    photos: achievementImages.enki,
+    photos: achievementImages.enkiFourth,
     timelineNote: { ko: 'nobody09', en: 'nobody09' },
     description: { ko: '개인전 · nobody09', en: 'Individual competition · nobody09' },
   },

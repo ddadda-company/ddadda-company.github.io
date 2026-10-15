@@ -1,6 +1,8 @@
 ---
 import Arrow from '../components/Arrow.astro';
 import AchievementGallery from '../components/AchievementGallery.astro';
+import GalleryIcon from '../components/GalleryIcon.astro';
+import type { AchievementImage } from '../data/achievement-images';
 import { copy, pageUrl, type Locale } from '../data/i18n';
 import { achievements, rating, team, type Achievement } from '../data/team';
 import '../styles/playroom.css';
@@ -11,10 +13,10 @@ const years = [...new Set(records.map(a => a.date.slice(0, 4)))];
 const month = (date: string) => new Intl.DateTimeFormat(locale === 'ko' ? 'ko-KR' : 'en-US', { month: 'short', timeZone: 'UTC' }).format(new Date(`${date}T00:00:00Z`));
 const suffix = (rank: number) => locale === 'ko' ? '위' : rank % 100 >= 11 && rank % 100 <= 13 ? 'th' : ({ 1: 'st', 2: 'nd', 3: 'rd' }[rank % 10] ?? 'th');
 const resultDescription = (record: Achievement) => [record.description?.[locale], record.qualifiedForFinals && t.qualifiedForFinals].filter(Boolean).join(' · ');
-const photoLabel = (record: Achievement) => {
-  const award = record.photos?.[0]?.kind === 'award';
-  return locale === 'ko' ? `${award ? '수상 사진' : '스코어보드'} · ${record.photos?.length}장` : `${award ? 'Award photo' : 'Scoreboard'} · ${record.photos?.length}`;
-};
+const photoLabel = locale === 'ko' ? '사진 보기' : 'View photos';
+const focusStyle = ({ focus, width, height }: AchievementImage) => focus
+  ? `--focus-ratio:${focus.width / focus.height};--focus-left:${-100 * focus.left / focus.width}%;--focus-top:${-100 * focus.top / focus.height}%;--focus-width:${100 * width / focus.width}%;--focus-height:${100 * height / focus.height}%;`
+  : undefined;
 const timelineName = (record: Achievement) => record.timelineName?.[locale] ?? record.event
   .replace(/\s+\d{4}\b/g, '')
   .replace(/\s+(Finals?|Quals|Qualifier|Preliminary)$/, (_, round: string) =>
@@ -55,20 +57,24 @@ const timelineName = (record: Achievement) => record.timelineName?.[locale] ?? r
               <div class="station-caption">
                 <h4 id={`event-${year}-${index}`}>{a.event}</h4>
                 {resultDescription(a) && <p class="station-description">{resultDescription(a)}</p>}
-                <div class="station-details"><span>{a.photos?.length ? photoLabel(a) : a.format}</span><Arrow /></div>
               </div>
-              <span id={`result-${year}-${index}`} class="visually-hidden">{a.placement[locale]} · <time datetime={a.date}>{a.date}</time> · {resultDescription(a) && `${resultDescription(a)} · `}{a.photos?.length ? photoLabel(a) : t.link}</span>
+              <span id={`result-${year}-${index}`} class="visually-hidden">{a.placement[locale]} · <time datetime={a.date}>{a.date}</time> · {resultDescription(a) && `${resultDescription(a)} · `}{a.photos?.length ? photoLabel : t.link}</span>
             </a>
+            <div class="station-actions">
+              {a.photos?.length && <a class="station-action" data-gallery={`gallery-${year}-${index}`} href={a.photos[0].src} target="_blank" rel="noopener noreferrer" aria-label={`${a.event} ${a.placement[locale]} · ${photoLabel}`} title={photoLabel}><GalleryIcon /></a>}
+              {a.url && <a class="station-action" href={a.url} target="_blank" rel="noopener noreferrer" aria-label={`${a.event} ${a.placement[locale]} · ${t.link}`} title={t.link}><Arrow /></a>}
+            </div>
             {a.photos?.length && <>
               <template id={`gallery-${year}-${index}`} data-title={a.event} data-summary={`${a.date} · ${a.placement[locale]}${resultDescription(a) ? ` · ${resultDescription(a)}` : ''}`} data-source={a.url}>
                 {a.photos.map(photo => <figure data-gallery-slide hidden>
-                  <img data-src={photo.src} width={photo.width} height={photo.height} alt={photo.caption[locale]} decoding="async" />
+                  <div class:list={['gallery-image', { 'gallery-image--focused': !!photo.focus }]} style={focusStyle(photo)}>
+                    <div class="gallery-image-window"><img data-src={photo.src} width={photo.width} height={photo.height} alt={photo.caption[locale]} decoding="async" /></div>
+                  </div>
                   <figcaption>{photo.caption[locale]}{photo.credit && <a class="gallery-credit" href={photo.credit.url} target="_blank" rel="noopener noreferrer">{photo.credit.name[locale]}<Arrow /></a>}</figcaption>
                 </figure>)}
               </template>
               <noscript><div class="station-details">
                 {a.photos.slice(1).map((photo, photoIndex) => <a href={photo.src} target="_blank" rel="noopener noreferrer">{locale === 'ko' ? `스코어보드 ${photoIndex + 2}` : `Scoreboard ${photoIndex + 2}`}</a>)}
-                <a href={a.url} target="_blank" rel="noopener noreferrer">{t.link}</a>
                 {a.photos[0].credit && <a href={a.photos[0].credit.url} target="_blank" rel="noopener noreferrer">{a.photos[0].credit.name[locale]}</a>}
               </div></noscript>
             </>}

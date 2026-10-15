@@ -29,7 +29,7 @@ body.identity-v3 .playroom-intro { display: flex; align-items: center; justify-c
 .room-station--gold { --cube-face: var(--color-gold); --cube-light: var(--color-gold-light); --cube-edge: var(--color-toy-wood-edge); --cube-ink: var(--color-gold-ink); }
 .room-station--silver { --cube-face: var(--color-silver-medal); --cube-light: var(--color-silver-light); --cube-edge: var(--color-silver); --cube-ink: var(--color-silver-ink); }
 .room-station--bronze { --cube-face: var(--color-bronze); --cube-light: var(--color-bronze-light); --cube-edge: var(--color-toy-wood-edge); --cube-ink: var(--color-bronze-ink); }
-.station-link { display: block; position: relative; padding: 8px 12px 16px; border-radius: 8px; }
+.station-link { display: block; position: relative; padding: 8px 12px 4px; border-radius: 8px; }
 .station-toys { position: relative; height: 260px; isolation: isolate; transform-origin: center bottom; }
 .playroom-ready .station-toys { transform: scale(var(--toy-scale, 1)); }
 .room-track.is-dragging, .room-track.is-settling { scroll-snap-type: none; }
@@ -53,11 +53,15 @@ body.identity-v3 .playroom-intro { display: flex; align-items: center; justify-c
 .date-month { display: block; background: var(--color-rose); padding: 10px 0 6px; border-radius: 6px 6px 0 0; font-size: 1rem; line-height: 1.4; font-weight: 650; }
 .date-day { display: block; font-family: var(--font-wordmark); font-size: 3.25rem; font-weight: 800; line-height: 1.3; padding-top: 5px; }
 .station-shadow { position: absolute; z-index: -1; width: 280px; height: 30px; border-radius: 50%; background: var(--color-shadow); bottom: 12px; left: 40px; filter: blur(10px); }
-.station-caption { padding-top: var(--space-lg); min-height: 124px; text-align: center; }
+.station-caption { padding-top: var(--space-lg); min-height: 80px; text-align: center; }
 .station-caption h4 { font-family: var(--font-body); font-size: 1.35rem; font-weight: 750; line-height: 1.35; letter-spacing: -.025em; margin: 0; overflow-wrap: anywhere; text-wrap: balance; color: var(--color-ink); }
 .station-description { margin: var(--space-sm) 0 0; font-size: .9375rem; line-height: 1.6; color: var(--color-ink-soft); word-break: keep-all; overflow-wrap: anywhere; text-wrap: balance; }
 .station-details { display: flex; align-items: center; justify-content: center; gap: var(--space-md); min-height: 44px; margin-top: var(--space-sm); font-size: .9375rem; color: var(--color-ink-soft); }
 .station-details .arrow { width: 18px; height: 18px; }
+.station-actions { display: flex; align-items: center; justify-content: center; gap: 8px; padding-bottom: 8px; }
+.station-action { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; color: var(--color-ink-soft); }
+.station-action:hover { color: var(--color-accent); background: var(--color-blue-light); }
+.station-action svg { width: 22px; height: 22px; }
 .station-link:hover .station-details { color: var(--color-accent); }
 .station-link:active { transform: translateY(2px); }
 .date-rail { padding-top: var(--space-2xl); padding-bottom: var(--space-xl); }
@@ -123,7 +127,7 @@ body.identity-v3 .playroom-intro { display: flex; align-items: center; justify-c
   .date-toy::before { left: 16px; }
   .date-toy::after { right: 16px; }
   .station-shadow { width: 230px; left: 20px; }
-  .station-caption { padding-top: var(--space-md); min-height: 112px; }
+  .station-caption { padding-top: var(--space-md); min-height: 68px; }
   .station-caption h4 { font-size: 1.2rem; }
   .station-details { font-size: .875rem; }
   .date-rail ol { --date-columns: 2; padding-inline: 16px; }

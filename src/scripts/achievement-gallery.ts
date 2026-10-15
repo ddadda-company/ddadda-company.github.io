@@ -10,7 +10,8 @@ function setupAchievementGallery() {
   const source = dialog.querySelector<HTMLAnchorElement>('[data-gallery-source]')!;
   const error = dialog.querySelector<HTMLElement>('[data-gallery-error]')!;
   const steps = [...dialog.querySelectorAll<HTMLButtonElement>('[data-gallery-step]')];
-  const galleries = [...document.querySelectorAll<HTMLAnchorElement>('a[data-gallery]')].flatMap(link => {
+  const triggers = [...document.querySelectorAll<HTMLAnchorElement>('a[data-gallery]')];
+  const galleries = triggers.filter(link => link.classList.contains('station-link')).flatMap(link => {
     const template = document.getElementById(link.dataset.gallery!);
     return template instanceof HTMLTemplateElement ? [{ link, template }] : [];
   });
@@ -46,7 +47,9 @@ function setupAchievementGallery() {
     steps.forEach(button => { button.hidden = photos.length < 2; });
   };
 
-  galleries.forEach(({ link }) => {
+  triggers.forEach(link => {
+    const template = document.getElementById(link.dataset.gallery!);
+    if (!(template instanceof HTMLTemplateElement)) return;
     link.setAttribute('aria-haspopup', 'dialog');
     link.setAttribute('aria-controls', dialog.id);
     link.setAttribute('role', 'button');
@@ -60,7 +63,7 @@ function setupAchievementGallery() {
       // Follow the visible competition order, including every photo of each block.
       photos = galleries.filter(gallery => !gallery.link.closest('[hidden]')).flatMap(gallery =>
         [...gallery.template.content.querySelectorAll<HTMLElement>('[data-gallery-slide]')].map(slide => ({ ...gallery, slide })));
-      const start = photos.findIndex(photo => photo.link === link);
+      const start = photos.findIndex(photo => photo.template === template);
       if (start < 0) return;
       event.preventDefault();
       opener = link;
@@ -88,7 +91,7 @@ function setupAchievementGallery() {
   container.addEventListener('pointerdown', event => {
     // A second finger cancels navigation so native pinch zoom remains available.
     if (!event.isPrimary) { cancelGesture(); return; }
-    if (event.button !== 0 || photos.length < 2 || !(event.target instanceof HTMLImageElement)) return;
+    if (event.button !== 0 || photos.length < 2 || !(event.target instanceof Element) || !event.target.closest('.gallery-image')) return;
     gesture = { pointer: event.pointerId, x: event.clientX, y: event.clientY, dragging: false };
   });
   container.addEventListener('pointermove', event => {
