@@ -37,7 +37,7 @@ KO / EN은 현재 페이지를 유지하며 언어를 전환합니다. 선택한
 `astro.config.mjs`의 `site`를 기준으로 검색 설정을 빌드합니다. 도메인을 바꾸면 canonical, 언어별 대체 주소, JSON-LD, 사이트맵과 robots.txt가 함께 바뀝니다.
 
 - 한영 8개 페이지에 고유한 제목·설명, 절대 주소 canonical, 상호 연결된 `ko`·`en`·`x-default` hreflang, Open Graph·Twitter 카드가 들어갑니다.
-- `/sitemap.xml`은 실제 페이지 목록에서 생성하며 `/robots.txt`에 연결됩니다. 404는 사이트맵에서 제외하고 `noindex, follow`를 지정합니다. 404에 홈페이지 canonical이나 구조화 데이터를 붙이지 않습니다.
+- `/sitemap.xml`과 대체 제출용 `/sitemap.txt`는 같은 실제 페이지 목록에서 생성하며 `/robots.txt`에 연결됩니다. XML에는 언어별 대체 주소도 포함합니다. 404는 사이트맵에서 제외하고 `noindex, follow`를 지정합니다. 404에 홈페이지 canonical이나 구조화 데이터를 붙이지 않습니다.
 - `src/lib/seo.ts`에서 `Organization`, `WebSite`, 페이지 유형별 JSON-LD와 멤버 `Person`·`ItemList`를 생성합니다. 팀의 한영 이름, 공식 GitHub·CTFtime, 이메일과 실제 공개 프로필만 사용합니다. 미확인 수상·전문 분야·주소는 생성하지 않습니다.
 - 홈의 팀 설명과 성과의 출처·기준일은 HTML 본문에서 읽을 수 있습니다. CTFtime 순위는 `rating.checkedAt` 당시의 기록이며 실시간 순위로 표시하지 않습니다. 숨은 퍼즐 코드·플래그는 `data-nosnippet`으로 Google 검색 설명문에서 제외합니다.
 - `User-agent: *` 규칙은 검색·AI 검색 크롤러를 포함해 공개 페이지 수집을 허용합니다. 이는 robots.txt 수준의 설정이며 각 서비스의 수집·인용을 보장하지 않습니다.
@@ -52,7 +52,7 @@ npm run build
 npm run check:seo
 ```
 
-`check:seo`는 배포할 HTML을 읽어 페이지 누락·중복, 대표 주소, 언어 연결의 상호성, 제목·설명, 공유 이미지 파일, JSON-LD와 실제 멤버 앵커, robots.txt, 404 검색 제외를 검사합니다. GitHub Pages 배포 작업에서도 실행합니다.
+`check:seo`는 배포할 HTML을 읽어 페이지 누락·중복, 대표 주소, 언어 연결의 상호성, 제목·설명, 공유 이미지 파일, JSON-LD와 실제 멤버 앵커, XML·텍스트 사이트맵의 URL 일치, robots.txt, 404 검색 제외를 검사합니다. GitHub Pages 배포 작업에서도 실행합니다.
 
 ### 배포 후 검색 서비스 등록
 
@@ -63,6 +63,8 @@ npm run check:seo
 Google Search Console은 **URL 접두어** 속성으로 등록하세요. HTML 태그 인증은 DNS 인증이 필요한 도메인 속성에는 사용할 수 없습니다. [Google 소유권 확인 안내](https://support.google.com/webmasters/answer/9008080?hl=ko)
 
 다시 빌드·배포한 다음 해당 서비스에서 소유권 확인을 완료하고 `https://ddadda-company.github.io/sitemap.xml`을 제출하세요. 검색 서비스 계정 등록과 사이트맵 제출은 코드 배포만으로 자동 완료되지 않습니다. 이후 URL 검사와 검색 노출 보고서에서 수집·색인 여부를 확인합니다.
+
+사이트맵 보고서에 `읽을 수 없음`이 표시되면 제출 접수와 실제 수집 성공을 구분하세요. [Google의 점검 절차](https://support.google.com/webmasters/answer/7451001?hl=ko)에 따라 정확한 사이트맵 주소의 실시간 검사에서 수집 허용·가져오기 성공과 받은 원문을 확인합니다. XML이 정상 응답해도 해당 제출이 처리되지 않으면 같은 URL 목록을 담은 `https://ddadda-company.github.io/sitemap.txt`를 대체 주소로 제출할 수 있습니다. [텍스트 사이트맵도 Google 공식 지원 형식](https://developers.google.com/search/docs/crawling-indexing/sitemaps/build-sitemap#text)이며, 최종 성공 여부는 보고서의 상태와 발견된 페이지 수로 확인합니다.
 
 ### IndexNow 수집 알림
 

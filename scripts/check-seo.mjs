@@ -25,6 +25,9 @@ const entries = [...sitemap.matchAll(/<url>([\s\S]*?)<\/url>/g)].map(([, entry])
 assert(entries.length > 0, 'Sitemap must contain public pages');
 const urls = new Set(entries.map(({ url }) => url.href));
 assert.equal(urls.size, entries.length, 'Duplicate sitemap URL');
+const textSitemap = await read('sitemap.txt');
+assert(!textSitemap.startsWith('\uFEFF'), 'Text sitemap must not contain a byte order mark');
+assert.deepEqual(textSitemap.trimEnd().split('\n'), entries.map(({ url }) => url.href), 'Text/XML sitemap URL mismatch');
 const origin = entries[0].url.origin;
 assert.match(origin, /^https:\/\//);
 assert(!/localhost|127\.0\.0\.1/.test(origin), 'Sitemap uses a development origin');
@@ -94,6 +97,7 @@ for (const [url, alternates] of alternatesByUrl) {
 const robots = await read('robots.txt');
 assert.match(robots, /User-agent: \*\r?\nAllow: \/(?:\r?\n|$)/);
 assert(robots.includes(`Sitemap: ${origin}/sitemap.xml`));
+assert(robots.includes(`Sitemap: ${origin}/sitemap.txt`));
 assert(!/^Disallow:\s*\/\s*$/m.test(robots), 'Public website is blocked');
 const errorHead = (await read('404.html')).split('</head>')[0];
 assert(tags(errorHead, 'meta').some(tag => tag.name === 'robots' && tag.content.includes('noindex')));
