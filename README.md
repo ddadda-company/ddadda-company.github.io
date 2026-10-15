@@ -56,6 +56,8 @@ npm run check:seo
 
 ### 배포 후 검색 서비스 등록
 
+2026-10-15 Google Search Console과 Bing Webmaster Tools의 소유권 인증을 완료하고 `/sitemap.xml`을 제출했습니다. 인증 태그는 GitHub Actions 저장소 변수에서 빌드에 전달합니다. 네이버 관리 도구 등록은 사용자 요청으로 제외했습니다.
+
 소유자 계정에서 Google Search Console, 네이버 서치어드바이저, Bing Webmaster Tools에 `https://ddadda-company.github.io/`를 등록합니다. HTML 태그 인증을 선택했다면 발급된 태그의 **content 값만** 각각 `GOOGLE_SITE_VERIFICATION`, `NAVER_SITE_VERIFICATION`, `BING_SITE_VERIFICATION`으로 설정하세요. 로컬 빌드는 `.env.example`을 복사한 `.env`, GitHub Pages는 저장소의 Settings → Secrets and variables → Actions → Variables를 사용합니다. 인증 값은 HTML에 공개되는 토큰입니다. 값이 비어 있으면 태그를 출력하지 않습니다.
 
 Google Search Console은 **URL 접두어** 속성으로 등록하세요. HTML 태그 인증은 DNS 인증이 필요한 도메인 속성에는 사용할 수 없습니다. [Google 소유권 확인 안내](https://support.google.com/webmasters/answer/9008080?hl=ko)
