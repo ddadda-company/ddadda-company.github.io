@@ -11,7 +11,7 @@ const links = [
   { name: locale === 'ko' ? '이메일' : 'Email', href: member.email ? `mailto:${member.email}` : undefined, icon: 'email' },
 ];
 ---
-<article class:list={['member-profile', 'member-card', 'member-gallery-profile', `member-card--${index % 4}`]} id={compact ? undefined : profileAnchor} data-member data-disciplines={member.disciplines.join(',')} aria-labelledby={`${profileAnchor}-name`}>
+<article class:list={['member-profile', 'member-card', 'member-gallery-profile', `member-card--${index % 7}`]} id={compact ? undefined : profileAnchor} data-member data-disciplines={member.disciplines.join(',')} aria-labelledby={`${profileAnchor}-name`}>
   <div class="member-portrait-stage" data-tilt>
     <div class:list={['member-photo', { 'member-photo--empty': !member.photo }]}>
       {member.photo ? <img src={member.photo} alt="" width="600" height="600" loading="lazy" /> : <>

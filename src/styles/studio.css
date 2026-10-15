@@ -724,9 +724,17 @@
 .identity-v3 .members-intro { padding-bottom: var(--space-2xl); }
 .identity-v3 .members-gallery { padding-top: var(--space-sm); }
 .identity-v3 .member-grid.member-gallery-grid {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--space-2xl) clamp(20px, 2.8vw, 44px);
-  align-items: start;
+  --member-columns: 4;
+  --member-column-gap: clamp(20px, 2.8vw, 44px);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2xl) var(--member-column-gap);
+  align-items: flex-start;
+}
+/* Keep portrait sizes equal and center incomplete rows, including the 4 + 3 roster. */
+.member-gallery-grid > .member-gallery-profile {
+  flex: 0 0 calc((100% - (var(--member-columns) - 1) * var(--member-column-gap)) / var(--member-columns));
 }
 .member-gallery-profile {
   --portrait-ground: var(--color-serenity-mist);
@@ -749,8 +757,11 @@
 .identity-v3 .member-profile.member-gallery-profile + .member-profile { border: 0; }
 .identity-v3 .member-gallery-profile:nth-child(even) { margin-top: var(--space-4xl); }
 .member-gallery-profile.member-card--1 { --portrait-ground: var(--color-rose); --portrait-detail: var(--color-rose-deep); --portrait-lean: 2deg; }
-.member-gallery-profile.member-card--2 { --portrait-ground: var(--color-lilac); --portrait-detail: var(--color-serenity); --portrait-lean: -1.5deg; }
-.member-gallery-profile.member-card--3 { --portrait-ground: var(--color-blue-mid); --portrait-detail: var(--color-accent); --portrait-lean: 2deg; }
+.member-gallery-profile.member-card--2 { --portrait-ground: var(--color-lilac); --portrait-detail: color-mix(in oklab, var(--color-lilac) 78%, var(--color-ink)); --portrait-lean: -1.5deg; }
+.member-gallery-profile.member-card--3 { --portrait-ground: var(--color-mint); --portrait-detail: color-mix(in oklab, var(--color-mint) 78%, var(--color-ink)); --portrait-lean: 2deg; }
+.member-gallery-profile.member-card--4 { --portrait-ground: var(--color-butter); --portrait-detail: color-mix(in oklab, var(--color-butter) 78%, var(--color-ink)); }
+.member-gallery-profile.member-card--5 { --portrait-ground: var(--color-peach); --portrait-detail: color-mix(in oklab, var(--color-peach) 78%, var(--color-ink)); --portrait-lean: 2deg; }
+.member-gallery-profile.member-card--6 { --portrait-ground: var(--color-teal); --portrait-detail: color-mix(in oklab, var(--color-teal) 78%, var(--color-ink)); --portrait-lean: -1.5deg; }
 .member-portrait-stage { position: relative; perspective: 1000px; isolation: isolate; flex: none; width: calc(100% - 8px); aspect-ratio: 4 / 5; margin: 0 4px var(--space-xl); }
 .member-portrait-stage::before {
   content: '';
@@ -845,14 +856,14 @@
   .member-gallery-profile:hover .member-photo > img { transform: scale(1.035); }
 }
 @media (max-width: 74.99rem) {
-  .identity-v3 .member-grid.member-gallery-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3xl) var(--space-2xl); max-width: 900px; margin-inline: auto; }
+  .identity-v3 .member-grid.member-gallery-grid { --member-columns: 2; --member-column-gap: var(--space-2xl); row-gap: var(--space-3xl); max-width: 900px; margin-inline: auto; }
   .identity-v3 .member-gallery-profile:nth-child(even) { margin-top: var(--space-3xl); }
   .member-monogram > span { font-size: clamp(10rem, 28vw, 18rem); }
   .identity-v3 .member-gallery-profile .member-info h3 { font-size: 1.65rem; }
 }
 @media (max-width: 39.99rem) {
   .identity-v3 .members-intro { padding-bottom: var(--space-xl); }
-  .identity-v3 .member-grid.member-gallery-grid { grid-template-columns: minmax(0, 1fr); gap: var(--space-3xl); max-width: 420px; }
+  .identity-v3 .member-grid.member-gallery-grid { --member-columns: 1; max-width: 420px; }
   .identity-v3 .member-gallery-profile:nth-child(even) { margin-top: 0; }
   .member-portrait-stage { width: calc(100% - 2 * var(--space-sm)); aspect-ratio: 1; margin: 0 var(--space-sm) var(--space-lg); }
   .member-gallery-profile .member-photo { aspect-ratio: 1; }

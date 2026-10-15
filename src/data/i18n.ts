@@ -24,7 +24,7 @@ export const copy = {
     language: '언어 선택', top: '맨 위로',
     imageAlt: '따따 dda_com CTF 팀 공식 이미지',
     home: {
-      greeting: '한국 기반 CTF 팀',
+      greeting: 'a.k.a 이성민남친구함',
       lead: '',
       recordsLink: '대회 성과',
     },
@@ -69,7 +69,7 @@ export const copy = {
     language: 'Select language', top: 'Back to top',
     imageAlt: 'Official dda_com CTF team illustration',
     home: {
-      greeting: 'A CTF team based in South Korea',
+      greeting: 'a.k.a 이성민남친구함',
       lead: '',
       recordsLink: 'Our results',
     },
