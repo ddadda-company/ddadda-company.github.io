@@ -10,6 +10,7 @@ export interface Achievement {
   placement: Localized;
   format: 'Jeopardy' | 'Attack & Defense' | 'Hack quest' | 'Other';
   description?: Localized;
+  qualifiedForFinals?: boolean; // Confirmed progression from this qualifier
   timelineName?: Localized; // Optional compact name for the date navigator
   timelineNote?: Localized;
   url?: string; // Result source: scoreboard, organizer, or published report
@@ -55,6 +56,7 @@ export const achievements: Achievement[] = [
   result('2026-09-26', 'FAUST CTF 2026', 5, 3312, 'Attack & Defense'),
   {
     ...result('2026-09-05', 'Black Hat MEA CTF 2026 Qualifier', 1, 'https://blackhatmea.com/competition/capture-the-flag'),
+    qualifiedForFinals: true,
     description: { ko: '온라인 예선 1위', en: 'Online qualifier winner' },
   },
   {
@@ -80,10 +82,14 @@ export const achievements: Achievement[] = [
     description: { ko: '초급부문 본선 2위', en: 'Beginner division runner-up' },
   },
   result('2026-06-14', 'SCTF 2026', 1, 3314),
-  result('2026-06-06', 'SAS CTF 2026 Quals', 5, 3109),
+  {
+    ...result('2026-06-06', 'SAS CTF 2026 Quals', 5, 3109),
+    qualifiedForFinals: true,
+  },
   {
     ...result('2026-05-22', 'DEF CON 34 CTF Qualifier', 6, 3205),
-    description: { ko: 'Jinddabi’s 연합팀으로 참가 · 본선 진출', en: 'As part of the Jinddabi’s coalition · Qualified for finals' },
+    qualifiedForFinals: true,
+    description: { ko: 'Jinddabi’s 연합팀으로 참가', en: 'As part of the Jinddabi’s coalition' },
   },
   result('2026-05-10', 'Midnight Sun CTF 2026 Quals', 11, 2773),
   {
@@ -93,7 +99,10 @@ export const achievements: Achievement[] = [
     description: { ko: 'ACTF 우승 · 제10회 XCTF 본선 시드 획득', en: 'ACTF winner · Secured a seed for the 10th XCTF Finals' },
   },
   result('2026-04-10', 'UMassCTF 2026', 8, 2937),
-  result('2026-03-28', 'Codegate CTF 2026 Preliminary', 12, 3131),
+  {
+    ...result('2026-03-28', 'Codegate CTF 2026 Preliminary', 12, 3131),
+    qualifiedForFinals: true,
+  },
   {
     ...result('2026-03-21', 'ENKI RedTeam CTF 2026', 2, 'https://v.daum.net/v/20260324211343216'),
     timelineNote: { ko: '8l4nk', en: '8l4nk' },
@@ -105,7 +114,10 @@ export const achievements: Achievement[] = [
     description: { ko: '개인전 · nobody09', en: 'Individual competition · nobody09' },
   },
   result('2026-03-14', 'SUCTF 2026', 2, 3161),
-  result('2026-03-07', 'DiceCTF 2026 Quals', 5, 3110),
+  {
+    ...result('2026-03-07', 'DiceCTF 2026 Quals', 5, 3110),
+    qualifiedForFinals: true,
+  },
   result('2026-02-20', 'BITSCTF 2026', 1, 3122),
   {
     ...result('2026-02-08', 'HCTF 2026', 2, 'https://forge.hspace.io/competitions/69770d9ac6511438ead39267'),

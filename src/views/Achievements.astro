@@ -9,6 +9,7 @@ const records = [...achievements].sort((a, b) => a.date.localeCompare(b.date));
 const years = [...new Set(records.map(a => a.date.slice(0, 4)))];
 const month = (date: string) => new Intl.DateTimeFormat(locale === 'ko' ? 'ko-KR' : 'en-US', { month: 'short', timeZone: 'UTC' }).format(new Date(`${date}T00:00:00Z`));
 const suffix = (rank: number) => locale === 'ko' ? '위' : rank % 100 >= 11 && rank % 100 <= 13 ? 'th' : ({ 1: 'st', 2: 'nd', 3: 'rd' }[rank % 10] ?? 'th');
+const resultDescription = (record: Achievement) => [record.description?.[locale], record.qualifiedForFinals && t.qualifiedForFinals].filter(Boolean).join(' · ');
 const timelineName = (record: Achievement) => record.timelineName?.[locale] ?? record.event
   .replace(/\s+\d{4}\b/g, '')
   .replace(/\s+(Finals?|Quals|Qualifier|Preliminary)$/, (_, round: string) =>
@@ -48,10 +49,10 @@ const timelineName = (record: Achievement) => record.timelineName?.[locale] ?? r
               </div>
               <div class="station-caption">
                 <h4 id={`event-${year}-${index}`}>{a.event}</h4>
-                {a.description && <p class="station-description">{a.description[locale]}</p>}
+                {resultDescription(a) && <p class="station-description">{resultDescription(a)}</p>}
                 <div class="station-details"><span>{a.format}</span><Arrow /></div>
               </div>
-              <span id={`result-${year}-${index}`} class="visually-hidden">{a.placement[locale]} · <time datetime={a.date}>{a.date}</time> · {a.description && `${a.description[locale]} · `}{t.link}</span>
+              <span id={`result-${year}-${index}`} class="visually-hidden">{a.placement[locale]} · <time datetime={a.date}>{a.date}</time> · {resultDescription(a) && `${resultDescription(a)} · `}{t.link}</span>
             </a>
           </li>)}
         </ol>
@@ -61,11 +62,12 @@ const timelineName = (record: Achievement) => record.timelineName?.[locale] ?? r
         <div class="date-trail" data-date-trail>
           <svg class="date-trail-route" data-date-route aria-hidden="true" focusable="false"><path class="date-trail-edge" /><path class="date-trail-fill" /></svg>
           <ol>{entries.map((a, index) => <li>
-            <a href={`#competition-${year}-${index}`} data-room-date={`competition-${year}-${index}`} aria-label={`${a.date} ${timelineName(a)} · ${a.placement[locale]}${a.timelineNote ? ` · ${a.timelineNote[locale]}` : ''}`}>
+            <a href={`#competition-${year}-${index}`} data-room-date={`competition-${year}-${index}`} aria-label={`${a.date} ${timelineName(a)} · ${a.placement[locale]}${a.qualifiedForFinals ? ` · ${t.qualifiedForFinals}` : ''}${a.timelineNote ? ` · ${a.timelineNote[locale]}` : ''}`}>
               <span class="date-rail-dot" aria-hidden="true"></span>
               <time datetime={a.date}>{a.date.slice(5).replaceAll('-', '.')}</time>
               <span class="date-rail-event">{timelineName(a)}</span>
               <span class="date-rail-rank">{a.placement[locale]}</span>
+              {a.qualifiedForFinals && <span class="date-rail-note">{t.qualifiedForFinals}</span>}
               {a.timelineNote && <span class="date-rail-note">{a.timelineNote[locale]}</span>}
             </a>
           </li>)}</ol>

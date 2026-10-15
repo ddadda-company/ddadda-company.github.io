@@ -80,6 +80,8 @@ KO / EN은 현재 페이지를 유지하며 언어를 전환합니다. 선택한
 
 기존 `Azure Assassin Alliance CTF 2026` 기록이 ACTF입니다. 중복 대회를 만들지 않고 “ACTF 우승 · 제10회 XCTF 본선 시드 획득” 설명을 추가했습니다. [주최 측 대회 아카이브](https://github.com/team-s2/ACTF-2026)에 따따의 우승과 우승팀의 본선 초청 자격이 함께 명시돼 있습니다.
 
+본선 진출이 확인된 예선은 `qualifiedForFinals: true`로 표시하며, 상단 블록 설명과 하단 타임라인에 `본선 진출` / `Qualified for finals`를 함께 보여 줍니다. 현재 대상은 DiceCTF, CODEGATE, DEF CON, SAS CTF, Black Hat MEA 예선 5건입니다. DiceCTF·CODEGATE·DEF CON은 위 본선 참가 기록과 대조했습니다. SAS는 [주최 측이 등록한 상위 8팀 선발 기준과 따따의 예선 5위](https://ctftime.org/event/3109/)로, Black Hat MEA는 [공식 예선→본선 안내](https://blackhatmea.com/competition/capture-the-flag)와 팀 제공 예선 1위로 판단했습니다. Midnight Sun은 [공식 상위 10팀 선발 기준](https://play.midnightsunctf.com/rules)에 비해 예선 11위이고 추가 초청이 확인되지 않아 진출 표시를 넣지 않았습니다. ACTF의 XCTF 본선 시드 설명은 그대로 유지합니다.
+
 하단 타임라인 이름은 대회명의 연도를 생략하고 예선/본선을 구분해 표시합니다. `timelineName`과 `timelineNote`로 짧은 대회명·부문·보충 설명을 지정할 수 있으며, 순위는 기존 `placement`를 그대로 사용합니다.
 
 `rank: null`은 순위가 확인되지 않은 본선 진출 기록입니다. 해당 블록은 `본선`/`FINAL`로 표시하며 `입상` 필터와 순위 그래프에서는 제외합니다. ENKI는 개인전 기록을 팀원별로 분리하고, HackTheon은 고급·초급부문을 구분합니다.
