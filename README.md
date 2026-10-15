@@ -62,6 +62,19 @@ Google Search Console은 **URL 접두어** 속성으로 등록하세요. HTML �
 
 다시 빌드·배포한 다음 해당 서비스에서 소유권 확인을 완료하고 `https://ddadda-company.github.io/sitemap.xml`을 제출하세요. 검색 서비스 계정 등록과 사이트맵 제출은 코드 배포만으로 자동 완료되지 않습니다. 이후 URL 검사와 검색 노출 보고서에서 수집·색인 여부를 확인합니다.
 
+### IndexNow 수집 알림
+
+`public/indexnow-key.txt`는 IndexNow가 도메인 소유권을 확인하는 공개 텍스트 파일입니다. [IndexNow 공식 프로토콜](https://www.indexnow.org/documentation)의 `keyLocation` 방식으로 사용합니다. 비밀번호나 검색 서비스 계정의 인증 토큰이 아닙니다.
+
+```bash
+# 전송 없이 로컬 빌드의 제출 대상 확인
+npm run submit:indexnow -- --dry-run
+# 배포가 끝난 뒤 실제 사이트의 키와 사이트맵을 확인하고 URL 제출
+npm run submit:indexnow
+```
+
+이 스크립트는 배포된 사이트맵의 URL을 IndexNow 공통 엔드포인트에 한 번 전송합니다. 참여 검색엔진 사이에서 알림이 공유되므로 같은 URL을 서비스별로 중복 전송할 필요가 없습니다. HTTP 200은 접수 성공, 202는 접수 후 키 검증 대기 상태입니다. 실제 수집·색인 완료나 Google Search Console·네이버·Bing 관리 계정의 등록 완료를 의미하지 않습니다. 내용이 바뀐 배포 후에 사용하고 반복 제출하지 마세요. [지원 서비스와 제출 안내](https://www.indexnow.org/faq#url-submission)
+
 ## 모바일 구성
 
 - 언어·메뉴 버튼은 최소 44×44px이며, 펼친 메뉴는 2열입니다. 큰 글자 설정으로 한 줄에 들어가지 않으면 헤더를 줄바꿈합니다.
