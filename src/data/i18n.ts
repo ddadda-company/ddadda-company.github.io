@@ -11,7 +11,7 @@ export const copy = {
   ko: {
     nav: { home: '팀 소개', achievements: '성과', members: '멤버', contact: '문의' },
     meta: {
-      home: '따따 (dda_com) | 한국 기반 CTF 팀', achievements: 'CTF 대회 성과·수상 기록 | 따따 (dda_com)',
+      home: '따따 (dda_com) 공식 홈페이지 | CTF 팀', achievements: 'CTF 대회 성과·수상 기록 | 따따 (dda_com)',
       members: 'CTF 팀 멤버 | 따따 (dda_com)', contact: '대회 초청·협업 문의 | 따따 (dda_com)',
       description: {
         home: '따따(dda_com)는 국내외 CTF(Capture The Flag) 대회에 참가하는 한국 기반 보안 팀입니다. 공식 사이트에서 대회 성과와 수상 기록, 팀 멤버, 초청·협업 연락처를 확인하세요.',
@@ -58,7 +58,7 @@ export const copy = {
   en: {
     nav: { home: 'About', achievements: 'Achievements', members: 'Members', contact: 'Contact' },
     meta: {
-      home: 'dda_com (따따) | CTF Team from South Korea', achievements: 'CTF Competition Results & Awards | dda_com',
+      home: 'dda_com (따따) | Official CTF Team Website', achievements: 'CTF Competition Results & Awards | dda_com',
       members: 'CTF Team Members | dda_com', contact: 'CTF Invitations & Collaboration | dda_com',
       description: {
         home: 'dda_com (따따) is a South Korean Capture The Flag (CTF) team. Explore competition results, meet the members, and contact the team for invitations and collaboration.',

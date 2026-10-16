@@ -10,7 +10,8 @@ const ko = locale === 'ko';
 <section class="open-hero" aria-labelledby="hero-heading" data-scene>
   <div class="open-hero-inner container">
     <div class="open-hero-copy">
-      <h1 id="hero-heading">{team.name}<span>{t.home.greeting}</span></h1>
+      <h1 id="hero-heading">{team.name}<span>{team.koreanName} · {ko ? 'CTF 팀' : 'CTF Team'}</span></h1>
+      <p class="hero-alias">{t.home.greeting}</p>
       <p>{t.home.lead}</p>
       <div class="hero-links"><a class="studio-button" href={pageUrl(locale, 'achievements')}>{t.home.recordsLink}<Arrow /></a><a class="text-link" href={pageUrl(locale, 'members')}>{locale === 'ko' ? '멤버 소개' : 'Our members'}<Arrow /></a></div>
     </div>
@@ -37,6 +38,7 @@ const ko = locale === 'ko';
 <CaptureFlag locale={locale} />
 
 <style>
+  .open-hero-copy > .hero-alias { margin-top: 8px; font-size: .875rem; }
   .home-records { padding-block: clamp(36px, 5vw, 72px); }
   .home-records-heading { max-width: 760px; }
   .home-records-heading h2 { font-size: clamp(1.5rem, 3vw, 2rem); }

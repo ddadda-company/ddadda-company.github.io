@@ -40,7 +40,7 @@ export function pageSchema(locale: Locale, page: Page, site: URL | undefined) {
   const graph: Record<string, unknown>[] = [
     {
       '@type': 'Organization', '@id': organizationId,
-      name: team.name, alternateName: team.koreanName, url: root,
+      name: team.koreanName, alternateName: team.name, url: root,
       description: t.home.lead,
       logo: { '@type': 'ImageObject', url: absoluteUrl('/apple-touch-icon.png', site), width: 180, height: 180 },
       email: team.email,
@@ -49,7 +49,7 @@ export function pageSchema(locale: Locale, page: Page, site: URL | undefined) {
     },
     {
       '@type': 'WebSite', '@id': websiteId,
-      url: root, name: team.name, alternateName: team.koreanName,
+      url: root, name: team.siteName, alternateName: [team.koreanName, team.name],
       inLanguage: [...locales], publisher: { '@id': organizationId },
     },
     {

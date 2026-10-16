@@ -2,6 +2,8 @@
 
 따따 팀의 한국어·영어 정적 웹사이트. Astro로 HTML을 미리 생성합니다. 서버, 데이터베이스, API 키 없이 `dist/`를 정적 호스팅에 올릴 수 있습니다.
 
+공식 홈페이지: [따따 (dda_com)](https://ddadda-company.github.io/)
+
 ## 실행
 
 Node.js 24를 사용합니다.
@@ -37,6 +39,7 @@ KO / EN은 현재 페이지를 유지하며 언어를 전환합니다. `/`는 �
 `astro.config.mjs`의 `site`를 기준으로 검색 설정을 빌드합니다. 도메인을 바꾸면 canonical, 언어별 대체 주소, JSON-LD, 사이트맵과 robots.txt가 함께 바뀝니다.
 
 - 한영 8개 페이지에 고유한 제목·설명, 절대 주소 canonical, 상호 연결된 `ko`·`en`·`x-default` hreflang, Open Graph·Twitter 카드가 들어갑니다.
+- 사이트 이름은 `따따 (dda_com)`으로 통일하며, `WebSite`의 대체 이름에 `따따`와 `dda_com`을 함께 제공합니다. `Organization`의 기본 이름은 `따따`이고 홈의 주 제목에도 한글 팀명과 CTF 팀임을 표시합니다. [Google 사이트 이름 안내](https://developers.google.com/search/docs/appearance/site-names)에 따른 식별 정보이며 특정 검색어 순위를 보장하는 마크업은 아닙니다.
 - `/sitemap.xml`과 대체 제출용 `/sitemap.txt`는 같은 실제 페이지 목록에서 생성하며 `/robots.txt`에 연결됩니다. XML에는 언어별 대체 주소도 포함합니다. 404는 사이트맵에서 제외하고 `noindex, follow`를 지정합니다. 404에 홈페이지 canonical이나 구조화 데이터를 붙이지 않습니다.
 - `src/lib/seo.ts`에서 `Organization`, `WebSite`, 페이지 유형별 JSON-LD와 멤버 `Person`·`ItemList`를 생성합니다. 팀의 한영 이름, 공식 GitHub·CTFtime, 이메일과 실제 공개 프로필만 사용합니다. 미확인 수상·전문 분야·주소는 생성하지 않습니다.
 - 홈의 팀 설명·대표 대회 기록과 성과의 출처·기준일은 HTML 본문에서 읽을 수 있습니다. 홈의 인원·기록 수와 대표 성과는 `team.ts`의 실제 데이터에서 생성합니다. `featured: true`로 대표 성과를 선택하며 개인·연합팀 참가 설명도 그대로 표시합니다. CTFtime 순위는 `rating.checkedAt` 당시의 기록이며 실시간 순위로 표시하지 않습니다. 숨은 퍼즐 코드·플래그는 `data-nosnippet`으로 Google 검색 설명문에서 제외합니다.
