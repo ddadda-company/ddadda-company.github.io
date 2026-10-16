@@ -40,7 +40,7 @@ export function pageSchema(locale: Locale, page: Page, site: URL | undefined) {
   const graph: Record<string, unknown>[] = [
     {
       '@type': 'Organization', '@id': organizationId,
-      name: team.koreanName, alternateName: team.name, url: root,
+      name: team.koreanName, alternateName: team.alternateNames, url: root,
       description: t.home.lead,
       logo: { '@type': 'ImageObject', url: absoluteUrl('/apple-touch-icon.png', site), width: 180, height: 180 },
       email: team.email,

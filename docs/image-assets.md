@@ -31,7 +31,7 @@ Exact revision prompt:
 
 `public/favicon.svg` is a native vector simplification of the supplied double-D and bear identity. It uses the rose and serenity pair, a cream bear face, and a pale background that remains visible on light and dark browser tabs. This icon is drawn directly as SVG rather than generated as a bitmap.
 
-The SVG is also exported at 32 px to `favicon-32.png`, 180 px to `apple-touch-icon.png`, and 16/32/48 px in `favicon.ico`. The layout references versioned icon URLs to refresh older cached tab icons. Header and footer share the same mark. Member photo placeholders use the nickname's first letter on a CSS block face, not the team mascot. Real portraits use a 1:1 photo area (recommended source 600×600).
+The SVG is also exported at 32 px to `favicon-32.png`, 96 px to `favicon-96.png`, 180 px to `apple-touch-icon.png`, and 16/32/48 px in `favicon.ico`. The layout explicitly links the PNG and ICO files for search engines, alongside the SVG for browsers. Icon URLs are stable and have no version query. Header and footer share the same mark. Member photo placeholders use the nickname's first letter on a CSS block face, not the team mascot. Real portraits use a 1:1 photo area (recommended source 600×600).
 
 ## Achievements playroom
 

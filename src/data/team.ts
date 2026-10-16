@@ -35,6 +35,8 @@ export const team = {
   name: 'dda_com',
   koreanName: '따따',
   siteName: '따따 (dda_com)',
+  // Names listed on the team's public CTFtime profile.
+  alternateNames: ['dda_com', 'dda.com'],
   email: 'ddacom77@gmail.com',
   github: 'https://github.com/ddadda-company',
   ctftime: 'https://ctftime.org/team/425478',
