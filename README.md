@@ -42,7 +42,7 @@ KO / EN은 현재 페이지를 유지하며 언어를 전환합니다. `/`는 �
 - 사이트 이름은 `따따 (dda_com)`으로 통일하며, `WebSite`의 대체 이름에 `따따`와 `dda_com`을 함께 제공합니다. `Organization`의 기본 이름은 `따따`이고 홈의 주 제목에도 한글 팀명과 CTF 팀임을 표시합니다. [Google 사이트 이름 안내](https://developers.google.com/search/docs/appearance/site-names)에 따른 식별 정보이며 특정 검색어 순위를 보장하는 마크업은 아닙니다.
 - `/sitemap.xml`과 대체 제출용 `/sitemap.txt`는 같은 실제 페이지 목록에서 생성하며 `/robots.txt`에 연결됩니다. XML에는 언어별 대체 주소도 포함합니다. 404는 사이트맵에서 제외하고 `noindex, follow`를 지정합니다. 404에 홈페이지 canonical이나 구조화 데이터를 붙이지 않습니다.
 - `src/lib/seo.ts`에서 `Organization`, `WebSite`, 페이지 유형별 JSON-LD와 멤버 `Person`·`ItemList`를 생성합니다. 팀의 한영 이름, 공식 GitHub·CTFtime, 이메일과 실제 공개 프로필만 사용합니다. 미확인 수상·전문 분야·주소는 생성하지 않습니다.
-- 한영 홈의 공식 채널 안내와 `Organization.alternateName`은 CTFtime에 등록된 `따따`·`dda_com`·`dda.com`의 관계를 함께 설명합니다. 대체 이름은 `team.alternateNames`에서 관리합니다.
+- `Organization.alternateName`은 CTFtime에 등록된 `따따`·`dda_com`·`dda.com`의 관계를 제공합니다. 대체 이름은 `team.alternateNames`에서 관리하며, 공식 채널은 기존 하단 링크로 안내합니다.
 - 검색용 favicon은 기존 팀 SVG에서 내보낸 96×96 PNG와 16/32/48px ICO를 명시하며, 브라우저용 SVG·32px PNG·Apple 아이콘도 유지합니다. 아이콘 주소는 버전 쿼리 없이 고정합니다. [Google favicon 안내](https://developers.google.com/search/docs/appearance/favicon-in-search)에 따라 배포 후 홈페이지의 재수집을 기다리거나 Search Console에서 루트 URL의 색인 생성을 요청합니다. 반영에는 며칠에서 몇 주가 걸릴 수 있으며 표시가 보장되지는 않습니다.
 - 홈의 팀 설명·대표 대회 기록과 성과의 출처·기준일은 HTML 본문에서 읽을 수 있습니다. 홈의 인원·기록 수와 대표 성과는 `team.ts`의 실제 데이터에서 생성합니다. `featured: true`로 대표 성과를 선택하며 개인·연합팀 참가 설명도 그대로 표시합니다. CTFtime 순위는 `rating.checkedAt` 당시의 기록이며 실시간 순위로 표시하지 않습니다. 숨은 퍼즐 코드·플래그는 `data-nosnippet`으로 Google 검색 설명문에서 제외합니다.
 - `User-agent: *` 규칙은 검색·AI 검색 크롤러를 포함해 공개 페이지 수집을 허용합니다. 이는 robots.txt 수준의 설정이며 각 서비스의 수집·인용을 보장하지 않습니다.
