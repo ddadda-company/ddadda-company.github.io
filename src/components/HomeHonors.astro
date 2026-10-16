@@ -1,0 +1,146 @@
+---
+import Arrow from './Arrow.astro';
+import { pageUrl, type Locale } from '../data/i18n';
+import { achievements } from '../data/team';
+
+const { locale } = Astro.props as { locale: Locale };
+const ko = locale === 'ko';
+// This selection belongs only to the homepage; the full results archive is unchanged.
+const select = (event: string, rank: number) => {
+  const record = achievements.find(record => record.event === event && record.rank === rank);
+  if (!record) throw new Error(`Missing homepage honor: ${event}, rank ${rank}`);
+  return record;
+};
+const featured = [
+  { record: select('SCTF 2026', 1), toy: 'star', title: 'SCTF', round: { ko: '2026', en: '2026' } },
+  { record: select('HackTheon Sejong 2026 Finals', 1), toy: 'bear', title: 'HackTheon Sejong', round: { ko: '2026 · 고급부 본선', en: '2026 · Advanced finals' } },
+  { record: select('CODEGATE 2026 Finals', 2), toy: 'medal', title: 'CODEGATE', round: { ko: '2026 · 일반부 본선', en: '2026 · General finals' } },
+];
+const extra = [
+  { record: select('Azure Assassin Alliance CTF 2026', 1), title: 'ACTF 2026', note: { ko: 'XCTF 본선 시드', en: 'XCTF Finals seed' } },
+  { record: select('BITSCTF 2026', 1), title: 'BITSCTF 2026', note: { ko: '', en: '' } },
+  { record: select('SCAN 2026 Final', 2), title: 'SCAN 2026', note: { ko: '본선 · hello', en: 'Finals · hello' } },
+];
+---
+<section class="home-records container" aria-labelledby="home-records-heading">
+  <div class="honors-heading">
+    <div>
+      <h2 id="home-records-heading">{ko ? '따따의 트로피 선반' : 'Our trophy shelf'}</h2>
+      <p>{ko ? 'CTF 대회에서 함께 모은 1·2위 기록들입니다.' : 'A few first and second places we earned together.'}</p>
+    </div>
+    <a class="honors-all" href={pageUrl(locale, 'achievements')}>{ko ? '모든 성과 보기' : 'All results'}<Arrow /></a>
+  </div>
+
+  <ul class="honors-shelf">
+    {featured.map(({ record, toy, title, round }, index) => <li class:list={['honor', `honor--${toy}`]}>
+      <a class="honor-entry" href={record.url} target="_blank" rel="noopener noreferrer" aria-label={`${record.event} · ${record.placement[locale]}${record.description ? ` · ${record.description[locale]}` : ''} · ${ko ? '결과 출처' : 'Result source'}`}>
+      <div class="honor-object" aria-hidden="true">
+        <div class="honor-art"><img src="/images/home-honors-toys.webp" alt="" width="1800" height="600" loading="lazy" decoding="async" style={`--toy-offset: ${index * -100 / 3}%`} /></div>
+      </div>
+      <div class="honor-caption">
+        <p class="honor-place"><strong>{record.rank}</strong><span>{ko ? '위' : record.rank === 1 ? 'st' : 'nd'}</span></p>
+        <p class="honor-round">{round[locale]}</p>
+        <h3>{title}</h3>
+        <p class="honor-detail">{toy === 'bear'
+          ? (ko ? '대상 · 정현수의전역을축하합니다' : 'Winner · 정현수의전역을축하합니다')
+          : toy === 'medal' ? (ko ? '준우승 · 따따' : 'Runner-up · dda_com') : (ko ? '우승 · 따따' : 'Winner · dda_com')}</p>
+        <span class="honor-source">
+          <time datetime={record.date}>{record.date.replaceAll('-', '.')}</time><Arrow />
+        </span>
+      </div>
+      </a>
+    </li>)}
+  </ul>
+
+  <ul class="honors-extras" aria-label={ko ? '다른 1·2위 성과' : 'More first and second places'}>
+    {extra.map(({ record, title, note }) => <li>
+      <a href={record.url} target="_blank" rel="noopener noreferrer" aria-label={`${record.event} · ${record.placement[locale]}${note[locale] ? ` · ${note[locale]}` : ''} · ${ko ? '결과 출처' : 'Result source'}`}>
+        <span class:list={['mini-medal', { 'mini-medal--silver': record.rank === 2 }]}>{record.placement[locale]}</span>
+        <span class="extra-event"><strong>{title}</strong>{note[locale] && <small>{note[locale]}</small>}</span>
+        <Arrow />
+      </a>
+    </li>)}
+  </ul>
+</section>
+
+<style>
+  /* Hallmark · component: homepage honors · genre: playful · theme: existing DDADDA
+   * Pre-emit critique: P5 H4 E4 S5 R5 V4. Static source links: default, hover, focus, active.
+   * The decorative toys are one transparent imagegen strip, cropped only by CSS. */
+  .home-records {
+    --toy-size: clamp(180px, 21vw, 280px);
+    --shelf-light: var(--color-toy-wood-light);
+    --shelf-face: var(--color-toy-wood);
+    --shelf-edge: var(--color-toy-wood-edge);
+    padding-block: clamp(36px, 5vw, 72px) clamp(56px, 7vw, 96px);
+  }
+  .honors-heading { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+  .honors-heading h2 { font-size: clamp(1.5rem, 3vw, 2rem); line-height: 1.35; }
+  .honors-heading p { margin-top: 12px; color: var(--color-ink-soft); font-size: var(--text-sm); word-break: keep-all; }
+  .honors-all { display: inline-flex; flex-shrink: 0; align-items: center; justify-content: center; gap: 18px; min-height: 48px; padding: 10px 18px; border: 1px solid var(--color-white); border-radius: 14px; background: var(--color-blue-light); color: var(--color-ink); box-shadow: 0 4px 0 var(--color-serenity-mist), 0 7px 10px var(--color-shadow); font-size: var(--text-sm); font-weight: 650; white-space: nowrap; }
+  .honors-all :global(.arrow) { width: 18px; height: 18px; }
+  .honors-shelf { position: relative; isolation: isolate; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; list-style: none; margin: 36px 0 0; padding: 0 32px; }
+  .honors-shelf::before { content: ''; position: absolute; z-index: -1; top: calc(var(--toy-size) - 19px); left: 0; right: 0; height: 26px; border-radius: 10px 10px 7px 7px; background: linear-gradient(var(--shelf-light) 0 7px, var(--shelf-face) 8px 23px, var(--shelf-edge) 24px); box-shadow: 0 12px 17px -8px var(--color-shadow); }
+  .honor { min-width: 0; position: relative; text-align: center; }
+  .honor-entry { display: block; border-radius: 16px; }
+  .honor-object { width: var(--toy-size); height: var(--toy-size); margin-inline: auto; }
+  .honor-art { width: 100%; height: 100%; overflow: clip; }
+  .honor-art img { display: block; width: 300%; max-width: none; height: 100%; transform: translateX(var(--toy-offset)); }
+  .honor-caption { position: relative; padding-top: 34px; }
+  .honor-place { display: inline-flex; gap: 3px; align-items: baseline; justify-content: center; min-width: 70px; padding: 2px 14px 4px; margin-bottom: 12px; border: 2px solid var(--color-gold-light); border-radius: 12px 12px 16px 16px; background: var(--color-butter); color: var(--color-gold-ink); box-shadow: 0 4px 0 var(--color-gold); rotate: -4deg; }
+  .honor-place strong { font: 800 2rem/1.1 var(--font-wordmark); }
+  .honor-place span { font-size: var(--text-sm); font-weight: 700; }
+  .honor--bear .honor-place { rotate: 3deg; }
+  .honor--medal .honor-place { color: var(--color-silver-ink); border-color: var(--color-white); background: var(--color-blue-light); box-shadow: 0 4px 0 var(--color-serenity-mist); }
+  .honor-round { margin-top: 7px; font-size: var(--text-xs); color: var(--color-muted); }
+  .honor h3 { margin-top: 5px; font-size: clamp(1.125rem, 1.9vw, 1.5rem); line-height: 1.35; }
+  .honor-detail { max-width: 32ch; min-height: 3.2em; margin: 9px auto 0; color: var(--color-ink-soft); font-size: var(--text-sm); line-height: 1.6; word-break: keep-all; overflow-wrap: anywhere; }
+  .honor-source { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; margin-top: 2px; padding-inline: 8px; border-radius: 8px; color: var(--color-muted); font-size: var(--text-xs); white-space: nowrap; }
+  .honor-source :global(.arrow) { width: 14px; height: 14px; }
+  .honors-extras { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px 28px; margin: 36px 0 0; padding: 0; list-style: none; }
+  .honors-extras li { min-width: 0; }
+  .honors-extras a { display: flex; align-items: center; gap: 12px; min-height: 64px; padding: 8px 12px; border-radius: 14px; }
+  .mini-medal { display: flex; flex-shrink: 0; justify-content: center; align-items: center; width: 44px; height: 44px; border: 3px solid var(--color-gold-light); border-radius: 50%; background: var(--color-butter); color: var(--color-gold-ink); box-shadow: 0 3px 0 var(--color-gold); font-weight: 750; font-size: var(--text-sm); rotate: -7deg; }
+  .mini-medal--silver { border-color: var(--color-white); background: var(--color-blue-light); color: var(--color-silver-ink); box-shadow: 0 3px 0 var(--color-serenity-mist); }
+  .extra-event { display: flex; flex-direction: column; gap: 2px; }
+  .extra-event strong { font-size: var(--text-sm); font-weight: 650; white-space: nowrap; }
+  .extra-event small { color: var(--color-muted); font-size: var(--text-xs); white-space: nowrap; }
+  .honors-extras :global(.arrow) { width: 14px; height: 14px; flex-shrink: 0; }
+  .home-records a:focus-visible { outline: 3px solid var(--color-focus); outline-offset: 5px; }
+  .honors-all:active { translate: 0 3px; box-shadow: 0 1px 0 var(--color-serenity-mist); }
+  .honor-entry:active .honor-source, .honors-extras a:active { background: var(--color-blue-light); }
+  @media (hover: hover) {
+    .honors-all:hover { background: var(--color-blue-mid); }
+    .honor-entry:hover .honor-source { background: var(--color-blue-light); color: var(--color-ink); }
+    .honors-extras a:hover { background: var(--color-rose-light); }
+  }
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .honor-object { transition: transform var(--dur-medium) var(--ease-out); }
+    .honor:hover .honor-object, .honor:focus-within .honor-object { transform: translateY(-5px) rotate(-2deg); }
+    .honor--bear:hover .honor-object, .honor--bear:focus-within .honor-object { transform: translateY(-5px) rotate(2deg); }
+  }
+  @media (max-width: 59.99rem) {
+    .honors-shelf { gap: 16px; padding-inline: 12px; }
+    .honor-detail { min-height: 4.8em; }
+    .honors-extras { column-gap: 8px; }
+  }
+  @media (max-width: 39.99rem) {
+    .home-records { --toy-size: clamp(112px, 34vw, 170px); }
+    .honors-heading { flex-direction: column; align-items: flex-start; gap: 20px; }
+    .honors-shelf { display: flex; flex-direction: column; gap: 32px; margin-top: 36px; padding: 0; }
+    .honors-shelf::before { display: none; }
+    .honor-entry { display: grid; grid-template-columns: var(--toy-size) minmax(0, 1fr); align-items: center; gap: 18px; text-align: left; }
+    .honor-object { position: relative; isolation: isolate; }
+    .honor-object::after { content: ''; position: absolute; z-index: -1; inset: auto -4px 0; height: 12px; background: linear-gradient(var(--shelf-light) 0 4px, var(--shelf-face) 5px 10px, var(--shelf-edge) 11px); border-radius: 4px; box-shadow: 0 7px 10px -3px var(--color-shadow); }
+    .honor-caption { padding-top: 0; }
+    .honor-place { min-width: 54px; margin-bottom: 5px; padding: 2px 10px; border-radius: 8px 8px 12px 12px; }
+    .honor-place strong { font-size: 1.5rem; }
+    .honor-round { margin-top: 8px; font-size: .6875rem; }
+    .honor h3 { margin-top: 3px; font-size: 1.125rem; }
+    .honor-detail { min-height: 0; margin: 7px 0 0; font-size: .75rem; }
+    .honor-source { margin-left: -8px; }
+    .honors-extras { display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px; margin-top: 30px; padding-top: 18px; border-top: 1px dashed var(--shelf-edge); }
+    .honors-extras a { padding-inline: 0; }
+    .honors-extras :global(.arrow) { margin-left: auto; margin-right: 8px; }
+  }
+</style>
