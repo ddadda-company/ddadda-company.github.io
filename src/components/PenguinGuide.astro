@@ -1,0 +1,62 @@
+---
+import type { Locale } from '../data/i18n';
+import { penguins, penguinSource } from '../data/penguins';
+import photos from '../data/penguin-photos.json';
+import PenguinPhotoCredit from './PenguinPhotoCredit.astro';
+import '../styles/penguin-guide.css';
+const { locale } = Astro.props as { locale: Locale };
+const ko = locale === 'ko';
+---
+<section class="penguin-guide" id="penguin-guide" aria-labelledby="penguin-guide-title" data-nosnippet>
+  <header class="penguin-guide-header">
+    <div><p class="penguin-eyebrow">sane100400 · Spheniscidae</p><h2 id="penguin-guide-title">{ko ? '펭귄 도감' : 'Penguin field guide'}</h2></div>
+    <button class="penguin-close" type="button" data-penguin-close aria-label={ko ? '펭귄 도감 닫기' : 'Close penguin guide'} hidden><span aria-hidden="true">×</span></button>
+  </header>
+  <div class="penguin-guide-modes" data-penguin-controls hidden role="group" aria-label={ko ? '도감 페이지' : 'Guide pages'}>
+    <button type="button" data-penguin-mode="species" aria-pressed="true">{ko ? '펭귄 6종' : '6 penguin species'}</button>
+    <button type="button" data-penguin-mode="chicks" aria-pressed="false">{ko ? '황제펭귄 유조' : 'Emperor penguin chicks'}<span aria-hidden="true"> ↗</span></button>
+  </div>
+  <div class="penguin-guide-body" data-penguin-body>
+    {penguins.map((penguin, index) => <article class={`penguin-page penguin-page--${penguin.id}`} data-penguin-page data-penguin-name={penguin.name[locale]} aria-labelledby={`penguin-${penguin.id}-title`}>
+      <figure class="penguin-photo">
+        <img src={photos[penguin.id].src} width={photos[penguin.id].width} height={photos[penguin.id].height} alt={`${penguin.name[locale]} · ${penguin.scientificName}`} loading="lazy" decoding="async" />
+        <figcaption><span class="penguin-photo-label">{ko ? '도판' : 'Plate'} {String(index + 1).padStart(2, '0')} · {penguin.name[locale]}{penguin.id === 'king' && (ko ? ' · 에든버러 동물원' : ' · Edinburgh Zoo')}</span><PenguinPhotoCredit photo={photos[penguin.id]} /></figcaption>
+      </figure>
+      <div class="penguin-species-copy">
+        <p class="penguin-eyebrow">{penguin.name.en}</p>
+        <h3 id={`penguin-${penguin.id}-title`}>{penguin.name[locale]}</h3>
+        <p class="penguin-latin"><span>{ko ? '학명' : 'Scientific name'}</span> <i lang="la">{penguin.scientificName}</i></p>
+        <dl class="penguin-facts">
+          <div><dt>{ko ? '분류' : 'Taxonomy'}</dt><dd>{ko ? '펭귄목' : 'Order'} Sphenisciformes<br />{ko ? '펭귄과' : 'Family'} Spheniscidae<br /><i lang="la">{penguin.scientificName.split(' ')[0]}</i>{ko ? '속' : ' (genus)'}</dd></div>
+          <div><dt>{ko ? '분포' : 'Distribution'}</dt><dd>{penguin.habitat[locale]}</dd></div>
+          <div><dt>{ko ? '성체 체중' : 'Adult mass'}</dt><dd>{penguin.mass[locale]}</dd></div>
+        </dl>
+        <h4 class="penguin-section-label">{ko ? '형태 및 식별' : 'Morphology & identification'}</h4>
+        <p class="penguin-note">{penguin.feature[locale]}</p>
+        <h4 class="penguin-section-label">{ko ? '번식 생태' : 'Breeding ecology'}</h4>
+        <p class="penguin-note">{penguin.note[locale]}</p>
+        <p class="penguin-measure-note">{ko ? '체중은 성별과 번식 단계에 따라 변한다. 종 구분과 수치는 아래 자료를 따른다.' : 'Body mass varies with sex and breeding stage. Species treatment and measurements follow the source below.'}</p>
+        <a class="penguin-source" href={penguinSource(penguin.id)} target="_blank" rel="noopener noreferrer">{ko ? '참고자료 · 호주 남극 프로그램' : 'Reference · Australian Antarctic Program'} <span aria-hidden="true">↗</span></a>
+        <p class="penguin-access-date">{ko ? '자료 확인' : 'Accessed'} 2026-10-16</p>
+      </div>
+    </article>)}
+    <article class="penguin-page penguin-page--chicks" data-penguin-page data-penguin-name={ko ? '황제펭귄 유조' : 'Emperor penguin chicks'} aria-labelledby="penguin-chicks-title">
+      <header class="penguin-chick-heading"><div><p class="penguin-eyebrow">Emperor penguin chicks</p><h3 id="penguin-chicks-title">{ko ? '황제펭귄 유조' : 'Emperor penguin chicks'}</h3></div><p class="penguin-latin"><i lang="la">Aptenodytes forsteri</i></p></header>
+      <div class="penguin-chick-gallery">
+        <figure class="penguin-chick-main"><img data-penguin-chicks src={photos.chicks.src} width={photos.chicks.width} height={photos.chicks.height} alt={ko ? '남극 아트카만에서 가까이 모여 선 회색 솜털의 황제펭귄 새끼들' : 'Fluffy emperor penguin chicks standing together in Atka Bay, Antarctica'} loading="lazy" decoding="async" /><figcaption><span class="penguin-photo-label">{ko ? '아트카만, 웨들해 · 황제펭귄 유조' : 'Atka Bay, Weddell Sea · emperor penguin chicks'}</span><PenguinPhotoCredit photo={photos.chicks} /></figcaption></figure>
+        <figure><img src={photos['chick-colony'].src} width={photos['chick-colony'].width} height={photos['chick-colony'].height} alt={ko ? '스노힐섬에서 황제펭귄 새끼와 성체가 빽빽하게 모인 번식 집단' : 'A dense breeding colony of emperor penguin chicks and adults on Snow Hill Island'} loading="lazy" decoding="async" /><figcaption><span class="penguin-photo-label">{ko ? '스노힐섬 · 번식 집단' : 'Snow Hill Island · breeding colony'}</span><PenguinPhotoCredit photo={photos['chick-colony']} /></figcaption></figure>
+        <figure><img src={photos['chick-line'].src} width={photos['chick-line'].width} height={photos['chick-line'].height} alt={ko ? '스노힐섬의 푸른 얼음 앞에 나란히 선 황제펭귄 새끼들' : 'Emperor penguin chicks standing side by side in front of blue ice on Snow Hill Island'} loading="lazy" decoding="async" /><figcaption><span class="penguin-photo-label">{ko ? '스노힐섬 · 유조의 솜털' : 'Snow Hill Island · chick down'}</span><PenguinPhotoCredit photo={photos['chick-line']} /></figcaption></figure>
+      </div>
+      <div class="penguin-chick-notes"><h4 class="penguin-section-label">{ko ? '유조 집단 · crèche' : 'The crèche stage'}</h4><p class="penguin-note">{ko ? '성장한 새끼들은 부모가 먹이를 구하러 나간 동안 유조 집단(crèche)을 형성한다. 회색 솜털은 보온을 돕지만 방수가 되지 않으므로, 바다에 들어가기 전에 방수 깃털로 교체되어야 한다.' : 'Growing chicks form groups called crèches while their parents forage. Their down provides insulation but is not waterproof; waterproof feathers must develop before they can enter the sea.'}</p><a class="penguin-source" href="https://www.antarctica.gov.au/about-antarctica/animals/penguins/emperor-penguin/breeding-cycle/" target="_blank" rel="noopener noreferrer">{ko ? '참고자료 · 황제펭귄의 번식 주기' : 'Reference · Emperor penguin breeding cycle'} ↗</a></div>
+    </article>
+  </div>
+  <nav class="penguin-species-nav" data-penguin-controls hidden aria-label={ko ? '펭귄 고르기' : 'Choose a penguin'}>
+    {penguins.map((penguin, index) => <button type="button" data-penguin-select={index} aria-pressed={index === 0 ? 'true' : 'false'}><span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>{penguin.name[locale]}</button>)}
+  </nav>
+  <footer class="penguin-guide-footer" data-penguin-controls hidden>
+    <button type="button" data-penguin-step="-1" aria-label={ko ? '이전 페이지' : 'Previous page'}>← <span>{ko ? '이전' : 'Previous'}</span></button>
+    <span class="penguin-page-count" data-penguin-count role="status" aria-live="polite" aria-atomic="true"></span>
+    <button type="button" data-penguin-step="1" aria-label={ko ? '다음 페이지' : 'Next page'}><span>{ko ? '다음' : 'Next'}</span> →</button>
+  </footer>
+</section>
+<script src="../scripts/penguin-guide.ts"></script>

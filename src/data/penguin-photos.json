@@ -1,0 +1,101 @@
+{
+  "emperor": {
+    "src": "/images/penguins/emperor.webp",
+    "width": 1179,
+    "height": 768,
+    "author": "Hannes Grobe/AWI",
+    "license": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Emperor-groupkids_hg.jpg",
+    "title": "Emperor-groupkids hg.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/8/80/Emperor-groupkids_hg.jpg"
+  },
+  "king": {
+    "src": "/images/penguins/king.webp",
+    "width": 1087,
+    "height": 1172,
+    "author": "Mark Dickson",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:King_Penguin_portrait.jpg",
+    "title": "King Penguin portrait.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/6/60/King_Penguin_portrait.jpg"
+  },
+  "adelie": {
+    "src": "/images/penguins/adelie.webp",
+    "width": 1600,
+    "height": 900,
+    "author": "ravas51",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Adelie_penguins_in_the_South_Shetland_Islands.jpg",
+    "title": "Adelie penguins in the South Shetland Islands.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/0/0e/Adelie_penguins_in_the_South_Shetland_Islands.jpg"
+  },
+  "chinstrap": {
+    "src": "/images/penguins/chinstrap.webp",
+    "width": 1600,
+    "height": 1200,
+    "author": "Pismire",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+    "source": "https://commons.wikimedia.org/wiki/File:Pygoscelis_antarctica_portrait.jpg",
+    "title": "Pygoscelis antarctica portrait.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/b/bd/Pygoscelis_antarctica_portrait.jpg"
+  },
+  "gentoo": {
+    "src": "/images/penguins/gentoo.webp",
+    "width": 1600,
+    "height": 1067,
+    "author": "Gilad Rom from Israel",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Gentoo_Portrait.jpg",
+    "title": "Gentoo Portrait.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/1/14/Gentoo_Portrait.jpg"
+  },
+  "macaroni": {
+    "src": "/images/penguins/macaroni.webp",
+    "width": 1600,
+    "height": 1200,
+    "author": "Sastognuti",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Goldschopfpinguin_(Eudyptes_chrysolophus).jpg",
+    "title": "Goldschopfpinguin (Eudyptes chrysolophus).jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/c/ca/Goldschopfpinguin_%28Eudyptes_chrysolophus%29.jpg"
+  },
+  "chicks": {
+    "src": "/images/penguins/chicks.webp",
+    "width": 1179,
+    "height": 768,
+    "author": "Hannes Grobe/AWI",
+    "license": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Emperor-pubs_hg.jpg",
+    "title": "Emperor-pubs hg.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/f/f0/Emperor-pubs_hg.jpg"
+  },
+  "chick-colony": {
+    "src": "/images/penguins/chick-colony.webp",
+    "width": 1600,
+    "height": 710,
+    "author": "Denis Luyten",
+    "license": "Public domain",
+    "licenseUrl": "https://commons.wikimedia.org/wiki/File:2007_Snow-Hill-Island_Luyten-De-Hauwere-Emperor-Penguin-07.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:2007_Snow-Hill-Island_Luyten-De-Hauwere-Emperor-Penguin-07.jpg",
+    "title": "2007 Snow-Hill-Island Luyten-De-Hauwere-Emperor-Penguin-07.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/8/8a/2007_Snow-Hill-Island_Luyten-De-Hauwere-Emperor-Penguin-07.jpg"
+  },
+  "chick-line": {
+    "src": "/images/penguins/chick-line.webp",
+    "width": 1600,
+    "height": 885,
+    "author": "Denis Luyten",
+    "license": "Public domain",
+    "licenseUrl": "https://commons.wikimedia.org/wiki/File:2007_Snow-Hill-Island_Luyten-De-Hauwere-Emperor-Penguin-31.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:2007_Snow-Hill-Island_Luyten-De-Hauwere-Emperor-Penguin-31.jpg",
+    "title": "2007 Snow-Hill-Island Luyten-De-Hauwere-Emperor-Penguin-31.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/a/a8/2007_Snow-Hill-Island_Luyten-De-Hauwere-Emperor-Penguin-31.jpg"
+  }
+}

@@ -1,0 +1,17 @@
+# Penguin photographs
+
+All images in the penguin guide are real photographs. Sources and reuse terms were verified against Wikimedia Commons file metadata on 2026-10-16. Files are hosted locally; there are no visitor-time image API requests.
+
+Photos were proportionally resized to at most 1600 px wide and encoded as WebP quality 86. No content was generated or composited. The responsive gallery may crop displayed edges; each credit links to the uncropped source. CC BY-SA adaptations retain their source license.
+
+- **emperor**: [Emperor-groupkids hg.jpg](https://commons.wikimedia.org/wiki/File:Emperor-groupkids_hg.jpg), Hannes Grobe/AWI. [CC BY 3.0](https://creativecommons.org/licenses/by/3.0). Local: `public/images/penguins/emperor.webp` (1179 × 768).
+- **king**: [King Penguin portrait.jpg](https://commons.wikimedia.org/wiki/File:King_Penguin_portrait.jpg), Mark Dickson. [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0). Local: `public/images/penguins/king.webp` (1087 × 1172).
+- **adelie**: [Adelie penguins in the South Shetland Islands.jpg](https://commons.wikimedia.org/wiki/File:Adelie_penguins_in_the_South_Shetland_Islands.jpg), ravas51. [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0). Local: `public/images/penguins/adelie.webp` (1600 × 900).
+- **chinstrap**: [Pygoscelis antarctica portrait.jpg](https://commons.wikimedia.org/wiki/File:Pygoscelis_antarctica_portrait.jpg), Pismire. [CC BY-SA 3.0](http://creativecommons.org/licenses/by-sa/3.0/). Local: `public/images/penguins/chinstrap.webp` (1600 × 1200).
+- **gentoo**: [Gentoo Portrait.jpg](https://commons.wikimedia.org/wiki/File:Gentoo_Portrait.jpg), Gilad Rom from Israel. [CC BY 2.0](https://creativecommons.org/licenses/by/2.0). Local: `public/images/penguins/gentoo.webp` (1600 × 1067).
+- **macaroni**: [Goldschopfpinguin (Eudyptes chrysolophus).jpg](https://commons.wikimedia.org/wiki/File:Goldschopfpinguin_(Eudyptes_chrysolophus).jpg), Sastognuti. [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0). Local: `public/images/penguins/macaroni.webp` (1600 × 1200).
+- **chicks**: [Emperor-pubs hg.jpg](https://commons.wikimedia.org/wiki/File:Emperor-pubs_hg.jpg), Hannes Grobe/AWI. [CC BY 3.0](https://creativecommons.org/licenses/by/3.0). Local: `public/images/penguins/chicks.webp` (1179 × 768).
+- **chick-colony**: [2007 Snow-Hill-Island Luyten-De-Hauwere-Emperor-Penguin-07.jpg](https://commons.wikimedia.org/wiki/File:2007_Snow-Hill-Island_Luyten-De-Hauwere-Emperor-Penguin-07.jpg), Denis Luyten. [Public domain](https://commons.wikimedia.org/wiki/File:2007_Snow-Hill-Island_Luyten-De-Hauwere-Emperor-Penguin-07.jpg). Local: `public/images/penguins/chick-colony.webp` (1600 × 710).
+- **chick-line**: [2007 Snow-Hill-Island Luyten-De-Hauwere-Emperor-Penguin-31.jpg](https://commons.wikimedia.org/wiki/File:2007_Snow-Hill-Island_Luyten-De-Hauwere-Emperor-Penguin-31.jpg), Denis Luyten. [Public domain](https://commons.wikimedia.org/wiki/File:2007_Snow-Hill-Island_Luyten-De-Hauwere-Emperor-Penguin-31.jpg). Local: `public/images/penguins/chick-line.webp` (1600 × 885).
+
+Natural-history text follows the Australian Antarctic Program species accounts, linked individually in the guide. The guide lists six representative species, not a complete taxonomic checklist. Mass values retain their breeding-stage qualifiers; no live conservation status or population estimates are asserted.

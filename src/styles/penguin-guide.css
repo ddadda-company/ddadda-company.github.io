@@ -1,0 +1,91 @@
+.member-penguin-hint { display: inline-block; margin-left: .4em; font-size: .78em; vertical-align: .06em; }
+.member-info a[data-penguin-open] { display: inline-flex; align-items: center; min-height: 44px; }
+.member-info a[data-penguin-open]:hover { color: var(--color-accent); }
+.member-portrait-stage[data-penguin-open] { cursor: pointer; }
+.member-portrait-stage[data-penguin-open]:focus-visible { outline-offset: 8px; }
+.penguin-guide-open { overflow: hidden; }
+.penguin-dialog { width: min(1000px, calc(100% - 40px)); max-width: none; max-height: calc(100dvh - 40px); margin: auto; padding: 0; border: 1px solid var(--color-line); border-radius: 16px; background: var(--color-paper); color: var(--color-ink); box-shadow: 0 24px 100px var(--color-puzzle-backdrop); overflow: hidden; }
+.penguin-dialog::backdrop { background: oklch(20% .03 270 / .55); backdrop-filter: blur(5px); }
+.penguin-guide { max-width: 1000px; margin: 0 auto 48px; padding: 24px; background: var(--color-paper); }
+.penguin-dialog .penguin-guide { display: flex; flex-direction: column; max-height: calc(100dvh - 42px); margin: 0; padding: 0; }
+.penguin-guide-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 20px 28px 16px; flex: none; }
+.penguin-eyebrow { font-family: var(--font-body); font-size: .6875rem; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; color: var(--color-muted); }
+.penguin-guide-header h2 { margin-top: 5px; font-size: clamp(1.5rem, 4vw, 2rem); }
+.penguin-close { display: grid; place-items: center; width: 44px; height: 44px; flex: none; border: 1px solid var(--color-line); border-radius: 50%; background: transparent; font-size: 1.8rem; line-height: 1; }
+.penguin-close:hover { background: var(--color-rose); }
+.penguin-guide-modes { display: flex; gap: 20px; padding-inline: 28px; border-block: 1px solid var(--color-line); flex: none; }
+.penguin-guide-modes button { min-height: 48px; padding: 10px 0; border: 0; border-bottom: 3px solid transparent; background: none; font-size: .875rem; color: var(--color-muted); }
+.penguin-guide-modes button[aria-pressed='true'] { border-bottom-color: var(--color-ink); color: var(--color-ink); font-weight: 700; }
+.penguin-guide-body { min-height: 0; overflow-y: auto; overscroll-behavior-y: contain; }
+.penguin-page { display: grid; grid-template-columns: 1fr 1.1fr; min-width: 0; }
+.penguin-page + .penguin-page { border-top: 1px solid var(--color-line); }
+.penguin-dialog .penguin-page { border-top: 0; }
+.penguin-photo { padding: 24px 0 24px 24px; min-width: 0; align-self: start; position: sticky; top: 0; }
+.penguin-photo > img { width: 100%; height: auto; max-height: 470px; object-fit: contain; background: var(--color-blue-light); }
+.penguin-photo figcaption, .penguin-chick-gallery figcaption { padding-top: 10px; font-size: .6875rem; line-height: 1.6; color: var(--color-muted); }
+.penguin-photo-label { display: block; font-weight: 600; }
+.penguin-photo-credit { display: block; }
+.penguin-photo-credit a { display: inline-block; padding-block: 4px; text-decoration: underline; text-underline-offset: 3px; }
+.penguin-photo-credit a:hover { color: var(--color-ink); }
+.penguin-species-copy { min-width: 0; padding: 26px 28px; }
+.penguin-species-copy h3 { margin-block: 8px 10px; font-size: clamp(1.65rem, 4vw, 2.25rem); }
+.penguin-latin { color: var(--color-ink-soft); font-size: 1rem; overflow-wrap: anywhere; }
+.penguin-latin > span { color: var(--color-muted); font-size: .75rem; margin-right: 6px; }
+.penguin-latin > i { font-family: Georgia, 'Times New Roman', serif; font-size: 1.15em; }
+.penguin-facts { margin: 22px 0; border-block: 1px solid var(--color-line); font-size: .8125rem; }
+.penguin-facts > div { display: grid; grid-template-columns: 74px minmax(0, 1fr); gap: 12px; padding-block: 10px; }
+.penguin-facts > div + div { border-top: 1px solid var(--color-line); }
+.penguin-facts dt { font-weight: 700; }
+.penguin-facts dd { margin: 0; overflow-wrap: anywhere; color: var(--color-ink-soft); }
+.penguin-section-label { margin: 16px 0 5px; font: 700 .8125rem/1.5 var(--font-body); color: var(--color-ink); }
+.penguin-note { color: var(--color-ink-soft); font-size: .875rem; line-height: 1.8; word-break: keep-all; overflow-wrap: anywhere; }
+.penguin-measure-note { margin-top: 20px; font-size: .6875rem; line-height: 1.6; color: var(--color-muted); }
+.penguin-source { display: inline-flex; align-items: center; min-height: 44px; gap: 8px; font-size: .6875rem; color: var(--color-muted); text-decoration: underline; text-underline-offset: 4px; }
+.penguin-access-date { font-size: .625rem; color: var(--color-muted); }
+.penguin-species-nav { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 4px; padding: 8px 20px; border-top: 1px solid var(--color-line); flex: none; }
+.penguin-species-nav button { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 3px; min-height: 54px; padding: 6px 4px; border: 1px solid transparent; border-radius: 5px; background: none; font-size: .75rem; line-height: 1.4; }
+.penguin-species-nav button > span { color: var(--color-muted); font-family: var(--font-code); font-size: .625rem; }
+.penguin-species-nav button[aria-pressed='true'] { border-color: var(--color-line-strong); background: var(--color-white); font-weight: 700; }
+.penguin-species-nav button:hover { background: var(--color-blue-light); }
+.penguin-guide-footer { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 4px 24px 8px; border-top: 1px solid var(--color-line); flex: none; }
+.penguin-guide-footer button { min-height: 44px; min-width: 44px; padding: 6px 4px; border: 0; background: none; font-size: .8125rem; }
+.penguin-guide-footer button:hover { color: var(--color-accent); }
+.penguin-page-count { font-family: var(--font-code); font-size: .75rem; color: var(--color-muted); }
+.penguin-page--chicks { display: block; }
+.penguin-chick-heading { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px; padding: 22px 24px; }
+.penguin-chick-heading h3 { font-size: clamp(1.5rem, 4vw, 2rem); margin-top: 5px; }
+.penguin-chick-gallery { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 0 24px; }
+.penguin-chick-gallery figure { min-width: 0; }
+.penguin-chick-gallery img { width: 100%; height: auto; }
+.penguin-chick-main { grid-column: 1 / -1; }
+.penguin-chick-main img { max-height: 500px; object-fit: cover; object-position: center 42%; }
+.penguin-chick-gallery > figure:not(.penguin-chick-main) img { aspect-ratio: 16 / 9; object-fit: cover; }
+.penguin-chick-notes { padding: 8px 24px 20px; }
+@media (max-width: 600px) {
+  .penguin-dialog { width: calc(100% - 20px); max-height: calc(100dvh - 20px); border-radius: 12px; }
+  .penguin-dialog .penguin-guide { max-height: calc(100dvh - 22px); }
+  .penguin-guide-header { padding: 12px 16px; }
+  .penguin-guide-modes { padding-inline: 16px; gap: 18px; }
+  .penguin-guide-modes button { font-size: .8125rem; }
+  .penguin-page { grid-template-columns: 1fr; }
+  .penguin-photo { padding: 16px 16px 0; position: static; }
+  .penguin-photo > img { max-height: 250px; }
+  .penguin-species-copy { padding: 20px 16px; }
+  .penguin-species-copy h3 { font-size: 1.6rem; }
+  .penguin-facts { margin-block: 18px; }
+  .penguin-species-nav { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 3px; padding: 6px 12px; }
+  .penguin-species-nav button { flex-direction: row; min-height: 44px; gap: 6px; font-size: .6875rem; }
+  .penguin-guide-footer { padding: 2px 16px max(6px, env(safe-area-inset-bottom)); }
+  .penguin-chick-heading { padding: 18px 16px; }
+  .penguin-chick-gallery { gap: 12px; padding-inline: 12px; }
+  .penguin-chick-main img { height: 360px; object-fit: cover; }
+  .penguin-chick-notes { padding-inline: 16px; }
+}
+@media (max-height: 500px) and (min-width: 601px) {
+  .penguin-guide-header { padding-block: 8px; }
+  .penguin-guide-header h2 { font-size: 1.25rem; }
+  .penguin-guide-header .penguin-eyebrow { display: none; }
+  .penguin-species-nav { padding-block: 4px; }
+  .penguin-species-nav button { min-height: 44px; flex-direction: row; gap: 8px; }
+  .penguin-guide-footer { padding-block: 0; }
+}

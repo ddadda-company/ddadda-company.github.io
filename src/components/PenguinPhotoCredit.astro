@@ -1,0 +1,5 @@
+---
+interface Props { photo: { author: string; source: string; license: string; licenseUrl: string }; }
+const { photo } = Astro.props;
+---
+<span class="penguin-photo-credit"><a href={photo.source} target="_blank" rel="noopener noreferrer">© {photo.author}</a><span aria-hidden="true"> · </span><a href={photo.licenseUrl} target="_blank" rel="noopener noreferrer">{photo.license}</a></span>

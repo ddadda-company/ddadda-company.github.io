@@ -1,6 +1,7 @@
 ---
 import Arrow from '../components/Arrow.astro';
 import MemberCard from '../components/MemberCard.astro';
+import PenguinGuide from '../components/PenguinGuide.astro';
 import { copy, pageUrl, type Locale } from '../data/i18n';
 import { members } from '../data/team';
 const { locale } = Astro.props as { locale: Locale };
@@ -17,3 +18,4 @@ const disciplines = [...new Set(members.flatMap(m => m.disciplines))];
   <p class="filter-empty" data-members-empty hidden>{t.noMatch}</p>
 </section>
 <section class="inline-next container"><a class="text-link" href={pageUrl(locale, 'contact')}>{t.contactLink}<Arrow /></a></section>
+<PenguinGuide locale={locale} />
