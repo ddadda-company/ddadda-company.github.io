@@ -1,0 +1,21 @@
+---
+import type { Locale } from '../data/i18n';
+import { memberSurprisePhotos } from '../data/member-surprise';
+const { locale } = Astro.props as { locale: Locale };
+const ko = locale === 'ko';
+---
+{memberSurprisePhotos.length > 0 && <dialog id="member-surprise" class="member-surprise" aria-label={ko ? '깜짝 사진' : 'Surprise photo'} data-photos={JSON.stringify(memberSurprisePhotos)} data-nosnippet>
+  <img data-surprise-photo alt={ko ? '깜짝 등장한 사진' : 'A surprise photo'} />
+  <button type="button" data-surprise-close autofocus aria-label={ko ? '닫기' : 'Close'}>×</button>
+</dialog>}
+<style is:global>
+  .member-surprise-trigger { appearance: none; padding: 0; border: 0; background: none; color: inherit; font: inherit; letter-spacing: inherit; text-align: inherit; cursor: pointer; }
+  .member-surprise-trigger:focus-visible { outline: 3px solid currentColor; outline-offset: 6px; }
+  .member-surprise { position: fixed; inset: 0; width: 100vw; height: 100dvh; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: #090909; overflow: hidden; cursor: pointer; }
+  .member-surprise::backdrop { background: #090909; }
+  .member-surprise[open] { display: grid; place-items: center; }
+  .member-surprise img { display: block; width: 100%; height: 100%; min-height: 0; object-fit: contain; }
+  .member-surprise [data-surprise-close] { position: absolute; top: max(16px, env(safe-area-inset-top)); right: max(16px, env(safe-area-inset-right)); width: 48px; height: 48px; padding: 0; border: 1px solid #ffffff80; border-radius: 50%; background: #000a; color: #fff; font-size: 32px; cursor: pointer; }
+  html:has(.member-surprise[open]) { overflow: hidden; }
+</style>
+<script src="../scripts/member-surprise.ts"></script>
