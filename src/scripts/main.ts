@@ -1,9 +1,3 @@
-document.querySelectorAll<HTMLAnchorElement>('[data-language]').forEach(link => {
-  link.addEventListener('click', () => {
-    try { localStorage.setItem('dda_com-language', link.dataset.language!); } catch { /* Optional preference. */ }
-  });
-});
-
 const menuButton = document.querySelector<HTMLButtonElement>('.menu-toggle');
 const mobileNav = document.querySelector<HTMLElement>('#mobile-nav');
 function closeMenu(restoreFocus = false) {

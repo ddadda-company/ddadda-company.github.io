@@ -32,6 +32,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     permissions:
+      contents: read
       pages: write
       id-token: write
     environment:
@@ -41,3 +42,9 @@ jobs:
       - name: Deploy site
         id: deployment
         uses: actions/deploy-pages@v5
+      - name: Check out validation script
+        uses: actions/checkout@v7
+      - name: Verify public GitHub Pages responses
+        env:
+          SITE_URL: ${{ steps.deployment.outputs.page_url }}
+        run: node scripts/check-live-seo.mjs "$SITE_URL"

@@ -58,15 +58,6 @@ const verificationTags = [
     <link rel="preload" href="/fonts/WantedSansVariable.woff2" as="font" type="font/woff2" crossorigin />
     {page === 'home' && <link rel="preload" href="/fonts/Fraunces-Soft-ExtraBold.woff2" as="font" type="font/woff2" crossorigin />}
     <title>{pageTitle}</title>
-    <script is:inline>
-      // Only the language-neutral entry point uses a saved preference.
-      // Deep links always retain their explicit language, including without JS.
-      try {
-        if (location.pathname === '/' && localStorage.getItem('dda_com-language') === 'en') {
-          location.replace('/en/' + location.search + location.hash);
-        }
-      } catch { /* Storage may be disabled; language links still work. */ }
-    </script>
   </head>
   <body data-page={page} class="identity-v3">
     <a class="skip-link" href="#main">{t.skip}</a>

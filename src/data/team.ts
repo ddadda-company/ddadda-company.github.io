@@ -13,6 +13,7 @@ export interface Achievement {
   format: 'Jeopardy' | 'Attack & Defense' | 'Hack quest' | 'Other';
   description?: Localized;
   qualifiedForFinals?: boolean; // Confirmed progression from this qualifier
+  featured?: boolean; // Selected results shown on the homepage, using this same record
   timelineName?: Localized; // Optional compact name for the date navigator
   timelineNote?: Localized;
   photos?: AchievementImage[];
@@ -74,16 +75,19 @@ export const achievements: Achievement[] = [
   },
   {
     ...result('2026-08-07', 'DEF CON 34 CTF Finals', 7, 'https://www.dailysecu.com/news/articleView.html?idxno=207969', 'Attack & Defense'),
+    featured: true,
     photos: achievementImages.defconFinals,
     description: { ko: "Jinddabi’s 연합팀으로 본선 참가", en: 'Finals as part of the Jinddabi’s coalition' },
   },
   {
     ...result('2026-07-23', 'CODEGATE 2026 Finals', 2, 'https://zdnet.co.kr/view/?no=20260724173734'),
+    featured: true,
     photos: achievementImages.codegateFinals,
     description: { ko: '일반부 본선 · 따따', en: 'General division finals · dda_com' },
   },
   {
     ...result('2026-07-09', 'HackTheon Sejong 2026 Finals', 1, 'https://www.yna.co.kr/view/AKR20260710119900063'),
+    featured: true,
     photos: achievementImages.hacktheonAdvanced,
     timelineName: { ko: 'HackTheon 고급부', en: 'HackTheon Advanced' },
     description: { ko: '고급부문 대상 · 정현수의전역을축하합니다', en: 'Advanced division winner · 정현수의전역을축하합니다' },

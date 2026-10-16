@@ -30,7 +30,7 @@ npm run preview
 | 멤버 | `/members/` | `/en/members/` |
 | 문의 | `/contact/` | `/en/contact/` |
 
-KO / EN은 현재 페이지를 유지하며 언어를 전환합니다. 선택한 언어는 브라우저에 저장되고 다음 루트 방문에 적용됩니다. 언어가 명시된 링크는 직접 접근할 수 있습니다. 자바스크립트가 꺼져 있어도 모든 내용과 언어 링크를 사용할 수 있습니다.
+KO / EN은 현재 페이지를 유지하며 언어를 전환합니다. `/`는 항상 한국어, `/en/`은 항상 영어를 제공하며 저장된 언어 설정으로 자동 이동하지 않습니다. 각 언어의 내부 링크가 선택한 언어를 유지합니다. 자바스크립트가 꺼져 있어도 모든 내용과 언어 링크를 사용할 수 있습니다.
 
 ## SEO와 AI 검색 노출
 
@@ -39,7 +39,7 @@ KO / EN은 현재 페이지를 유지하며 언어를 전환합니다. 선택한
 - 한영 8개 페이지에 고유한 제목·설명, 절대 주소 canonical, 상호 연결된 `ko`·`en`·`x-default` hreflang, Open Graph·Twitter 카드가 들어갑니다.
 - `/sitemap.xml`과 대체 제출용 `/sitemap.txt`는 같은 실제 페이지 목록에서 생성하며 `/robots.txt`에 연결됩니다. XML에는 언어별 대체 주소도 포함합니다. 404는 사이트맵에서 제외하고 `noindex, follow`를 지정합니다. 404에 홈페이지 canonical이나 구조화 데이터를 붙이지 않습니다.
 - `src/lib/seo.ts`에서 `Organization`, `WebSite`, 페이지 유형별 JSON-LD와 멤버 `Person`·`ItemList`를 생성합니다. 팀의 한영 이름, 공식 GitHub·CTFtime, 이메일과 실제 공개 프로필만 사용합니다. 미확인 수상·전문 분야·주소는 생성하지 않습니다.
-- 홈의 팀 설명과 성과의 출처·기준일은 HTML 본문에서 읽을 수 있습니다. CTFtime 순위는 `rating.checkedAt` 당시의 기록이며 실시간 순위로 표시하지 않습니다. 숨은 퍼즐 코드·플래그는 `data-nosnippet`으로 Google 검색 설명문에서 제외합니다.
+- 홈의 팀 설명·대표 대회 기록과 성과의 출처·기준일은 HTML 본문에서 읽을 수 있습니다. 홈의 인원·기록 수와 대표 성과는 `team.ts`의 실제 데이터에서 생성합니다. `featured: true`로 대표 성과를 선택하며 개인·연합팀 참가 설명도 그대로 표시합니다. CTFtime 순위는 `rating.checkedAt` 당시의 기록이며 실시간 순위로 표시하지 않습니다. 숨은 퍼즐 코드·플래그는 `data-nosnippet`으로 Google 검색 설명문에서 제외합니다.
 - `User-agent: *` 규칙은 검색·AI 검색 크롤러를 포함해 공개 페이지 수집을 허용합니다. 이는 robots.txt 수준의 설정이며 각 서비스의 수집·인용을 보장하지 않습니다.
 
 [Google의 AI 검색 안내](https://developers.google.com/search/docs/fundamentals/ai-optimization-guide)에 따라 읽을 수 있는 본문, 명확한 출처, 일반 SEO를 중심으로 구성했습니다. `llms.txt`나 AI 전용 마크업은 Google 검색 노출의 요건이 아니며 검색 순위나 AI 답변 인용을 보장하지 않습니다. 구조화 데이터는 [공식 Organization 안내](https://developers.google.com/search/docs/appearance/structured-data/organization), 언어 연결은 [다국어 페이지 안내](https://developers.google.com/search/docs/specialty/international/localized-versions)를 따릅니다.
@@ -54,9 +54,15 @@ npm run check:seo
 
 `check:seo`는 배포할 HTML을 읽어 페이지 누락·중복, 대표 주소, 언어 연결의 상호성, 제목·설명, 공유 이미지 파일, JSON-LD와 실제 멤버 앵커, XML·텍스트 사이트맵의 URL 일치, robots.txt, 404 검색 제외를 검사합니다. GitHub Pages 배포 작업에서도 실행합니다.
 
+배포 이후에는 `npm run check:seo:live`로 공개 URL의 실제 HTTP 상태·Content-Type·색인 차단 헤더·소유권 태그·canonical·언어 연결·정적 본문·내부 링크·사이트맵·robots.txt와 존재하지 않는 주소의 404 응답까지 검사합니다. GitHub Actions도 배포 직후 이 검사를 실행합니다. 로컬 빌드 통과와 실제 호스팅 응답을 구분하기 위한 검사이며 Google의 수집·색인 완료를 의미하지 않습니다.
+
+GitHub Pages에는 빌드된 HTML과 파일을 배포합니다. 이 저장소는 조직 사이트이므로 주소에 저장소 이름을 덧붙이지 않고 도메인 루트를 사용합니다. URL별 `index.html`을 생성하고 페이지 본문과 검색 태그를 초기 HTML에 포함하며, 실제 HTTP 404를 유지합니다. 언어별 주소·canonical·사이트맵의 주소를 일치시키고, 서버 설정 파일로 검색엔진 처리를 제어한다고 가정하지 않습니다. [GitHub Pages 구조](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages), [Google 다국어 주소 안내](https://developers.google.com/search/docs/specialty/international/managing-multi-regional-sites)
+
 ### 배포 후 검색 서비스 등록
 
 2026-10-15 Google Search Console과 Bing Webmaster Tools의 소유권 인증을 완료하고 `/sitemap.xml`을 제출했습니다. 인증 태그는 GitHub Actions 저장소 변수에서 빌드에 전달합니다. 네이버 관리 도구 등록은 사용자 요청으로 제외했습니다.
+
+2026-10-16 재점검에서 URL 검사상 8개 중 7개 페이지는 이미 색인이 생성되어 있었고 `/en/contact/`만 아직 알려지지 않은 URL로 표시되었습니다. 한국어 홈은 10월 15일 22:20:59 KST에 Googlebot 스마트폰으로 수집되었으며 Google이 선택한 표준 주소도 `/`입니다. XML 사이트맵의 10월 16일 14:12 KST 실시간 검사는 수집 허용·가져오기 성공을 확인했습니다. 직접 조치와 보안 문제도 없었습니다. 그러나 사이트맵 보고서는 XML·텍스트 모두 `가져올 수 없음`, 발견된 페이지 0개로 표시되었고, XML을 한 번 재제출한 직후에도 동일했습니다. 사이트맵 처리 실패와 개별 페이지 색인 여부는 별개이며 이 상태를 사이트 전체 색인 실패나 GitHub Pages 차단으로 단정하지 않습니다. 페이지 색인 생성 집계 보고서는 아직 데이터 처리 중이었습니다.
 
 소유자 계정에서 Google Search Console, 네이버 서치어드바이저, Bing Webmaster Tools에 `https://ddadda-company.github.io/`를 등록합니다. HTML 태그 인증을 선택했다면 발급된 태그의 **content 값만** 각각 `GOOGLE_SITE_VERIFICATION`, `NAVER_SITE_VERIFICATION`, `BING_SITE_VERIFICATION`으로 설정하세요. 로컬 빌드는 `.env.example`을 복사한 `.env`, GitHub Pages는 저장소의 Settings → Secrets and variables → Actions → Variables를 사용합니다. 인증 값은 HTML에 공개되는 토큰입니다. 값이 비어 있으면 태그를 출력하지 않습니다.
 
