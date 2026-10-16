@@ -6,6 +6,7 @@ import PenguinPhotoCredit from './PenguinPhotoCredit.astro';
 import '../styles/penguin-guide.css';
 const { locale } = Astro.props as { locale: Locale };
 const ko = locale === 'ko';
+const chickTitle = ko ? '아기황제펭귄들' : 'Baby emperor penguins';
 ---
 <section class="penguin-guide" id="penguin-guide" aria-labelledby="penguin-guide-title" data-nosnippet>
   <header class="penguin-guide-header">
@@ -14,7 +15,7 @@ const ko = locale === 'ko';
   </header>
   <div class="penguin-guide-modes" data-penguin-controls hidden role="group" aria-label={ko ? '도감 페이지' : 'Guide pages'}>
     <button type="button" data-penguin-mode="species" aria-pressed="true">{ko ? '펭귄 6종' : '6 penguin species'}</button>
-    <button type="button" data-penguin-mode="chicks" aria-pressed="false">{ko ? '황제펭귄 유조' : 'Emperor penguin chicks'}<span aria-hidden="true"> ↗</span></button>
+    <button type="button" data-penguin-mode="chicks" aria-pressed="false">{chickTitle}<span aria-hidden="true"> ↗</span></button>
   </div>
   <div class="penguin-guide-body" data-penguin-body>
     {penguins.map((penguin, index) => <article class={`penguin-page penguin-page--${penguin.id}`} data-penguin-page data-penguin-name={penguin.name[locale]} aria-labelledby={`penguin-${penguin.id}-title`}>
@@ -40,10 +41,10 @@ const ko = locale === 'ko';
         <p class="penguin-access-date">{ko ? '자료 확인' : 'Accessed'} 2026-10-16</p>
       </div>
     </article>)}
-    <article class="penguin-page penguin-page--chicks" data-penguin-page data-penguin-name={ko ? '황제펭귄 유조' : 'Emperor penguin chicks'} aria-labelledby="penguin-chicks-title">
-      <header class="penguin-chick-heading"><div><p class="penguin-eyebrow">Emperor penguin chicks</p><h3 id="penguin-chicks-title">{ko ? '황제펭귄 유조' : 'Emperor penguin chicks'}</h3></div><p class="penguin-latin"><i lang="la">Aptenodytes forsteri</i></p></header>
+    <article class="penguin-page penguin-page--chicks" data-penguin-page data-penguin-name={chickTitle} aria-labelledby="penguin-chicks-title">
+      <header class="penguin-chick-heading"><div><p class="penguin-eyebrow">Emperor penguin chicks</p><h3 id="penguin-chicks-title">{chickTitle}</h3></div><p class="penguin-latin"><i lang="la">Aptenodytes forsteri</i></p></header>
       <div class="penguin-chick-gallery">
-        <figure class="penguin-chick-main"><img data-penguin-chicks src={photos.chicks.src} width={photos.chicks.width} height={photos.chicks.height} alt={ko ? '남극 아트카만에서 가까이 모여 선 회색 솜털의 황제펭귄 새끼들' : 'Fluffy emperor penguin chicks standing together in Atka Bay, Antarctica'} loading="lazy" decoding="async" /><figcaption><span class="penguin-photo-label">{ko ? '아트카만, 웨들해 · 황제펭귄 유조' : 'Atka Bay, Weddell Sea · emperor penguin chicks'}</span><PenguinPhotoCredit photo={photos.chicks} /></figcaption></figure>
+        <figure class="penguin-chick-main"><img data-penguin-chicks src={photos.chicks.src} width={photos.chicks.width} height={photos.chicks.height} alt={ko ? '남극 아트카만에서 가까이 모여 선 회색 솜털의 황제펭귄 새끼들' : 'Fluffy emperor penguin chicks standing together in Atka Bay, Antarctica'} loading="lazy" decoding="async" /><figcaption><span class="penguin-photo-label">{ko ? '아트카만, 웨들해 · 아기황제펭귄들' : 'Atka Bay, Weddell Sea · emperor penguin chicks'}</span><PenguinPhotoCredit photo={photos.chicks} /></figcaption></figure>
         <figure><img src={photos['chick-colony'].src} width={photos['chick-colony'].width} height={photos['chick-colony'].height} alt={ko ? '스노힐섬에서 황제펭귄 새끼와 성체가 빽빽하게 모인 번식 집단' : 'A dense breeding colony of emperor penguin chicks and adults on Snow Hill Island'} loading="lazy" decoding="async" /><figcaption><span class="penguin-photo-label">{ko ? '스노힐섬 · 번식 집단' : 'Snow Hill Island · breeding colony'}</span><PenguinPhotoCredit photo={photos['chick-colony']} /></figcaption></figure>
         <figure><img src={photos['chick-line'].src} width={photos['chick-line'].width} height={photos['chick-line'].height} alt={ko ? '스노힐섬의 푸른 얼음 앞에 나란히 선 황제펭귄 새끼들' : 'Emperor penguin chicks standing side by side in front of blue ice on Snow Hill Island'} loading="lazy" decoding="async" /><figcaption><span class="penguin-photo-label">{ko ? '스노힐섬 · 유조의 솜털' : 'Snow Hill Island · chick down'}</span><PenguinPhotoCredit photo={photos['chick-line']} /></figcaption></figure>
       </div>
