@@ -29,6 +29,10 @@ const links = [
     {member.role && <span class="member-gallery-role">{member.role[locale]}</span>}
   </Portrait>
   <div class="member-info"><h3 id={`${profileAnchor}-name`}>{hasPenguinGuide ? <a href={guideUrl} data-penguin-open aria-label={guideLabel}>{member.handle}<span class="member-penguin-hint" aria-hidden="true">🐧</span></a> : compact ? <a href={`${pageUrl(locale, 'members')}#${profileAnchor}`}>{member.handle}</a> : hasSurprise ? <button type="button" class="member-surprise-trigger" data-surprise-open aria-haspopup="dialog" aria-controls="member-surprise">{member.handle}</button> : member.handle}</h3></div>
+  {hasSurprise && <div class="surprise-collection-entry" hidden data-surprise-entry>
+    <button type="button" class="surprise-collection-trigger" data-surprise-collection-open aria-haspopup="dialog" aria-controls="surprise-collection">{locale === 'ko' ? '사진 도감' : 'Photo collection'} <strong data-surprise-count>0/{memberSurprisePhotos.length}</strong><span aria-hidden="true"> ↗</span></button>
+    <p class="surprise-collection-status" data-surprise-status role="status" aria-live="polite" aria-atomic="true"></p>
+  </div>}
   <div class:list={['member-biography', { 'member-biography--empty': !member.bio[locale] }]} aria-hidden={!member.bio[locale] ? 'true' : undefined}>{member.bio[locale] && <p>{member.bio[locale]}</p>}</div>
   {member.disciplines.length > 0 && <p class="member-card-fields">{member.disciplines.join(' · ')}</p>}
   <div class="member-contacts">

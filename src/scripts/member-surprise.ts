@@ -1,14 +1,21 @@
+import { setupMemberCollection } from './member-collection';
+
 function setupMemberSurprise() {
   const dialog = document.querySelector<HTMLDialogElement>('#member-surprise');
   if (!dialog || typeof dialog.showModal !== 'function') return;
   const photos: string[] = JSON.parse(dialog.dataset.photos || '[]');
   const photo = dialog.querySelector<HTMLImageElement>('[data-surprise-photo]')!;
+  const discovery = dialog.querySelector<HTMLElement>('[data-surprise-discovery]')!;
+  const status = document.querySelector<HTMLElement>('[data-surprise-status]')!;
+  const recordPhoto = setupMemberCollection(photos);
   const readyPhotos: string[] = [];
   // Decode ahead of the click so opening the dialog never waits on a download.
-  const preloads = photos.map(src => {
+  const preloads = photos.map(async src => {
     const image = new Image();
     image.src = src;
-    return image.decode().then(() => { readyPhotos.push(src); return src; });
+    await image.decode();
+    readyPhotos.push(src);
+    return src;
   });
   const firstReady = Promise.any(preloads);
   // A failed preload must not create an unhandled rejection before a click.
@@ -37,7 +44,13 @@ function setupMemberSurprise() {
       if (!readyPhotos.length) {
         // Only a click before the first image arrives needs to wait for loading.
         timer = window.setTimeout(reset, 8000);
-        try { await firstReady; } catch { if (generation === attempt) reset(); return; }
+        try { await firstReady; } catch {
+          if (generation === attempt) {
+            reset();
+            status.textContent = document.documentElement.lang === 'ko' ? '사진을 불러오지 못했어요. 페이지를 새로고침해 주세요.' : 'Could not load a photo. Please reload the page.';
+          }
+          return;
+        }
       }
       if (generation !== attempt) return;
       window.clearTimeout(timer);
@@ -49,12 +62,14 @@ function setupMemberSurprise() {
       lastPhoto = src;
       pending = false;
       dialog.showModal();
+      discovery.textContent = recordPhoto(src);
       timer = window.setTimeout(dismiss, 1600);
     });
   });
   dialog.addEventListener('click', dismiss);
   dialog.addEventListener('close', () => {
     reset();
+    status.textContent = discovery.textContent;
     opener?.focus({ preventScroll: true });
   });
   document.addEventListener('keydown', event => { if (event.key === 'Escape') dismiss(); });

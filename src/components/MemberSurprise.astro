@@ -1,12 +1,33 @@
 ---
 import type { Locale } from '../data/i18n';
 import { memberSurprisePhotos } from '../data/member-surprise';
+import '../styles/member-collection.css';
 const { locale } = Astro.props as { locale: Locale };
 const ko = locale === 'ko';
 ---
 {memberSurprisePhotos.length > 0 && <dialog id="member-surprise" class="member-surprise" aria-label={ko ? '깜짝 사진' : 'Surprise photo'} data-photos={JSON.stringify(memberSurprisePhotos)} data-nosnippet>
   <img data-surprise-photo alt={ko ? '깜짝 등장한 사진' : 'A surprise photo'} />
+  <p class="surprise-discovery" data-surprise-discovery></p>
   <button type="button" data-surprise-close autofocus aria-label={ko ? '닫기' : 'Close'}>×</button>
+</dialog>}
+{memberSurprisePhotos.length > 0 && <dialog id="surprise-collection" class="surprise-collection" aria-labelledby="surprise-collection-title" data-nosnippet>
+  <header class="surprise-collection-header">
+    <div><p class="surprise-collection-owner">8l4nk</p><h2 id="surprise-collection-title">{ko ? '사진 도감' : 'Photo collection'}</h2></div>
+    <button type="button" class="surprise-collection-close" data-collection-close autofocus aria-label={ko ? '도감 닫기' : 'Close collection'}>×</button>
+  </header>
+  <div class="surprise-collection-body">
+    <div class="surprise-collection-progress"><strong data-surprise-count>0/{memberSurprisePhotos.length}</strong><progress data-collection-progress value="0" max={memberSurprisePhotos.length} aria-label={ko ? '사진 수집 진행률' : 'Photo collection progress'}></progress></div>
+    <p class="surprise-collection-instruction">{ko ? '8l4nk 프로필을 누르면 만난 사진이 등록돼요.' : 'Click the 8l4nk profile to discover and collect photos.'}</p>
+    <p class="surprise-collection-complete" data-collection-complete hidden>{ko ? '전부 모았다! 도감 완성 🎉' : 'Found them all! Collection complete 🎉'}</p>
+    <div class="surprise-collection-grid">
+      {memberSurprisePhotos.map((src, index) => <button type="button" class="surprise-collection-slot" data-collection-photo={src} disabled aria-pressed="false" aria-label={ko ? `사진 ${index + 1} · 미발견` : `Photo ${index + 1} · Undiscovered`}>
+        <span class="surprise-collection-thumbnail"><span data-collection-lock aria-hidden="true">?</span><img data-collection-thumbnail alt="" width="240" height="180" hidden /></span>
+        <span class="surprise-collection-caption"><span>{String(index + 1).padStart(2, '0')}</span><span data-collection-label>{ko ? '미발견' : 'Undiscovered'}</span></span>
+      </button>)}
+    </div>
+    <figure class="surprise-collection-detail" data-collection-detail hidden><img data-collection-full-photo alt="" /><figcaption data-collection-detail-caption></figcaption></figure>
+    <p class="surprise-collection-storage" data-collection-storage hidden>{ko ? '이 브라우저에서 저장할 수 없어 이번 페이지에서만 수집 기록이 유지돼요.' : 'Storage is unavailable. Your collection will last only on this page.'}</p>
+  </div>
 </dialog>}
 <style is:global>
   .member-surprise-trigger { appearance: none; padding: 0; border: 0; background: none; color: inherit; font: inherit; letter-spacing: inherit; text-align: inherit; cursor: pointer; }
