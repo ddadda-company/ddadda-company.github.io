@@ -1,0 +1,26 @@
+---
+import type { Locale } from '../data/i18n';
+import '../styles/member-romance.css';
+const { locale } = Astro.props as { locale: Locale };
+const ko = locale === 'ko';
+---
+<dialog id="member-romance" class="member-romance" aria-labelledby="member-romance-title" data-nosnippet>
+  <header class="romance-header"><h2 id="member-romance-title">{ko ? '뜻밖의 만남' : 'An unexpected encounter'}</h2><button type="button" class="romance-close" data-romance-close aria-label={ko ? '미연시 닫기' : 'Close mini-game'}>×</button></header>
+  <div class="romance-body">
+    <div class="romance-scene">
+      <span class="romance-heart romance-heart--one" aria-hidden="true">♥</span><span class="romance-heart romance-heart--two" aria-hidden="true">♡</span>
+      <div class="romance-portrait">
+        <img src="/images/surprises/8l4nk/photo-01.png" width="796" height="1024" loading="lazy" alt={ko ? '볼에 분홍빛 홍조를 띤 8l4nk' : '8l4nk with rosy, blushing cheeks'} />
+        <span class="romance-blush romance-blush--left" aria-hidden="true"></span><span class="romance-blush romance-blush--right" aria-hidden="true"></span>
+        <span class="romance-blush-lines romance-blush-lines--left" aria-hidden="true">///</span><span class="romance-blush-lines romance-blush-lines--right" aria-hidden="true">///</span>
+      </div>
+      <span class="romance-name">8l4nk</span>
+    </div>
+    <div class="romance-conversation">
+      <p class="romance-page" data-romance-page></p>
+      <div class="romance-dialogue" data-romance-dialogue tabindex="-1" role="status" aria-live="polite" aria-atomic="true"><p class="romance-reply" data-romance-reply hidden></p><h3 data-romance-ending hidden></h3><p data-romance-line></p></div>
+      <div class="romance-choices" data-romance-choices></div>
+      <button type="button" class="romance-finish" data-romance-finish hidden>{ko ? '다음에 또 만나' : 'See you next time'}</button>
+    </div>
+  </div>
+</dialog>

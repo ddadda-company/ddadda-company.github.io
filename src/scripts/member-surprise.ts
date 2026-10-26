@@ -1,4 +1,5 @@
 import { recordMemberPhoto } from './member-collection';
+import { setupMemberRomance } from './member-romance';
 
 function setupMemberSurprise() {
   const dialog = document.querySelector<HTMLDialogElement>('#member-surprise');
@@ -7,6 +8,7 @@ function setupMemberSurprise() {
   const photo = dialog.querySelector<HTMLImageElement>('[data-surprise-photo]')!;
   const discovery = dialog.querySelector<HTMLElement>('[data-surprise-discovery]')!;
   const status = document.querySelector<HTMLElement>('[data-surprise-status]')!;
+  const openRomance = setupMemberRomance();
   const readyPhotos: string[] = [];
   // Decode ahead of the click so opening the dialog never waits on a download.
   const preloads = photos.map(async src => {
@@ -24,6 +26,7 @@ function setupMemberSurprise() {
   let generation = 0;
   let lastPhoto = '';
   let timer: number | undefined;
+  let continueToRomance = false;
 
   const reset = () => {
     generation++;
@@ -31,6 +34,7 @@ function setupMemberSurprise() {
     window.clearTimeout(timer);
   };
   const dismiss = () => {
+    continueToRomance = false;
     reset();
     if (dialog.open) dialog.close();
   };
@@ -62,13 +66,20 @@ function setupMemberSurprise() {
       pending = false;
       dialog.showModal();
       discovery.textContent = recordMemberPhoto(src);
-      timer = window.setTimeout(dismiss, 1600);
+      const romanceEncounter = Math.random() < 0.2;
+      timer = window.setTimeout(() => {
+        continueToRomance = romanceEncounter && !document.hidden;
+        dialog.close();
+      }, 1600);
     });
   });
   dialog.addEventListener('click', dismiss);
   dialog.addEventListener('close', () => {
+    const startRomance = continueToRomance;
+    continueToRomance = false;
     reset();
     status.textContent = discovery.textContent;
+    if (startRomance && openRomance(opener)) return;
     opener?.focus({ preventScroll: true });
   });
   document.addEventListener('keydown', event => { if (event.key === 'Escape') dismiss(); });

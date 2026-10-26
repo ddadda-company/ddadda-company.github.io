@@ -1,6 +1,7 @@
 ---
 import type { Locale } from '../data/i18n';
 import { memberSurprisePhotos } from '../data/member-surprise';
+import MemberRomance from './MemberRomance.astro';
 const { locale } = Astro.props as { locale: Locale };
 const ko = locale === 'ko';
 ---
@@ -9,6 +10,7 @@ const ko = locale === 'ko';
   <p class="surprise-discovery" data-surprise-discovery></p>
   <button type="button" data-surprise-close autofocus aria-label={ko ? '닫기' : 'Close'}>×</button>
 </dialog>}
+{memberSurprisePhotos.length > 0 && <MemberRomance locale={locale} />}
 <style is:global>
   .member-surprise-trigger { appearance: none; padding: 0; border: 0; background: none; color: inherit; font: inherit; letter-spacing: inherit; text-align: inherit; cursor: pointer; }
   .member-surprise-trigger:focus-visible { outline: 3px solid currentColor; outline-offset: 6px; }

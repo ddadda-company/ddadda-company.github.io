@@ -97,6 +97,8 @@ try {
     await page.setViewportSize({ width, height: 844 });
     await page.evaluate(() => scrollTo(0, document.body.scrollHeight));
     await expect(collectionTrigger).toBeInViewport();
+    const position = await collectionTrigger.boundingBox();
+    assert(position.x < 40 && position.y > 844 / 2, 'Quest button must sit at the bottom left');
   }
 
   // The album handles a failed full-size image and can retry without losing discoveries.
@@ -160,6 +162,8 @@ try {
   assert.equal(await blockedPage.locator('[data-surprise-photo]').evaluate(el => getComputedStyle(el).animationName), 'none');
   await expect(blockedPage.locator('[data-surprise-entry] [data-surprise-count]')).toHaveText('1/6');
   await blockedPage.keyboard.press('Escape');
+  assert.equal(await blockedPage.locator('[data-surprise-entry]').evaluate(el => getComputedStyle(el).animationName), 'none');
+  assert.equal(await blockedPage.locator('.surprise-quest-sparkles > span').first().evaluate(el => getComputedStyle(el).animationName), 'none');
   await blockedPage.locator('[data-surprise-collection-open]').click();
   await expect(blockedPage.locator('[data-collection-storage]')).toBeVisible();
   await blocked.close();
