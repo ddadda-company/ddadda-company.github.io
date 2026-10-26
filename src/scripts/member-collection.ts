@@ -1,7 +1,10 @@
 const storageKey = 'dda_com-8l4nk-collection-v1';
 
-export function setupMemberCollection(photos: string[]) {
-  const dialog = document.querySelector<HTMLDialogElement>('#surprise-collection')!;
+function setupMemberCollection() {
+  const dialog = document.querySelector<HTMLDialogElement>('#surprise-collection');
+  if (!dialog || typeof dialog.showModal !== 'function') return () => '';
+  const photos: string[] = JSON.parse(dialog.dataset.photos || '[]');
+  const entry = document.querySelector<HTMLElement>('[data-surprise-entry]')!;
   const ko = document.documentElement.lang === 'ko';
   const text = (korean: string, english: string) => ko ? korean : english;
   const slots = [...dialog.querySelectorAll<HTMLButtonElement>('[data-collection-photo]')];
@@ -12,6 +15,8 @@ export function setupMemberCollection(photos: string[]) {
   const detail = dialog.querySelector<HTMLElement>('[data-collection-detail]')!;
   const fullPhoto = dialog.querySelector<HTMLImageElement>('[data-collection-full-photo]')!;
   const caption = dialog.querySelector<HTMLElement>('[data-collection-detail-caption]')!;
+  const imageStatus = dialog.querySelector<HTMLElement>('[data-collection-image-status]')!;
+  const retry = dialog.querySelector<HTMLButtonElement>('[data-collection-retry]')!;
   let selected = '';
   let opener: HTMLElement | undefined;
 
@@ -29,6 +34,9 @@ export function setupMemberCollection(photos: string[]) {
   const photoName = (src: string) => `${text('사진', 'Photo')} ${String(photos.indexOf(src) + 1).padStart(2, '0')}`;
 
   const render = () => {
+    entry.hidden = collected.size === 0;
+    entry.dataset.complete = String(collected.size === photos.length);
+    dialog.querySelectorAll<HTMLElement>('[data-collection-stamp]').forEach(stamp => { stamp.dataset.found = String(collected.has(stamp.dataset.collectionStamp!)); });
     counts.forEach(count => { count.textContent = `${collected.size}/${photos.length}`; });
     progress.value = collected.size;
     complete.hidden = collected.size !== photos.length;
@@ -40,17 +48,36 @@ export function setupMemberCollection(photos: string[]) {
       slot.setAttribute('aria-pressed', String(found && selected === src));
       slot.setAttribute('aria-label', `${photoName(src)} · ${found ? text('크게 보기', 'View photo') : text('미발견', 'Undiscovered')}`);
       slot.querySelector<HTMLElement>('[data-collection-lock]')!.hidden = found;
-      slot.querySelector<HTMLElement>('[data-collection-label]')!.textContent = found ? text('수집 완료', 'Collected') : text('미발견', 'Undiscovered');
+      slot.querySelector<HTMLElement>('[data-collection-label]')!.textContent = found ? text('수집 완료', 'Collected') : text('미발견', 'Not found');
       image.hidden = !found;
       if (found && image.getAttribute('src') !== src) image.src = src;
     });
     detail.hidden = !collected.has(selected);
     if (!detail.hidden) {
-      fullPhoto.src = selected;
+      if (fullPhoto.getAttribute('src') !== selected) loadPhoto(selected);
       fullPhoto.alt = `8l4nk · ${photoName(selected)}`;
       caption.textContent = photoName(selected);
     }
   };
+  const loadPhoto = (src: string) => {
+    detail.dataset.state = 'loading';
+    imageStatus.textContent = text('사진 불러오는 중…', 'Loading photo…');
+    imageStatus.hidden = false;
+    retry.hidden = true;
+    fullPhoto.src = src;
+  };
+  fullPhoto.addEventListener('load', () => {
+    detail.dataset.state = 'success';
+    imageStatus.hidden = true;
+    retry.hidden = true;
+  });
+  fullPhoto.addEventListener('error', () => {
+    detail.dataset.state = 'error';
+    imageStatus.textContent = text('사진을 불러오지 못했어요.', 'Could not load this photo.');
+    imageStatus.hidden = false;
+    retry.hidden = false;
+  });
+  retry.addEventListener('click', () => loadPhoto(`${selected}?retry=${Date.now()}`));
   const mergeSaved = () => { read().forEach(src => collected.add(src)); };
   const record = (src: string) => {
     if (!photos.includes(src)) return '';
@@ -66,10 +93,9 @@ export function setupMemberCollection(photos: string[]) {
     return `${message} ${collected.size}/${photos.length}${isNew && collected.size === photos.length ? text(' · 도감 완성 🎉', ' · Collection complete 🎉') : ''}`;
   };
 
-  document.querySelectorAll<HTMLElement>('[data-surprise-entry]').forEach(entry => { entry.hidden = false; });
   document.querySelectorAll<HTMLElement>('[data-surprise-collection-open]').forEach(trigger => {
     trigger.addEventListener('click', () => {
-      if (document.querySelector('dialog[open]')) return;
+      if (!collected.size || document.querySelector('dialog[open]')) return;
       opener = trigger;
       mergeSaved();
       if (!selected) selected = photos.find(src => collected.has(src)) || '';
@@ -107,3 +133,5 @@ export function setupMemberCollection(photos: string[]) {
   render();
   return record;
 }
+
+export const recordMemberPhoto = setupMemberCollection();

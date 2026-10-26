@@ -1,4 +1,4 @@
-import { setupMemberCollection } from './member-collection';
+import { recordMemberPhoto } from './member-collection';
 
 function setupMemberSurprise() {
   const dialog = document.querySelector<HTMLDialogElement>('#member-surprise');
@@ -7,7 +7,6 @@ function setupMemberSurprise() {
   const photo = dialog.querySelector<HTMLImageElement>('[data-surprise-photo]')!;
   const discovery = dialog.querySelector<HTMLElement>('[data-surprise-discovery]')!;
   const status = document.querySelector<HTMLElement>('[data-surprise-status]')!;
-  const recordPhoto = setupMemberCollection(photos);
   const readyPhotos: string[] = [];
   // Decode ahead of the click so opening the dialog never waits on a download.
   const preloads = photos.map(async src => {
@@ -62,7 +61,7 @@ function setupMemberSurprise() {
       lastPhoto = src;
       pending = false;
       dialog.showModal();
-      discovery.textContent = recordPhoto(src);
+      discovery.textContent = recordMemberPhoto(src);
       timer = window.setTimeout(dismiss, 1600);
     });
   });

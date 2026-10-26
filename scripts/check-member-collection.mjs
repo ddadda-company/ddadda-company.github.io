@@ -24,14 +24,17 @@ const collection = page.locator('#surprise-collection');
 const surprise = page.locator('#member-surprise');
 
 try {
+  await page.goto(`${base}/`);
+  await expect(collectionTrigger).not.toBeVisible();
+  await expect(collection.locator('img[src]')).toHaveCount(0);
   await page.goto(`${base}/members/`);
   await page.waitForFunction(() => window.photoDecodeOrder.length === 6);
   await expect(counter).toHaveText('0/6');
-  await collectionTrigger.click();
+  await expect(collectionTrigger).not.toBeVisible();
+  await expect(collectionTrigger).not.toBeVisible();
+  await expect(page.locator('#member-8l4nk [data-surprise-entry]')).toHaveCount(0);
   await expect(collection.locator('[data-collection-photo]:disabled')).toHaveCount(6);
   await expect(collection.locator('img[src]')).toHaveCount(0);
-  await page.keyboard.press('Escape');
-  await expect(collectionTrigger).toBeFocused();
   const photos = await page.evaluate(() => window.photoDecodeOrder);
   let last = '';
   const found = new Set();
@@ -50,11 +53,27 @@ try {
     if (index === 5) await expect(surprise).not.toBeVisible({ timeout: 3000 });
     else await page.keyboard.press('Escape');
     await expect(trigger).toBeFocused();
+    await expect(collectionTrigger).toBeVisible();
+    if (found.size === 1) {
+      assert.equal(await page.locator('[data-surprise-entry]').evaluate(el => getComputedStyle(el).position), 'fixed');
+      await collectionTrigger.click();
+      await expect(collection.locator('[data-collection-photo]:disabled')).toHaveCount(5);
+      await page.keyboard.press('Escape');
+      await expect(collectionTrigger).toBeFocused();
+    }
     last = src;
   }
   assert.equal((await page.evaluate(k => JSON.parse(localStorage.getItem(k)), key)).length, 6);
   await page.reload();
   await expect(counter).toHaveText('6/6');
+  for (const path of ['/', '/achievements/', '/contact/', '/en/', '/en/achievements/', '/en/contact/']) {
+    await page.goto(`${base}${path}`);
+    await expect(collectionTrigger).toBeVisible();
+    await expect(counter).toHaveText('6/6');
+    await collectionTrigger.click();
+    await expect(collection).toBeVisible();
+    await page.keyboard.press('Escape');
+  }
   await page.goto(`${base}/en/members/`);
   await expect(counter).toHaveText('6/6');
   await collectionTrigger.click();
@@ -66,7 +85,7 @@ try {
     await expect(collection.locator('[data-collection-full-photo]')).toHaveAttribute('src', await slot.getAttribute('data-collection-photo'));
     await expect(collection.locator('[data-collection-full-photo]')).toBeVisible();
   }
-  for (const width of [1440, 390, 320]) {
+  for (const width of [1440, 768, 414, 375, 320]) {
     await page.setViewportSize({ width, height: 844 });
     assert(await collection.evaluate(el => el.scrollWidth <= el.clientWidth));
     assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
@@ -74,6 +93,23 @@ try {
   }
   await collection.locator('[data-collection-close]').click();
   await expect(collectionTrigger).toBeFocused();
+  for (const width of [1440, 768, 414, 375, 320]) {
+    await page.setViewportSize({ width, height: 844 });
+    await page.evaluate(() => scrollTo(0, document.body.scrollHeight));
+    await expect(collectionTrigger).toBeInViewport();
+  }
+
+  // The album handles a failed full-size image and can retry without losing discoveries.
+  await page.route('**/images/surprises/8l4nk/*', route => route.abort());
+  await page.reload({ waitUntil: 'networkidle' });
+  await collectionTrigger.click();
+  await expect(collection.locator('[data-collection-detail]')).toHaveAttribute('data-state', 'error');
+  await expect(collection.locator('[data-collection-retry]')).toBeVisible();
+  await page.unroute('**/images/surprises/8l4nk/*');
+  await collection.locator('[data-collection-retry]').click();
+  await expect(collection.locator('[data-collection-detail]')).toHaveAttribute('data-state', 'success');
+  await expect(collection.locator('[data-collection-full-photo]')).toBeVisible();
+  await page.keyboard.press('Escape');
 
   // Invalid or stale storage entries must not unlock arbitrary URLs or inflate counts.
   await page.evaluate(k => localStorage.setItem(k, JSON.stringify(['https://invalid.example/photo.png', 123, '/images/surprises/8l4nk/photo-01.png', '/images/surprises/8l4nk/photo-01.png'])), key);
@@ -82,6 +118,7 @@ try {
   await page.evaluate(k => localStorage.setItem(k, '{broken'), key);
   await page.reload();
   await expect(counter).toHaveText('0/6');
+  await expect(collectionTrigger).not.toBeVisible();
 
   // A cancelled download cannot collect a photo that was never shown.
   let releasePhotos;
@@ -96,6 +133,7 @@ try {
   releasePhotos();
   await page.waitForFunction(() => window.photoDecodeOrder.length === 6);
   await expect(counter).toHaveText('0/6');
+  await expect(collectionTrigger).not.toBeVisible();
   await expect(surprise).not.toBeVisible();
   await page.unroute('**/images/surprises/8l4nk/*');
 
@@ -104,6 +142,7 @@ try {
   await trigger.click();
   await expect(page.locator('[data-surprise-status]')).toContainText('새로고침');
   await expect(counter).toHaveText('0/6');
+  await expect(collectionTrigger).not.toBeVisible();
   await expect(surprise).not.toBeVisible();
   await page.unroute('**/images/surprises/8l4nk/*');
 
@@ -125,7 +164,7 @@ try {
   await expect(blockedPage.locator('[data-collection-storage]')).toBeVisible();
   await blocked.close();
   assert.deepEqual(errors, []);
-  console.log('Collection checks passed: six discoveries, duplicates, viewing, completion, persistence, languages, mobile, cancellation, blocked storage, reduced motion and focus.');
+  console.log('Collection checks passed: hidden until discovery, floating across all routes, six discoveries, duplicates, viewing, completion, persistence, languages, mobile, cancellation, blocked storage, reduced motion and focus.');
 } finally {
   await browser.close();
 }
