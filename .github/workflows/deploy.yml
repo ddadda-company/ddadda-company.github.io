@@ -26,7 +26,7 @@ jobs:
           BING_SITE_VERIFICATION: ${{ vars.BING_SITE_VERIFICATION }}
         with:
           node-version: 24
-          build-cmd: npm run check && npm run build && npm run check:seo
+          build-cmd: npm run check && npm run check:romance && npm run build && npm run check:seo
 
   deploy:
     needs: build

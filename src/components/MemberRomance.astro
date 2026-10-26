@@ -6,6 +6,12 @@ const ko = locale === 'ko';
 ---
 <dialog id="member-romance" class="member-romance" aria-labelledby="member-romance-title" data-nosnippet>
   <header class="romance-header"><h2 id="member-romance-title">{ko ? '뜻밖의 만남' : 'An unexpected encounter'}</h2><button type="button" class="romance-close" data-romance-close aria-label={ko ? '미연시 닫기' : 'Close mini-game'}>×</button></header>
+  <div class="romance-dashboard">
+    <div class="romance-resources"><strong data-romance-day></strong><span data-romance-energy></span><span data-romance-gifts></span></div>
+    <div class="romance-stats">
+      {(['affection', 'trust', 'tension'] as const).map((stat, index) => <div class={`romance-stat romance-stat--${stat}`}><label for={`romance-${stat}`}>{(ko ? ['호감도', '신뢰', '긴장도'] : ['Affection', 'Trust', 'Tension'])[index]} <strong data-romance-stat={stat}>0</strong></label><progress id={`romance-${stat}`} data-romance-meter={stat} value="0" max="100"></progress></div>)}
+    </div>
+  </div>
   <div class="romance-body">
     <div class="romance-scene">
       <span class="romance-heart romance-heart--one" aria-hidden="true">♥</span><span class="romance-heart romance-heart--two" aria-hidden="true">♡</span>
@@ -15,12 +21,24 @@ const ko = locale === 'ko';
         <span class="romance-blush-lines romance-blush-lines--left" aria-hidden="true">///</span><span class="romance-blush-lines romance-blush-lines--right" aria-hidden="true">///</span>
       </div>
       <span class="romance-name">8l4nk</span>
+      <p class="romance-relationship" data-romance-relationship></p>
+      <span class="romance-mood" data-romance-mood></span>
     </div>
     <div class="romance-conversation">
       <p class="romance-page" data-romance-page></p>
-      <div class="romance-dialogue" data-romance-dialogue tabindex="-1" role="status" aria-live="polite" aria-atomic="true"><p class="romance-reply" data-romance-reply hidden></p><h3 data-romance-ending hidden></h3><p data-romance-line></p></div>
+      <p class="romance-context" data-romance-context></p>
+      <div class="romance-dialogue" data-romance-dialogue tabindex="-1" role="status" aria-live="polite" aria-atomic="true"><h3 data-romance-ending hidden></h3><p data-romance-line></p></div>
+      <div class="romance-effects" data-romance-effects aria-live="polite"></div>
+      <ul class="romance-notes" data-romance-notes></ul>
       <div class="romance-choices" data-romance-choices></div>
-      <button type="button" class="romance-finish" data-romance-finish hidden>{ko ? '다음에 또 만나' : 'See you next time'}</button>
+      <button type="button" class="romance-back" data-romance-back hidden>{ko ? '다른 행동 고르기' : 'Choose another activity'}</button>
+      <button type="button" class="romance-finish" data-romance-finish hidden>{ko ? '나중에 또 만나' : 'See you next time'}</button>
+      <p class="romance-save-note" data-romance-save-note>{ko ? '진행은 자동 저장돼요. 다음에 만나면 이어서 할 수 있어요.' : 'Progress saves automatically. Continue when you meet again.'}</p>
+    </div>
+    <div class="romance-notebooks">
+      <details class="romance-notebook"><summary data-romance-goal-summary></summary><ul class="romance-goals" data-romance-goals></ul><p>{ko ? '호감도만 높다고 끝이 아니에요. 신뢰를 쌓고 긴장을 낮추세요. 같은 날 같은 행동을 반복하면 효과가 줄어요.' : 'Affection alone is not enough. Build trust and ease tension. Repeating an activity on the same day has diminishing returns.'}</p></details>
+      <details class="romance-notebook"><summary>{ko ? '추억과 대화 기록' : 'Memories & conversation log'}</summary><ul class="romance-memories" data-romance-memories></ul><ol class="romance-history" data-romance-history></ol></details>
+      <details class="romance-notebook"><summary data-romance-gallery-summary></summary><ul class="romance-ending-gallery" data-romance-gallery></ul></details>
     </div>
   </div>
 </dialog>

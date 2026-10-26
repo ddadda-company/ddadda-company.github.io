@@ -123,7 +123,7 @@ function setupMemberCollection() {
   });
   dialog.addEventListener('close', () => {
     backdropPointer = false;
-    opener?.focus({ preventScroll: true });
+    if (!document.querySelector('dialog[open]')) opener?.focus({ preventScroll: true });
   });
   window.addEventListener('storage', event => {
     if (event.key !== storageKey) return;
