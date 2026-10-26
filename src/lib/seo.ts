@@ -1,5 +1,5 @@
 import { copy, locales, pageUrl, type Locale, type Page } from '../data/i18n';
-import { members, team } from '../data/team';
+import { memberAnchor, members, team } from '../data/team';
 
 export const socialImage = {
   path: '/images/team.webp', width: 1600, height: 883, type: 'image/webp',
@@ -28,9 +28,9 @@ export function pageSchema(locale: Locale, page: Page, site: URL | undefined) {
   const pageType = { home: 'AboutPage', achievements: 'CollectionPage', members: 'CollectionPage', contact: 'ContactPage' }[page];
   const roster = members.map(member => ({
     '@type': 'Person',
-    '@id': `${absoluteUrl(pageUrl('ko', 'members'), site)}#member-${member.handle}`,
+    '@id': `${absoluteUrl(pageUrl('ko', 'members'), site)}#${memberAnchor(member.handle)}`,
     name: member.handle,
-    url: `${absoluteUrl(pageUrl(locale, 'members'), site)}#member-${member.handle}`,
+    url: `${absoluteUrl(pageUrl(locale, 'members'), site)}#${memberAnchor(member.handle)}`,
     memberOf: { '@id': organizationId },
     ...(member.bio[locale] ? { description: member.bio[locale] } : {}),
     ...(member.photo ? { image: absoluteUrl(member.photo, site) } : {}),

@@ -31,6 +31,10 @@ export interface Member {
   url?: string;
 }
 
+export function memberAnchor(handle: string): string {
+  return `member-${handle.replace(/\s+/g, '-')}`;
+}
+
 export const team = {
   name: 'dda_com',
   koreanName: '따따',
@@ -186,6 +190,11 @@ export const members: Member[] = [
   },
   {
     handle: 'snowball',
+    disciplines: [],
+    bio: { ko: '', en: '' },
+  },
+  {
+    handle: 'Hyeongeun Ji',
     disciplines: [],
     bio: { ko: '', en: '' },
   },

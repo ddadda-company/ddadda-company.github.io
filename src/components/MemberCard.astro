@@ -1,11 +1,11 @@
 ---
 import Arrow from './Arrow.astro';
 import { pageUrl, type Locale } from '../data/i18n';
-import type { Member } from '../data/team';
+import { memberAnchor, type Member } from '../data/team';
 import { memberSurprisePhotos } from '../data/member-surprise';
 interface Props { member: Member; locale: Locale; index: number; compact?: boolean; }
 const { member, locale, index, compact = false } = Astro.props;
-const profileAnchor = `member-${member.handle}`;
+const profileAnchor = memberAnchor(member.handle);
 const hasPenguinGuide = member.handle === 'sane100400';
 const hasSurprise = !compact && member.handle === '8l4nk' && memberSurprisePhotos.length > 0;
 const Portrait = hasPenguinGuide ? 'a' : hasSurprise ? 'button' : 'div';
