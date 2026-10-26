@@ -26,7 +26,6 @@ function setupMemberSurprise() {
   let generation = 0;
   let lastPhoto = '';
   let timer: number | undefined;
-  let continueToRomance = false;
 
   const reset = () => {
     generation++;
@@ -34,15 +33,16 @@ function setupMemberSurprise() {
     window.clearTimeout(timer);
   };
   const dismiss = () => {
-    continueToRomance = false;
     reset();
     if (dialog.open) dialog.close();
   };
   document.querySelectorAll<HTMLElement>('[data-surprise-open]').forEach(trigger => {
     trigger.addEventListener('click', async () => {
-      if (pending || dialog.open || document.querySelector('dialog[open]')) return;
-      pending = true;
+      if (pending || document.hidden || dialog.open || document.querySelector('dialog[open]')) return;
       opener = trigger;
+      // Decide on activation; dismissing a photo can no longer erase a winning roll.
+      if (Math.random() < 0.2 && openRomance(trigger)) return;
+      pending = true;
       const attempt = ++generation;
       if (!readyPhotos.length) {
         // Only a click before the first image arrives needs to wait for loading.
@@ -66,20 +66,13 @@ function setupMemberSurprise() {
       pending = false;
       dialog.showModal();
       discovery.textContent = recordMemberPhoto(src);
-      const romanceEncounter = Math.random() < 0.2;
-      timer = window.setTimeout(() => {
-        continueToRomance = romanceEncounter && !document.hidden;
-        dialog.close();
-      }, 1600);
+      timer = window.setTimeout(dismiss, 1600);
     });
   });
   dialog.addEventListener('click', dismiss);
   dialog.addEventListener('close', () => {
-    const startRomance = continueToRomance;
-    continueToRomance = false;
     reset();
     status.textContent = discovery.textContent;
-    if (startRomance && openRomance(opener)) return;
     opener?.focus({ preventScroll: true });
   });
   document.addEventListener('keydown', event => { if (event.key === 'Escape') dismiss(); });

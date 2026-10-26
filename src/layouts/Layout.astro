@@ -4,7 +4,6 @@ import { team } from '../data/team';
 import { absoluteUrl, languageAlternates, pageSchema, serializeJsonLd, socialImage } from '../lib/seo';
 import Arrow from '../components/Arrow.astro';
 import EscapeRoom from '../components/EscapeRoom.astro';
-import MemberCollection from '../components/MemberCollection.astro';
 import '../../tokens.css';
 import '../styles/global.css';
 import '../styles/studio.css';
@@ -104,7 +103,6 @@ const verificationTags = [
       </div>
     </footer>
     <EscapeRoom locale={locale} />
-    <MemberCollection locale={locale} />
     <script src="../scripts/main.ts"></script>
     <script src="../scripts/studio.ts"></script>
   </body>

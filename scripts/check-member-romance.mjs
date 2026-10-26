@@ -16,8 +16,13 @@ const count = page.locator('[data-surprise-entry] [data-surprise-count]');
 const encounter = async chance => {
   await page.evaluate(value => { Math.random = () => value; }, chance);
   await trigger.click();
-  await expect(surprise).toBeVisible();
-  await expect(surprise).not.toBeVisible({ timeout: 3000 });
+  if (chance < .2) {
+    await expect(game).toBeVisible();
+    await expect(surprise).not.toBeVisible();
+  } else {
+    await expect(surprise).toBeVisible();
+    await expect(surprise).not.toBeVisible({ timeout: 3000 });
+  }
 };
 try {
   await page.goto(`${base}/members/`, { waitUntil: 'networkidle' });
@@ -62,16 +67,24 @@ try {
   for (let i = 0; i < 3; i++) await options.nth(2).click();
   await expect(game.locator('[data-romance-ending]')).toHaveText('A little shy, for now');
   await game.locator('[data-romance-close]').click();
-  // An early dismissal must cancel the selected encounter.
-  for (const method of ['escape', 'button']) {
+  // Regression: even rapid clicks must open a winning encounter immediately.
+  for (let attempt = 0; attempt < 30; attempt++) {
     await page.evaluate(() => { Math.random = () => .1; });
-    await trigger.click();
-    if (method === 'escape') await page.keyboard.press('Escape');
-    else await surprise.locator('[data-surprise-close]').click();
-    await page.waitForTimeout(1800);
-    await expect(game).not.toBeVisible();
-    await expect(trigger).toBeFocused();
+    await page.locator('[data-surprise-open]').nth(attempt % 2).click();
+    await expect(game).toBeVisible();
+    await expect(surprise).not.toBeVisible();
+    await expect(game).toHaveAttribute('data-step', '0');
+    if (attempt % 2) await page.keyboard.press('Escape');
+    else await game.locator('[data-romance-close]').click();
+    await expect(page.locator('[data-surprise-open]').nth(attempt % 2)).toBeFocused();
   }
+  // Losing rolls stay normal photos, including when dismissed immediately.
+  await page.evaluate(() => { Math.random = () => .9; });
+  await trigger.click();
+  await expect(surprise).toBeVisible();
+  await surprise.locator('[data-surprise-photo]').click();
+  await expect(game).not.toBeVisible();
+  await expect(trigger).toBeFocused();
   assert.deepEqual(errors, []);
-  console.log('Romance checks passed: 20% boundary, three choices per scene, all three endings, blush, replay reset, collection preserved, Korean/English, mobile/landscape, cancellation and focus.');
+  console.log('Romance checks passed: immediate 20% branch, 30 rapid encounters, three choices per scene, all three endings, blush, replay reset, collection preserved, Korean/English, mobile/landscape, cancellation and focus.');
 } finally { await browser.close(); }

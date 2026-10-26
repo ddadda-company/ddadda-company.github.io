@@ -9,6 +9,7 @@ const errors = [];
 const context = await browser.newContext();
 await context.addInitScript(() => {
   window.photoDecodeOrder = [];
+  Math.random = () => .9;
   const decode = HTMLImageElement.prototype.decode;
   HTMLImageElement.prototype.decode = async function () {
     await decode.call(this);
@@ -42,7 +43,10 @@ try {
     const src = photos[index];
     const candidates = photos.filter(photo => photo !== last);
     const random = (candidates.indexOf(src) + .1) / candidates.length;
-    await page.evaluate(value => { Math.random = () => value; }, random);
+    await page.evaluate(value => {
+      let calls = 0;
+      Math.random = () => calls++ === 0 ? .9 : value;
+    }, random);
     await trigger.click();
     await expect(surprise).toBeVisible();
     await expect(surprise.locator('[data-surprise-photo]')).toHaveAttribute('src', src);
@@ -68,11 +72,8 @@ try {
   await expect(counter).toHaveText('6/6');
   for (const path of ['/', '/achievements/', '/contact/', '/en/', '/en/achievements/', '/en/contact/']) {
     await page.goto(`${base}${path}`);
-    await expect(collectionTrigger).toBeVisible();
-    await expect(counter).toHaveText('6/6');
-    await collectionTrigger.click();
-    await expect(collection).toBeVisible();
-    await page.keyboard.press('Escape');
+    await expect(collectionTrigger).toHaveCount(0);
+    await expect(collection).toHaveCount(0);
   }
   await page.goto(`${base}/en/members/`);
   await expect(counter).toHaveText('6/6');
@@ -151,6 +152,7 @@ try {
   // Storage-disabled browsers still collect in memory; reduced motion remains respected.
   const blocked = await browser.newContext({ reducedMotion: 'reduce' });
   await blocked.addInitScript(() => {
+    Math.random = () => .9;
     Storage.prototype.getItem = () => { throw new Error('Blocked'); };
     Storage.prototype.setItem = () => { throw new Error('Blocked'); };
   });
@@ -168,7 +170,7 @@ try {
   await expect(blockedPage.locator('[data-collection-storage]')).toBeVisible();
   await blocked.close();
   assert.deepEqual(errors, []);
-  console.log('Collection checks passed: hidden until discovery, floating across all routes, six discoveries, duplicates, viewing, completion, persistence, languages, mobile, cancellation, blocked storage, reduced motion and focus.');
+  console.log('Collection checks passed: hidden until discovery, floating only on member routes, six discoveries, duplicates, viewing, completion, persistence, languages, mobile, cancellation, blocked storage, reduced motion and focus.');
 } finally {
   await browser.close();
 }
