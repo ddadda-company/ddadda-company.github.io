@@ -1,4 +1,4 @@
-# dda_com identity | revision 27
+# dda_com identity | revision 28
 
 ## Direction
 
@@ -18,6 +18,10 @@ These inform information structure. Their artwork and page designs are not reuse
 Earlier visual research included [Oryzo AI / Lusion](https://oryzo.ai/), [Noomo](https://storytelling.noomoagency.com/), and [MindMarket](https://mindmarket.com/). CSS Design Awards social announcements establish recent recognition, not a measured ranking of SNS popularity. Only the material depth and illustration-led direction carry into the current design.
 
 [ToyFight](https://toyfight.co/) and [Cub Studio](https://www.cubstudio.com/) were also reviewed for open compositions and illustration-led brand presentation. Their illustrations are not reused. Member portraits must come from the members; mascot avatars are not used as substitutes.
+
+## Component variant: Axii’s hwatu table
+
+The Seotda dialog uses a compact green felt playing surface, dark wood rails, ivory cards and vermilion backs, as requested. Retain Paperlogy / Wanted Sans. Keep hands, pot, current dialogue and actions within the viewport; on short landscape screens arrange all seats side by side. Rules, the optional free-play tutorial, match history and the meme album open in a separate dismissible panel. Scene images are secondary, preserve their aspect ratio and appear only at story beats. Other members and the surrounding site retain Rose Quartz / Serenity.
 
 ## Pages
 
@@ -126,5 +130,78 @@ shadcn/ui semantic color mapping, with the same imported `tokens.css`:
   --border: var(--color-line-strong);
   --input: var(--color-line-strong);
   --ring: var(--color-focus);
+}
+```
+
+### Hwatu component variant exports (revision 28)
+
+CSS / Tailwind v4 (append inside `:root` / `@theme` respectively):
+
+```css
+  --color-table-felt: #275545;
+  --color-table-felt-dark: #1c4035;
+  --color-table-stitch: #638575;
+  --color-table-wood: #392b25;
+  --color-table-wood-edge: #6d5140;
+  --color-table-cream: #fff2cf;
+  --color-table-muted: #c7d9c9;
+  --color-hwatu-red: #ac2d24;
+  --color-hwatu-black: #211d19;
+```
+
+DTCG color tokens:
+
+```json
+{
+  "color": {
+    "table-felt": {
+      "$type": "color",
+      "$value": "#275545"
+    },
+    "table-felt-dark": {
+      "$type": "color",
+      "$value": "#1c4035"
+    },
+    "table-stitch": {
+      "$type": "color",
+      "$value": "#638575"
+    },
+    "table-wood": {
+      "$type": "color",
+      "$value": "#392b25"
+    },
+    "table-wood-edge": {
+      "$type": "color",
+      "$value": "#6d5140"
+    },
+    "table-cream": {
+      "$type": "color",
+      "$value": "#fff2cf"
+    },
+    "table-muted": {
+      "$type": "color",
+      "$value": "#c7d9c9"
+    },
+    "hwatu-red": {
+      "$type": "color",
+      "$value": "#ac2d24"
+    },
+    "hwatu-black": {
+      "$type": "color",
+      "$value": "#211d19"
+    }
+  }
+}
+```
+
+Scoped shadcn/ui mapping:
+
+```css
+.seotda {
+  --background: var(--color-table-felt-dark);
+  --foreground: var(--color-table-cream);
+  --primary: var(--color-hwatu-red);
+  --primary-foreground: var(--color-table-cream);
+  --border: var(--color-table-stitch);
 }
 ```

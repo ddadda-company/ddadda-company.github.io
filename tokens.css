@@ -1,5 +1,14 @@
 /* DDADDA v2 · Rose Quartz / Serenity · Paperlogy + Wanted Sans */
 :root {
+  --color-table-felt: #275545;
+  --color-table-felt-dark: #1c4035;
+  --color-table-stitch: #638575;
+  --color-table-wood: #392b25;
+  --color-table-wood-edge: #6d5140;
+  --color-table-cream: #fff2cf;
+  --color-table-muted: #c7d9c9;
+  --color-hwatu-red: #ac2d24;
+  --color-hwatu-black: #211d19;
   --color-paper: oklch(97.56% 0.0057 88);
   --color-ink: oklch(25% 0.063 270);
   --color-muted: oklch(47% 0.018 265);
