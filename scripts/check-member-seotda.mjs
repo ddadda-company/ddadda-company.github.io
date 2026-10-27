@@ -19,6 +19,9 @@ const layout = async () => {
     for (const node of root.querySelectorAll('.seotda-table .seotda-card, .seotda-table h4, .seotda-table p, .seotda-pot')) {
       if (!contains(table.getBoundingClientRect(), node.getBoundingClientRect())) return `outside table: ${node.className}`;
     }
+    for (const mark of root.querySelectorAll('.seotda-table .seotda-card-mark')) {
+      if (!contains(mark.parentElement.getBoundingClientRect(), mark.getBoundingClientRect())) return 'card label is clipped';
+    }
     for (const node of root.querySelectorAll('.seotda-dialogue, .seotda-table, [data-seotda-actions] button, [data-seotda-close]')) {
       if (!contains(viewport, node.getBoundingClientRect())) return `outside viewport: ${node.className}`;
     }

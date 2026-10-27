@@ -180,3 +180,6 @@ html:has(.seotda[open]) { overflow: hidden; }
   .seotda-meme { display: none; }
   .seotda-controls > p { display: none; }
 }
+@media (max-height: 680px) {
+  .seotda-card-mark:not(.seotda-card-mark--bright) { padding: 1px 2px; font-size: .5rem; }
+}
