@@ -14,6 +14,29 @@ for(const lang of ['ko','en']) {
  const before=await page.evaluate(()=>localStorage.getItem('dda_com-axii-seotda-v1'));
  await page.locator('[data-seotda-help]').click();
  const guide=page.locator('[data-seotda-guide]');
+ const chart=page.locator('#seotda-card-chart');
+ const checkChart=async (opener, escape=false) => {
+  await opener.click(); await expect(chart).toBeVisible();
+  await expect(chart.locator('.seotda-months > li')).toHaveCount(10);
+  await expect.poll(()=>chart.locator('img').evaluateAll(imgs=>imgs.length===20 && imgs.every(i=>i.complete&&i.naturalWidth>0))).toBe(true);
+  const mapping=await chart.locator('.seotda-months > li').evaluateAll(items=>items.map(n=>({month:n.dataset.month,cards:[...n.querySelectorAll('[data-card-id]')].map(c=>Number(c.dataset.cardId))})));
+  assert.deepEqual(mapping,Array.from({length:10},(_,i)=>({month:String(i+1),cards:[i*2,i*2+1]})));
+  for(const [width,height] of [[1440,1000],[768,900],[414,844],[375,812],[320,700],[320,568],[320,500],[844,390],[568,320]]) {
+   await page.setViewportSize({width,height});
+   assert(await chart.evaluate(n=>n.scrollWidth<=n.clientWidth+1 && n.scrollHeight<=n.clientHeight+1));
+   assert(await chart.locator('.seotda-chart-scroll').evaluate(n=>n.scrollWidth<=n.clientWidth+1));
+   assert(await chart.locator('.seotda-months > li').evaluateAll(items=>items.every(n=>n.scrollWidth<=n.clientWidth+1)));
+   await expect(chart.locator('[data-seotda-chart-close]')).toBeInViewport();
+   await chart.locator('.seotda-chart-scroll').evaluate(n=>n.scrollTop=0);
+   if([1440,375,568].includes(width)) await page.screenshot({path:`.qa/seotda-tutorial/chart-${lang}-${width}.png`});
+   await chart.locator('.seotda-months > li').last().scrollIntoViewIfNeeded();
+   await expect(chart.locator('.seotda-months > li').last()).toBeInViewport();
+   await expect(chart.locator('[data-seotda-chart-close]')).toBeInViewport();
+  }
+  const audit=await new AxeBuilder({page}).include('#member-seotda').analyze();assert.deepEqual(audit.violations.map(v=>v.id),[]);
+  if(escape) await page.keyboard.press('Escape'); else await chart.locator('[data-seotda-chart-close]').click();
+  await expect(chart).not.toBeVisible(); await expect(opener).toBeFocused();
+ };
  for(let step=0;step<5;step++) {
   await expect(guide).toHaveAttribute('data-step',String(step));
   for(const [width,height] of [[1440,1000],[768,900],[414,844],[375,812],[320,700],[320,568],[320,500],[844,390],[568,320]]) {
@@ -40,6 +63,7 @@ for(const lang of ['ko','en']) {
    await guide.locator('.seotda-guide-choices button').last().click();
    await expect(guide.locator('[data-seotda-practice-result]')).toContainText('20');
   }
+  if(step===0 || step===4) { await checkChart(guide.locator('[data-seotda-chart-open]'),step===4); await expect(guide).toHaveAttribute('data-step',String(step)); }
   if(step<4) await guide.locator('[data-guide-next]').click();
  }
  for(let quiz=0;quiz<3;quiz++) {
@@ -51,6 +75,7 @@ for(const lang of ['ko','en']) {
    assert(await guide.locator('.seotda-guide-content').evaluate(n=>n.scrollWidth<=n.clientWidth+1 && n.scrollHeight<=n.clientHeight+1), `${lang}: answer ${quiz} overflows at ${width}x${height}`);
    await expect(guide.locator('[data-guide-next]')).toBeInViewport();
   }
+  if(quiz===0) { const answer=await guide.locator('[data-seotda-practice-result]').textContent(); await checkChart(guide.locator('[data-seotda-chart-open]')); await expect(guide.locator('[data-seotda-practice-result]')).toHaveText(answer); }
   if(quiz<2) await guide.locator('[data-guide-next]').click();
  }
  await guide.locator('[data-guide-prev]').click();
@@ -62,10 +87,17 @@ for(const lang of ['ko','en']) {
  await page.locator('[data-seotda-skip-tutorial]').click();
  await expect(page.locator('[data-seotda-table]')).toBeFocused();
  await page.locator('[data-seotda-notes]').click();
+ await checkChart(page.locator('.seotda-notebooks > [data-seotda-chart-open]'));
  await page.locator('[data-seotda-rules] summary').click();
  assert(await page.locator('.seotda-notebooks').evaluate(n=>n.scrollWidth<=n.clientWidth+1));
  await page.keyboard.press('Escape');
+ await page.locator('[data-seotda-notes]').click();
+ await page.locator('.seotda-notebooks > [data-seotda-chart-open]').click();
+ await page.locator('[data-seotda-close]').click();
+ await page.locator('[data-seotda-open]').first().click();
+ await expect(chart).not.toBeVisible();
+ await expect(page.locator('.seotda-body')).not.toHaveAttribute('inert','');
  await page.locator('[data-seotda-close]').click();
 }
 assert.deepEqual(errors,[]);
-await browser.close();console.log('Bilingual visual tutorial: five steps, nine sizes, quiz, betting, navigation, completion/skip, unchanged saves, a11y passed.');
+await browser.close();console.log('Bilingual visual tutorial: five steps, nine sizes, 20-card month chart, chart return/Escape, quiz, betting, navigation, completion/skip, unchanged saves, a11y passed.');

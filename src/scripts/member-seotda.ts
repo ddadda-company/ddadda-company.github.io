@@ -1,3 +1,4 @@
+import { createSeotdaCardChart } from './seotda-card-chart';
 import { createSeotdaTutorial } from './seotda-tutorial';
 import { createSeotdaEffects } from './seotda-effects';
 import { flowers, seotdaMemes, type MemeId } from '../data/seotda';
@@ -67,6 +68,7 @@ function setupSeotda() {
     image.src = `/images/hwatu/${filename}.svg`; node.append(image);
     return node;
   };
+  const chart = createSeotdaCardChart(dialog, locale === 'ko', card);
   const notes = find('[data-seotda-notes]');
   const panel = find('#seotda-notes');
   let panelOpener: HTMLElement = notes;
@@ -91,7 +93,7 @@ function setupSeotda() {
   find('[data-seotda-help]').addEventListener('click', () => {
     panelOpener = find('[data-seotda-help]'); setPanel(true); tutorial.open();
   });
-  dialog.addEventListener('cancel', event => { if (effects.active()) { event.preventDefault(); effects.dismiss(); } else if (!panel.hidden) { event.preventDefault(); setPanel(false); } });
+  dialog.addEventListener('cancel', event => { if (effects.active()) { event.preventDefault(); effects.dismiss(); } else if (chart.active()) { event.preventDefault(); chart.close(); } else if (!panel.hidden) { event.preventDefault(); setPanel(false); } });
   const seat = (name: string, cards: (Card | null | undefined)[], label: string, className = '') => {
     const box = el('div', '', `seotda-seat ${className}`); box.append(el('h4', name));
     const hand = el('div', '', 'seotda-hand'); hand.append(...cards.map(c => card(c))); box.append(hand, el('p', label)); board.append(box);
@@ -231,7 +233,7 @@ function setupSeotda() {
   }));
   const close = () => { if (dialog.open) dialog.close(); };
   find('[data-seotda-close]').addEventListener('click', close);
-  dialog.addEventListener('close', () => { effects.close(); opener?.focus({ preventScroll: true }); });
+  dialog.addEventListener('close', () => { chart.close(false); effects.close(); opener?.focus({ preventScroll: true }); });
   const outside = (e: MouseEvent) => { const r = dialog.getBoundingClientRect(); return e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom; };
   let backdrop = false;
   dialog.addEventListener('pointerdown', e => { backdrop = e.target === dialog && outside(e); });

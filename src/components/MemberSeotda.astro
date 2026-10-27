@@ -27,6 +27,7 @@ const ko = locale === 'ko';
     <header><h3 id="seotda-notes-title">{ko ? '테이블 노트' : 'Table notes'}</h3><button type="button" data-seotda-notes-close>{ko ? '← 게임으로' : '← Back to game'}</button></header>
     <div class="seotda-notebooks">
       <p class="seotda-save" data-seotda-save></p>
+      <button type="button" class="seotda-chart-link" data-seotda-chart-open aria-controls="seotda-card-chart">{ko ? '패 숫자표 · 그림으로 1~10 찾기' : 'Card chart · Match pictures to 1–10'}</button>
       <details id="seotda-beginner" class="seotda-beginner" hidden><summary>{ko ? '그림으로 배우는 섯다' : 'Learn with the cards'}</summary>
         <div class="seotda-guide" data-seotda-guide>
           <div class="seotda-guide-top"><span data-guide-progress></span><button type="button" data-seotda-skip-tutorial>{ko ? '건너뛰기' : 'Skip tutorial'}</button></div>
@@ -35,7 +36,7 @@ const ko = locale === 'ko';
             <div class="seotda-guide-visual" data-guide-visual></div>
             <p class="seotda-guide-feedback" data-seotda-practice-result role="status" aria-live="polite"></p>
           </div>
-          <nav class="seotda-guide-nav" aria-label={ko ? '튜토리얼 단계' : 'Tutorial steps'}><button type="button" data-guide-prev>{ko ? '← 이전' : '← Back'}</button><button type="button" data-guide-next></button></nav>
+          <nav class="seotda-guide-nav" aria-label={ko ? '튜토리얼 단계' : 'Tutorial steps'}><button type="button" data-guide-prev>{ko ? '← 이전' : '← Back'}</button><button type="button" data-seotda-chart-open aria-controls="seotda-card-chart">{ko ? '패 숫자표' : 'Card chart'}</button><button type="button" data-guide-next></button></nav>
         </div>
       </details>
       <details data-seotda-rules hidden><summary>{ko ? '이 판의 규칙과 족보' : 'Table rules & hand ranks'}</summary><p>{ko ? '게임용 칩으로만 하는 1:1 섯다예요. 자유 대국은 각자 1,000칩으로 5판을 진행해요. 한 명의 칩이 떨어져도 끝납니다. 기본 참가비는 20칩. 상대가 먼저 베팅하고, 내 패 두 장을 확인한 뒤 한 번 응수해요.' : 'Heads-up Seotda with play chips. Start with 1,000 each and play 5 rounds, or until one stack is empty. The ante is 20. The opponent opens, then you check both of your cards and respond.'}</p><p>{ko ? '하프는 콜한 뒤 판돈의 절반을 추가하고, 더블은 상대의 총 베팅만큼 더 올려요. 올인은 서로 받을 수 있는 칩까지만 걸어요. 같은 족보는 반씩 나누고, 구사는 판돈을 넘겨 다시 칩니다. 특수패 조건이 맞지 않으면 원래 끗수로 비교해요.' : 'Half adds half the pot after calling. Double raises by the opponent’s total commitment. All-in is capped at the smaller effective stack. Ties split the pot; Gusa carries it into a redeal. Special hands revert to their point value when their condition is not met.'}</p><p>{ko ? '한 판 앉기와 자유게임의 칩은 따로 저장해요. 자유게임에서는 언제든 튜토리얼을 선택하거나 건너뛸 수 있어요.' : 'Take a seat and Free play keep separate chip balances. In Free play, the tutorial is always optional and skippable.'}</p><dl class="seotda-ranks">{ruleRows.map(([title, description]) => <div><dt>{title[locale]}</dt><dd>{description[locale]}</dd></div>)}</dl><p class="seotda-credit"><a href="https://poker.hangame.com/gameguide/lasudda/game_lasudda2_2.html" target="_blank" rel="noopener noreferrer">{ko ? '참고: 한게임 족보 안내' : 'Reference: Hangame hand guide'}</a> · {ko ? '이 판에서는 일삼·일팔광땡을 동급으로 칩니다.' : 'This table treats 1–3 and 1–8 bright as equal.'}</p></details>
@@ -43,6 +44,14 @@ const ko = locale === 'ko';
       <p class="seotda-credit"><a href="https://commons.wikimedia.org/wiki/Category:SVG_Hwatu" target="_blank" rel="noopener noreferrer">{ko ? '화투 그림' : 'Hwatu artwork'}</a>: Marcus Richert · Louie Mantia, Jr. · Spenĉjo. <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0</a> · {ko ? '원본 그대로 사용' : 'Used without modification'}. <a href="/images/hwatu/ATTRIBUTION.txt" target="_blank" rel="noopener noreferrer">{ko ? '전체 출처' : 'Full credits'}</a></p>
       <details data-seotda-history-panel><summary>{ko ? '이번 자유 대국 기록' : 'This match’s history'}</summary><ol data-seotda-history></ol></details>
     </div>
+    <section id="seotda-card-chart" class="seotda-chart" hidden aria-labelledby="seotda-chart-title">
+      <header><h3 id="seotda-chart-title" tabindex="-1">{ko ? '그림으로 찾는 패 숫자표' : 'Picture-to-number chart'}</h3><button type="button" data-seotda-chart-close></button></header>
+      <div class="seotda-chart-scroll" tabindex="0" role="region" aria-label={ko ? '1월부터 10월 패 그림' : 'Cards for months 1 through 10'}>
+        <p>{ko ? '이 게임은 1~10월, 월마다 두 장을 써요. 그림이 달라도 같은 월이면 같은 숫자예요.' : 'This game uses two cards per month, from 1 to 10. Different pictures in the same month have the same number.'}</p>
+        <ol class="seotda-months" data-seotda-months></ol>
+        <p class="seotda-chart-key">{ko ? '광 = 光 표시 · 열 = 동물이나 사물이 있는 패 · 띠 = 리본이 있는 패. 끗을 셀 때는 종류 대신 월 숫자를 더해요.' : 'Bright = 光 mark · Animal = animal or object picture · Ribbon = ribbon picture. For points, add the month numbers, not the card types.'}</p>
+      </div>
+    </section>
   </aside>
   <footer class="seotda-controls"><p data-seotda-action-hint></p><div data-seotda-actions></div></footer>
 </dialog>
