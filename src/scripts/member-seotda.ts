@@ -1,5 +1,5 @@
 import { flowers, seotdaMemes, type MemeId } from '../data/seotda';
-import { animal, applyStory, applyTable, betCost, bright, deal, month, newStory, newTable, rankHand, restoreSeotda, saveSeotda, tableOver, type Bet, type Card, type StoryEvent, type TableEvent } from '../lib/seotda';
+import { animal, applyStory, applyTable, betCost, bright, deal, enterShowdown, openingReady, storyBalance, month, newStory, newTable, rankHand, restoreSeotda, saveSeotda, tableOver, type Bet, type Card, type StoryEvent, type TableEvent } from '../lib/seotda';
 import type { Localized } from '../data/team';
 
 function setupSeotda() {
@@ -28,7 +28,9 @@ function setupSeotda() {
   };
   const status = (heading: string, body: string, instruction = '') => { title.textContent = heading; line.textContent = body; hint.textContent = instruction; };
   const meme = (id: MemeId) => {
-    find('[data-seotda-meme]').hidden = save.mode !== 'story' || !['intro', 'stop', 'guess', 'ending'].includes(save.story.phase);
+    const visible = save.mode === 'story' && save.stage === 'showdown' && ['stop', 'guess', 'ending'].includes(save.story.phase) && save.story.log.some(e => e === 'call' || e === 'double');
+    find('[data-seotda-meme]').hidden = !visible;
+    if (!visible) return;
     find('[data-seotda-caption]').textContent = t(seotdaMemes[id].title);
     if (id === currentMeme) return;
     currentMeme = id; photo.hidden = true; photoStatus.hidden = false; retry.hidden = true;
@@ -124,88 +126,103 @@ function setupSeotda() {
   const pot = (label: string) => board.append(el('div', label, 'seotda-pot'));
   const resource = (label: string, value: string) => { const item = el('span'); item.append(el('small', label), el('strong', value)); score.append(item); };
   const storyAction = (event: StoryEvent) => { const next = applyStory(save.story, event); if (!next) return; save.story = next; persist(); render(); };
-  const tableAction = (event: TableEvent) => { const next = applyTable(save.table, event); if (!next) return; save.table = next; persist(); render(); };
+  const tableAction = (event: TableEvent, opening = false) => { const target = opening ? 'opening' : 'table'; const next = applyTable(save[target], event); if (!next) return; save[target] = next; persist(); render(); };
+  const restart = () => { save.stage = 'opening'; save.opening = newTable(); save.story = newStory(); persist(); render(); };
   const switchMode = (mode: 'story' | 'free') => { save.mode = mode; persist(); render(); };
 
   const renderStory = () => {
     const s = save.story;
     dialog.dataset.phase = s.phase;
-    resource(text('모드', 'Mode'), text('마지막 승부', 'Story'));
-    resource(text('건 칩', 'Stake'), String(s.stake));
-    resource(text('진행', 'Progress'), s.phase === 'ending' ? text('끝', 'Finished') : `${Math.min(s.log.length + 1, 9)} / 9`);
+    const tense = s.log.some(e => e === 'call' || e === 'double');
+    const committed = tense && s.phase !== 'ending';
+    resource(text('나', 'You'), String(storyBalance(save)));
+    resource(text('건 칩', 'Stake'), String(committed ? s.stake : 0));
+    resource(text('진행', 'Round'), s.phase === 'ending' ? text('종료', 'Finished') : text(`${save.opening.round + 1}판`, `Round ${save.opening.round + 1}`));
     const end = s.phase === 'ending' && s.outcome !== 'leave';
     const agwiOpen = ['guess', 'reveal', 'ending'].includes(s.phase);
-    seat(text('아귀', 'Agwi'), [s.dealt >= 2 ? agwiOpen ? 16 : null : undefined, s.dealt >= 5 ? agwiOpen ? 17 : null : undefined], agwiOpen ? text('9땡', 'Pair of 9s') : text('패 비공개', 'Hidden hand'));
-    seat(text('정마담', 'Madam Jeong'), [s.dealt >= 3 ? end ? 1 : null : undefined, s.dealt >= 5 ? end ? 5 : null : undefined], end ? text('3월 · 벚꽃', 'March · Cherry') : text('마지막 패의 주인', 'The final card'), 'seotda-seat--madam');
-    pot(text(`판돈 ${s.stake * 2} 칩`, `Pot ${s.stake * 2} chips`));
-    seat(text('나 · 고니', 'You · Goni'), [s.dealt >= 1 ? 2 : undefined, s.dealt >= 4 ? 11 : undefined], text('마지막 한 장에 건 승부', 'Read the final card'), 'seotda-seat--player');
+    seat(tense ? text('아귀', 'Agwi') : 'Axii', [s.dealt >= 2 ? agwiOpen ? 16 : null : undefined, s.dealt >= 5 ? agwiOpen ? 17 : null : undefined], agwiOpen ? text('9땡', 'Pair of 9s') : text('패 비공개', 'Hidden hand'));
+    seat(tense ? text('정마담', 'Madam Jeong') : text('새로 온 손님', 'New guest'), [s.dealt >= 3 ? end ? 1 : null : undefined, s.dealt >= 5 ? end ? 5 : null : undefined], end ? text('3월 · 벚꽃', 'March · Cherry') : text('패 비공개', 'Hidden hand'), 'seotda-seat--madam');
+    pot(text(`판돈 ${committed ? s.stake * 2 : 0} 칩`, `Pot ${committed ? s.stake * 2 : 0} chips`));
+    seat(tense ? text('나 · 고니', 'You · Goni') : text('나', 'You'), [s.dealt >= 1 ? 2 : undefined, s.dealt >= 4 ? 11 : undefined], s.dealt >= 4 ? t(rankHand([2, 11]).name) : text('패를 돌리는 중', 'Dealing'), 'seotda-seat--player');
     if (s.phase === 'intro' || s.phase === 'deal') {
       meme(s.dealt ? 'goni' : 'welcome');
-      const beats = [text('Axii의 테이블에 앉았다. 고니의 자리에서 마지막 승부를 시작한다.', 'Take a seat at Axii’s table. Play Goni’s side of the final showdown.'), text('내 앞에 첫 패가 놓였다. 아귀는 손끝을 지켜본다.', 'Your first card lands. Agwi watches every move.'), text('아귀에게 한 장. 표정은 변하지 않는다.', 'One card to Agwi. His expression stays still.'), text('정마담에게 한 장. 아직 누구도 패를 보이지 않는다.', 'A card for Madam Jeong. No one reveals a thing.'), text('내 두 번째 패까지 놓였다. 남은 건 상대의 반응.', 'Your second card is down. Watch the other side.')];
-      status(text('판이 깔렸다', 'The table is set'), beats[s.dealt], text('직접 한 장씩 돌려보세요.', 'Deal one card at a time.'));
+      const beats = [text('옆자리 손님이 의자를 끌어온다. “나도 한 판.” Axii가 패를 건넨다. 이번에는 내가 돌릴 차례다.', 'A guest pulls up a chair. “Deal me in.” Axii hands you the deck. Your turn to deal.'), text('내 앞에 한 장. Axii가 칩을 정리하며 가볍게 웃는다.', 'One card for you. Axii smiles and stacks the chips.'), text('건너편에 한 장. 잡담이 조금씩 줄어든다.', 'One across the table. The small talk begins to fade.'), text('손님 앞에도 한 장. Axii의 시선이 패에서 내 손목으로 옮겨간다.', 'One for the guest. Axii’s eyes move from the cards to your wrist.'), text('내 패는 8끗. 나쁘지 않다. 그런데 맞은편은 자기 패도 보지 않고 칩을 밀어 넣는다.', 'Eight points. Not bad. Across the table, chips slide forward before a glance at the cards.')];
+      status(s.dealt < 3 ? text('한 사람 더', 'Room for one more') : text('왜 손만 보지?', 'Why watch my hands?'), beats[s.dealt]);
       button('story-deal', s.dealt ? text('다음 패 돌리기', 'Deal next card') : text('첫 패 돌리기', 'Deal first card'), () => storyAction('deal'));
     } else if (s.phase === 'bet') {
-      meme('goni'); status(text('얼마나 걸겠어?', 'How much will you stake?'), text('정마담에게 마지막 패가 가기 직전이다. 판돈을 받거나 두 배로 키울 수 있다.', 'Madam Jeong is about to receive her last card. Match the stake or double it.'), text('이야기 칩은 자유 대국과 별개예요.', 'Story chips are separate from free play.'));
-      button('story-call', text('100칩 콜', 'Call 100'), () => storyAction('call'));
-      button('story-double', text('200칩 더블', 'Double to 200'), () => storyAction('double'));
+      meme('goni'); status(text('이번엔 좀 크게 갈까?', 'Raise the stakes?'), text('마지막 패를 건네려는데 Axii가 칩을 톡 친다. “받을 거지?” 아까부터 손목에서 시선을 떼지 않는다.', 'As you reach to deal the last card, Axii taps the chips. “You’re calling?” Those eyes have not left your wrist.'), text('콜은 맞추기 · 더블은 두 배 · 물러나면 칩을 지켜요.', 'Call to match · Double to raise · Walk away to keep your chips.'));
+      button('story-call', text(`${s.stake}칩 콜`, `Call ${s.stake}`), () => storyAction('call'));
+      const doubled = Math.min(s.stake * 2, s.limit);
+      button('story-double', text(`${doubled}칩 더블`, `Double to ${doubled}`), () => storyAction('double'), doubled === s.stake);
       button('story-leave', text('물러나기', 'Walk away'), () => storyAction('leave'));
     } else if (s.phase === 'stop') {
-      meme('stop'); status(text('동작 그만', 'Hold it'), text('아귀가 밑장빼기를 의심하며 판을 멈춘다. 정마담에게 갈 패가 10월 단풍이라고 주장한다.', 'Agwi stops the deal and accuses you of cheating. He claims Madam Jeong’s card is the October maple.'), text('아귀의 주장을 확인할까요?', 'Will you challenge his claim?'));
+      meme('stop'); status(text('동작 그만', 'Hold it'), text('갑자기 손목이 잡힌다. “밑에서 뺐지?” 방금까지 Axii였는데… 이 표정, 아귀다. 옆자리 손님은 어느새 정마담. 그냥 섯다 한 판 아니었어?' , 'A hand catches your wrist. “From the bottom?” That was Axii a moment ago… now it is Agwi. The guest is Madam Jeong. Wasn’t this just a casual game?' ), text('아귀의 주장을 확인할까요?', 'Will you challenge his claim?'));
       button('story-challenge', text('그 패 확인하자', 'Check that card'), () => storyAction('challenge'));
       button('story-leave', text('승부에서 빠지기', 'Walk away'), () => storyAction('leave'));
     } else if (s.phase === 'guess') {
-      meme('yerim'); status(text('마지막 한 장에 건다', 'Bet on the final card'), text('아귀의 패는 9땡. 하지만 그의 패가 좋다는 것과 정마담의 마지막 패를 맞히는 건 다른 문제다. 어느 쪽에 걸까?', 'Agwi has a pair of 9s. But a strong hand does not mean he knows Madam Jeong’s final card. Which side are you on?'), text('영화의 마지막 반전을 떠올려보세요.', 'Remember the film’s final twist.'));
+      meme('yerim'); status(text('마지막 한 장에 건다', 'Bet on the final card'), text('아귀의 패는 9땡. 하지만 그의 패가 좋다는 것과 정마담의 마지막 패를 맞히는 건 다른 문제다. 어느 쪽에 걸까?', 'Agwi has a pair of 9s. But a strong hand does not mean he knows Madam Jeong’s final card. Which side are you on?'), text('그는 마지막 패가 10월 단풍이라고 확신한다.', 'He insists the last card is October maple.'));
       button('story-maple', text('10월 단풍이다', 'October maple'), () => storyAction('maple'));
       button('story-cherry', text('단풍이 아니다', 'Not maple'), () => storyAction('cherry'));
     } else if (s.phase === 'reveal') {
-      meme('goni'); status(text('이제 뒤집을 차례', 'Time to turn it over'), text(`${s.pick === 'cherry' ? '단풍이 아니다' : '단풍이다'}에 ${s.stake}칩을 걸었다. 모든 시선이 정마담의 마지막 패로 모인다.`, `You staked ${s.stake} on “${s.pick === 'cherry' ? 'not maple' : 'maple'}.” Every eye turns to Madam Jeong’s final card.`), text('패를 눌러 결과를 확인하세요.', 'Reveal the card to settle the showdown.'));
+      meme('goni'); status(text('이제 뒤집을 차례', 'Time to turn it over'), text(`${s.pick === 'cherry' ? '단풍이 아니다' : '단풍이다'}에 ${s.stake}칩을 걸었다. 모든 시선이 정마담의 마지막 패로 모인다.`, `You staked ${s.stake} on “${s.pick === 'cherry' ? 'not maple' : 'maple'}.” Every eye turns to Madam Jeong’s final card.`), text('뒤집어서 직접 확인하자.', 'Turn it over and find out.'));
       button('story-reveal', text('마지막 패 뒤집기', 'Reveal last card'), () => storyAction('reveal'));
     } else {
       meme(s.outcome === 'leave' ? 'welcome' : 'sakura');
-      status(s.outcome === 'win' ? text('사쿠라! 판을 읽었다', 'Cherry blossom! You read the table') : s.outcome === 'lose' ? text('아귀와 함께 속았다', 'Agwi’s certainty fooled you') : text('오늘은 여기까지', 'Walk away for today'), s.outcome === 'leave' ? text('칩을 더 걸지 않고 일어섰다. 마음이 바뀌면 처음부터 다시 도전할 수 있다.', 'You left before committing more. Come back for a fresh showdown whenever you like.') : text(`마지막 패는 10월 단풍이 아닌 3월 벚꽃. ${s.outcome === 'win' ? `이번 승부에서 ${s.stake}칩을 땄다.` : `${s.stake}칩을 잃었다. 상대의 자신감만 믿으면 안 된다.`}`, `The last card is March cherry blossom, not October maple. ${s.outcome === 'win' ? `You won ${s.stake} story chips.` : `You lost ${s.stake} story chips. Confidence is not proof.`}`));
-      button('story-restart', text('명장면 다시 하기', 'Replay scene'), () => { save.story = newStory(); persist(); render(); });
-      button('play-free', text('진짜 패로 한 판', 'Free play'), () => switchMode('free'));
+      status(s.outcome === 'win' ? text('사쿠라! 판을 읽었다', 'Cherry blossom! You read the table') : s.outcome === 'lose' ? text('아귀와 함께 속았다', 'Agwi’s certainty fooled you') : text('오늘은 여기까지', 'Walk away for today'), s.outcome === 'leave' ? tense ? text(`판을 접었다. 이미 건 ${s.stake}칩은 남기고, 나머지를 챙겨 일어선다.`, `You fold, leaving the ${s.stake} committed chips and taking the rest.`) : text('베팅하기 전에 일어섰다. 지금까지 모은 칩은 그대로다.', 'You leave before betting. The chips you collected are yours to keep.') : text(`마지막 패는 10월 단풍이 아닌 3월 벚꽃. ${s.outcome === 'win' ? `이번 승부에서 ${s.stake}칩을 땄다.` : `${s.stake}칩을 잃었다. 상대의 자신감만 믿으면 안 된다.`}`, `The last card is March cherry blossom, not October maple. ${s.outcome === 'win' ? `You won ${s.stake} chips.` : `You lost ${s.stake} chips. Confidence is not proof.`}`));
+      button('story-restart', text('다시 한 판 앉기', 'Take a seat again'), restart);
+      button('play-free', text('자유게임으로', 'Free play'), () => switchMode('free'));
     }
   };
-  const renderTable = () => {
-    const g = save.table;
+  const renderTable = (opening = false) => {
+    const g = opening ? save.opening : save.table;
+    const play = (event: TableEvent) => tableAction(event, opening);
+    const opponent = 'Axii';
     dialog.dataset.phase = g.phase;
-    resource(text('나', 'You'), `${g.player}`); resource(text('아귀', 'Agwi'), `${g.dealer}`); resource(text('판돈', 'Pot'), `${g.pot}`); resource(text('진행', 'Round'), `${g.round}/5`);
+    resource(text('나', 'You'), `${g.player}`); resource(opponent, `${g.dealer}`); resource(text('판돈', 'Pot'), `${g.pot}`); resource(text('진행', 'Round'), opening ? text(`${g.round || 1}판`, `Round ${g.round || 1}`) : `${g.round}/5`);
     const shown = g.phase === 'result';
-    seat(text('아귀', 'Agwi'), [shown ? g.cards[2] : null, shown ? g.cards[3] : null], shown ? t(rankHand(g.cards.slice(2)).name) : text(`이번 판에 건 칩 ${g.paid[1]}`, `Committed ${g.paid[1]} chips`));
+    seat(opponent, [g.cards.length ? shown ? g.cards[2] : null : undefined, g.cards.length ? shown ? g.cards[3] : null : undefined], shown ? t(rankHand(g.cards.slice(2)).name) : text(`이번 판에 건 칩 ${g.paid[1]}`, `Committed ${g.paid[1]} chips`));
     pot(text(`${g.pot} 칩`, `${g.pot} chips`));
     const own = g.cards.length && g.phase !== 'peek';
-    seat(text('나', 'You'), [g.cards.length ? g.cards[0] : null, own ? g.cards[1] : null], own ? t(rankHand(g.cards.slice(0, 2)).name) : text('두 번째 패를 확인하세요', 'Check your second card'), 'seotda-seat--player');
+    seat(text('나', 'You'), [g.cards.length ? g.cards[0] : undefined, g.cards.length ? own ? g.cards[1] : null : undefined], own ? t(rankHand(g.cards.slice(0, 2)).name) : g.cards.length ? text('두 번째 패를 확인하세요', 'Check your second card') : text('패를 기다리는 중', 'Waiting for cards'), 'seotda-seat--player');
     if (g.phase === 'ready') {
-      meme('welcome'); status(text('5판짜리 승부', 'A five-round match'), text('각자 1,000칩으로 시작한다. 섞은 20장에서 두 장씩. 마지막에 칩이 더 많은 쪽이 이긴다.', 'Start with 1,000 chips each. Two cards from a shuffled 20-card deck. The larger stack wins the match.'), text('참가비 20칩 · 족보는 ‘더 보기’에서', 'Ante 20 · Ranks in More'));
-      button('deal', text('패 받기', 'Deal me in'), () => tableAction(deal()));
+      meme('welcome'); status(opening ? text('가볍게 한 판?', 'Fancy a quick game?') : text('5판짜리 승부', 'A five-round match'), opening ? text('Axii가 방석을 툭툭 친다. 각자 1,000칩. 패 두 장 받고, 좋은 쪽이 가져가는 거다. 일단 앉자.', 'Axii pats the cushion. A thousand chips each, two cards, best hand wins. Pull up a seat.') : text('각자 1,000칩으로 5판. 마지막에 칩이 더 많은 쪽이 이긴다.', 'A thousand chips each. The larger stack after five rounds wins.'), text('참가비 20칩 · 족보는 ‘더 보기’에서', 'Ante 20 · Ranks in More'));
+      button('deal', text('패 받기', 'Deal me in'), () => play(deal()));
     } else if (g.phase === 'peek') {
-      meme('goni'); status(text('내 패부터 확인', 'Check your hand'), text(`아귀가 ${g.paid[1] - g.paid[0]}칩을 먼저 올렸다. 두 번째 패까지 보고 결정하자.`, `Agwi opens for ${g.paid[1] - g.paid[0]} chips. Check your second card before deciding.`));
-      button('peek', text('두 번째 패 보기', 'Check second card'), () => tableAction({ type: 'peek' }));
+      meme('goni'); status(opening && g.round > 1 ? text('손이 좀 빨라졌네', 'Those hands are getting quick') : text('내 패부터 확인', 'Check your hand'), text(`Axii가 ${g.paid[1] - g.paid[0]}칩을 먼저 올렸다. 두 번째 패까지 보고 결정하자.`, `Axii opens for ${g.paid[1] - g.paid[0]} chips. Check your second card before deciding.`));
+      button('peek', text('두 번째 패 보기', 'Check second card'), () => play({ type: 'peek' }));
     } else if (g.phase === 'bet') {
       meme('goni'); const call = betCost(g, 'call');
-      status(text('받을까, 밀어붙일까?', 'Call, raise, or walk away?'), text('아귀는 자기 패와 내가 건 칩을 보고 응수한다. 약한 패로도 상대를 물러나게 할 수 있다.', 'Agwi responds to his own cards and your wager. Even a weak hand can make him fold.'), text(`콜 ${call}칩 · 각 버튼의 숫자는 지금 추가로 낼 칩이에요.`, `Call ${call} · Button amounts are the chips you add now.`));
+      status(text('받을까, 밀어붙일까?', 'Call, raise, or walk away?'), text('Axii는 자기 패와 내가 건 칩을 보고 응수한다. 약한 패로도 상대를 물러나게 할 수 있다.', 'Axii responds to his own cards and your wager. Even a weak hand can make him fold.'), text(`콜 ${call}칩 · 각 버튼의 숫자는 지금 추가로 낼 칩이에요.`, `Call ${call} · Button amounts are the chips you add now.`));
       const names: Record<Bet, string> = { call: text('콜', 'Call'), half: text('하프', 'Half'), double: text('더블', 'Double'), allin: text('올인', 'All-in'), fold: text('다이', 'Fold') };
-      for (const bet of ['call', 'half', 'double', 'allin', 'fold'] as Bet[]) button(`bet-${bet}`, names[bet], () => tableAction({ type: 'bet', bet }), !['call', 'fold'].includes(bet) && betCost(g, bet) <= call, bet === 'fold' ? text('포기', 'Give up') : text(`${betCost(g, bet)}칩`, `${betCost(g, bet)} chips`));
+      for (const bet of ['call', 'half', 'double', 'allin', 'fold'] as Bet[]) button(`bet-${bet}`, names[bet], () => play({ type: 'bet', bet }), !['call', 'fold'].includes(bet) && betCost(g, bet) <= call, bet === 'fold' ? text('포기', 'Give up') : text(`${betCost(g, bet)}칩`, `${betCost(g, bet)} chips`));
     } else if (g.phase === 'reveal') {
       meme('goni');
-      status(g.pending === 'dealer-fold' ? text('아귀가 다이했다', 'Agwi folds') : g.pending === 'player-fold' ? text('이번 판은 접는다', 'You fold this hand') : text('아귀도 받았다', 'Agwi calls'), text('베팅은 끝났다. 패를 공개하고 판돈의 주인을 정할 차례다.', 'Betting is complete. Reveal the hands and settle the pot.'));
-      button('show', text('패 공개 · 정산', 'Reveal & settle'), () => tableAction({ type: 'show' }));
+      status(g.pending === 'dealer-fold' ? text('Axii가 다이했다', 'Axii folds') : g.pending === 'player-fold' ? text('이번 판은 접는다', 'You fold this hand') : text('Axii도 받았다', 'Axii calls'), text('베팅은 끝났다. 패를 공개하고 판돈의 주인을 정할 차례다.', 'Betting is complete. Reveal the hands and settle the pot.'));
+      button('show', text('패 공개 · 정산', 'Reveal & settle'), () => play({ type: 'show' }));
     } else {
       const v = g.verdict!;
       meme('goni');
-      const labels = { player: text('내가 이겼다', 'You win'), dealer: text('아귀가 이겼다', 'Agwi wins'), draw: text('무승부', 'A tie'), replay: text('구사 재경기', 'Gusa redeal') };
+      const labels = { player: text('내가 이겼다', 'You win'), dealer: text('Axii가 이겼다', 'Axii wins'), draw: text('무승부', 'A tie'), replay: text('구사 재경기', 'Gusa redeal') };
       const over = tableOver(g);
-      status(over ? text(`대국 종료 · ${g.player > g.dealer ? '내 승리' : g.player < g.dealer ? '아귀 승리' : '무승부'}`, `Match over · ${g.player > g.dealer ? 'You win' : g.player < g.dealer ? 'Agwi wins' : 'Tie'}`) : labels[v.winner], `${labels[v.winner]}. ${t(v.reason)}`, over ? text('새 대국은 두 사람 모두 1,000칩으로 시작해요.', 'A new match starts both players at 1,000 chips.') : '');
-      if (over) button('new-match', text('새 대국', 'New match'), () => { save.table = newTable(); persist(); render(); });
-      else button('deal', v.winner === 'replay' ? text('판돈 유지 · 다시 받기', 'Redeal with pot') : text('다음 판', 'Next round'), () => tableAction(deal()));
+      status(over ? text(`대국 종료 · ${g.player > g.dealer ? '내 승리' : g.player < g.dealer ? 'Axii 승리' : '무승부'}`, `Match over · ${g.player > g.dealer ? 'You win' : g.player < g.dealer ? 'Axii wins' : 'Tie'}`) : labels[v.winner], `${labels[v.winner]}. ${t(v.reason)}`, over ? text('새 대국은 두 사람 모두 1,000칩으로 시작해요.', 'A new match starts both players at 1,000 chips.') : '');
+      if (opening && openingReady(g)) {
+        status(labels[v.winner], `${t(v.reason)} ${text('옆에서 구경하던 손님이 의자를 끌어온다. Axii가 말없이 패를 모은다.', 'A spectator pulls up a chair. Axii quietly gathers the cards.')}`);
+        button('join-table', text('자리 내주고 다음 판', 'Make room & deal'), () => { const next = enterShowdown(save); if (next) { save = next; persist(); render(); } });
+      } else if (over) button('new-match', text('새 대국', 'New match'), () => { if (opening) restart(); else { save.table = newTable(); persist(); render(); } });
+      else button('deal', v.winner === 'replay' ? text('판돈 유지 · 다시 받기', 'Redeal with pot') : text('다음 판', 'Next round'), () => play(deal()));
     }
   };
   const render = () => {
     board.replaceChildren(); score.replaceChildren(); actions.replaceChildren(); hint.textContent = '';
-    dialog.dataset.mode = save.mode;
+    const opening = save.mode === 'story' && save.stage === 'opening';
+    const tense = save.stage === 'showdown' && save.story.log.some(e => e === 'call' || e === 'double');
+    dialog.dataset.mode = opening ? 'free' : save.mode;
+    dialog.dataset.stage = save.stage;
+    dialog.dataset.tension = String(save.mode === 'story' && tense);
+    find('#seotda-title').textContent = save.mode === 'story' && tense ? text('마지막 한 장', 'The final card') : text('Axii와 섯다', 'Seotda with Axii');
+    find('[data-seotda-gallery]').hidden = !tense;
     find('[data-seotda-help]').hidden = save.mode !== 'free';
-    find('[data-seotda-rules]').hidden = save.mode !== 'free';
+    find('[data-seotda-rules]').hidden = false;
     find('[data-seotda-history-panel]').hidden = save.mode !== 'free';
     const beginner = find<HTMLDetailsElement>('#seotda-beginner');
     beginner.hidden = save.mode !== 'free';
@@ -214,7 +231,7 @@ function setupSeotda() {
     saveNotice.textContent = storage ? text('자동 저장 · 닫아도 다음에 이어 할 수 있어요. 게임용 칩만 사용해요.', 'Auto-saved · Continue next time. Play chips only.') : text('저장이 차단되어 이번 페이지에서만 진행이 유지돼요.', 'Storage is blocked. Progress lasts only on this page.');
     saveNotice.dataset.error = String(!storage);
     find('[data-seotda-history]').replaceChildren(...save.table.history.map(row => el('li', text(`${row.round}판 · ${row.verdict.winner === 'player' ? '승' : row.verdict.winner === 'dealer' ? '패' : row.verdict.winner === 'draw' ? '무승부' : '재경기'} · 내 칩 ${row.chips}`, `Round ${row.round} · ${row.verdict.winner} · Your chips ${row.chips}`))));
-    if (save.mode === 'free') renderTable();
+    if (save.mode === 'free' || opening) renderTable(opening);
     else renderStory();
   };
   dialog.querySelectorAll<HTMLButtonElement>('[data-seotda-mode]').forEach(b => b.addEventListener('click', () => { switchMode(b.dataset.seotdaMode as 'story' | 'free'); focus(); }));

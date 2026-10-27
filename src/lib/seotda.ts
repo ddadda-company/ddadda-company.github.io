@@ -98,30 +98,61 @@ export function deal(random = Math.random): TableEvent {
   return { type: 'deal', cards: deck.slice(0, 4), roll: random() };
 }
 export type StoryEvent = 'deal' | 'call' | 'double' | 'challenge' | 'maple' | 'cherry' | 'reveal' | 'leave';
-export interface Story { phase: 'intro' | 'deal' | 'bet' | 'stop' | 'guess' | 'reveal' | 'ending'; dealt: number; stake: number; pick: 'maple' | 'cherry' | null; outcome: 'win' | 'lose' | 'leave' | null; log: StoryEvent[]; }
-export const newStory = (): Story => ({ phase: 'intro', dealt: 0, stake: 100, pick: null, outcome: null, log: [] });
+export interface Story { phase: 'intro' | 'deal' | 'bet' | 'stop' | 'guess' | 'reveal' | 'ending'; dealt: number; stake: number; limit: number; pick: 'maple' | 'cherry' | null; outcome: 'win' | 'lose' | 'leave' | null; log: StoryEvent[]; }
+export const newStory = (limit = 200): Story => ({ phase: 'intro', dealt: 0, stake: Math.min(100, limit), limit, pick: null, outcome: null, log: [] });
 export function applyStory(g: Story, event: StoryEvent): Story | null {
   const n: Story = { ...g, log: [...g.log, event] };
   if (g.log.length >= 12 || g.phase === 'ending') return null;
   if (event === 'deal' && ['intro', 'deal'].includes(g.phase)) { n.dealt++; n.phase = n.dealt === 5 ? 'bet' : 'deal'; return n; }
-  if ((event === 'call' || event === 'double') && g.phase === 'bet') { n.stake = event === 'double' ? 200 : 100; n.phase = 'stop'; return n; }
+  if ((event === 'call' || event === 'double') && g.phase === 'bet') { n.stake = event === 'double' ? Math.min(g.stake * 2, g.limit) : g.stake; n.phase = 'stop'; return n; }
   if (event === 'challenge' && g.phase === 'stop') { n.phase = 'guess'; return n; }
   if ((event === 'maple' || event === 'cherry') && g.phase === 'guess') { n.pick = event; n.phase = 'reveal'; return n; }
   if (event === 'reveal' && g.phase === 'reveal') { n.phase = 'ending'; n.outcome = g.pick === 'cherry' ? 'win' : 'lose'; return n; }
   if (event === 'leave' && ['bet', 'stop', 'guess'].includes(g.phase)) { n.phase = 'ending'; n.outcome = 'leave'; return n; }
   return null;
 }
-export interface SeotdaSave { mode: 'story' | 'free'; story: Story; table: Table; }
-export const newSeotdaSave = (): SeotdaSave => ({ mode: 'story', story: newStory(), table: newTable() });
-export const saveSeotda = (s: SeotdaSave) => JSON.stringify({ version: 1, mode: s.mode, story: s.story.log, table: s.table.log });
+// The ordinary opening uses the same betting/rank engine as free play.
+// Settle all pots (including Gusa redeals) before allowing the cinematic turn.
+export const openingReady = (g: Table) => g.phase === 'result' && g.round >= 2 && g.pot === 0 && g.player > 0 && g.dealer > 0;
+export interface SeotdaSave { mode: 'story' | 'free'; stage: 'opening' | 'showdown'; opening: Table; story: Story; table: Table; }
+export const newSeotdaSave = (): SeotdaSave => ({ mode: 'story', stage: 'opening', opening: newTable(), story: newStory(), table: newTable() });
+export function enterShowdown(save: SeotdaSave): SeotdaSave | null {
+  if (save.stage !== 'opening' || !openingReady(save.opening)) return null;
+  return { ...save, stage: 'showdown', story: newStory(Math.min(save.opening.player, save.opening.dealer)) };
+}
+export function storyBalance(save: SeotdaSave): number {
+  const { outcome, stake, log } = save.story;
+  if (outcome === 'win') return save.opening.player + stake;
+  if (outcome === 'lose') return save.opening.player - stake;
+  return save.opening.player - (log.includes('call') || log.includes('double') ? stake : 0);
+}
+export const saveSeotda = (s: SeotdaSave) => JSON.stringify({ version: 2, mode: s.mode, stage: s.stage, opening: s.opening.log, story: s.story.log, table: s.table.log });
 export function restoreSeotda(raw: string | null): SeotdaSave {
-  if (!raw || raw.length > 32000) return newSeotdaSave();
+  if (!raw || raw.length > 64000) return newSeotdaSave();
   try {
     const v = JSON.parse(raw);
-    if (v.version !== 1 || !['story', 'free'].includes(v.mode) || !Array.isArray(v.story) || v.story.length > 12 || !Array.isArray(v.table) || v.table.length > 150) return newSeotdaSave();
+    if (![1, 2].includes(v.version) || !['story', 'free'].includes(v.mode) || !Array.isArray(v.story) || v.story.length > 12 || !Array.isArray(v.table) || v.table.length > 150) return newSeotdaSave();
     const save = newSeotdaSave(); save.mode = v.mode;
-    for (const e of v.story) { const next = applyStory(save.story, e); if (!next) return newSeotdaSave(); save.story = next; }
     for (const e of v.table) { const next = applyTable(save.table, e); if (!next) return newSeotdaSave(); save.table = next; }
+    if (v.version === 2) {
+      if (!['opening', 'showdown'].includes(v.stage) || !Array.isArray(v.opening) || v.opening.length > 150) return newSeotdaSave();
+      save.stage = v.stage;
+      for (const e of v.opening) {
+        if (openingReady(save.opening)) return newSeotdaSave();
+        const next = applyTable(save.opening, e); if (!next) return newSeotdaSave(); save.opening = next;
+      }
+      if (save.stage === 'opening' && v.story.length) return newSeotdaSave();
+      if (save.stage === 'showdown') {
+        // Empty opening logs are accepted for migrated, unfinished v1 games.
+        if (v.opening.length && !openingReady(save.opening)) return newSeotdaSave();
+        save.story = newStory(v.opening.length ? Math.min(save.opening.player, save.opening.dealer) : 200);
+      }
+    }
+    for (const e of v.story) { const next = applyStory(save.story, e); if (!next) return newSeotdaSave(); save.story = next; }
+    if (v.version === 1) {
+      if (save.story.log.length && save.story.phase !== 'ending') save.stage = 'showdown';
+      else save.story = newStory(); // Existing finished scenes start the new ordinary opening.
+    }
     return save;
   } catch { return newSeotdaSave(); }
 }

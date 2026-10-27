@@ -170,3 +170,5 @@ html:has(.seotda[open]) { overflow: hidden; }
   .seotda-meme { display: none; }
   .seotda-controls > p { display: none; }
 }
+
+.seotda[data-tension="true"] .seotda-table { border-color: var(--color-gold); }

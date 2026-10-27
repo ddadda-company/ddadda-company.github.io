@@ -42,6 +42,21 @@ const phase = value => expect(game).toHaveAttribute('data-phase', value);
 const imageReady = async () => { await expect(game.locator('[data-seotda-image]')).toBeVisible(); assert(await game.locator('[data-seotda-image]').evaluate(el => el.complete && el.naturalWidth >= 1000 && el.naturalHeight >= 667)); };
 const start = async () => { await trigger.click(); await expect(game).toBeVisible(); };
 const fiveCards = async () => { for (let i = 0; i < 5; i++) await choose('story-deal'); await phase('bet'); };
+const openingRounds = async (verifyLayouts = false) => {
+  const play = async id => { await action(id).click(); if (verifyLayouts) await allLayouts(); };
+  for (let i = 0; i < 2; i++) {
+    await play('deal'); await phase('peek'); await play('peek'); await phase('bet');
+    await play('bet-fold'); await phase('reveal'); await play('show'); await phase('result');
+    await expect(game.locator('[data-seotda-meme]')).not.toBeVisible();
+    if (verifyLayouts && i === 0) {
+      await page.reload({ waitUntil: 'networkidle' }); await start(); await phase('result');
+      await expect(game).toHaveAttribute('data-stage', 'opening');
+    }
+  }
+  await play('join-table'); await phase('intro');
+  await expect(game).toHaveAttribute('data-stage', 'showdown');
+  await expect(game.locator('[data-seotda-score]')).toContainText('960');
+};
 try {
   await mkdir('.qa', { recursive: true });
   for (const route of ['/', '/achievements/', '/contact/', '/en/', '/en/achievements/', '/en/contact/']) {
@@ -66,29 +81,41 @@ try {
   }, sources.map(asset => asset.cardId));
   await expect(page.locator('[data-seotda-open]')).toHaveCount(2);
   await expect(game.locator('img[src]')).toHaveCount(0);
-  await start(); await phase('intro'); await expect(game).toHaveAttribute('data-mode', 'story');
+  await start(); await phase('ready'); await expect(game).toHaveAttribute('data-stage', 'opening');
   await expect(game.locator('[data-seotda-help]')).not.toBeVisible();
   await expect(game.locator('#seotda-beginner')).not.toBeVisible();
-  await expect(action('story-deal')).toBeVisible(); await imageReady();
+  await expect(action('deal')).toBeVisible();
+  await expect(game.locator('[data-seotda-image]')).not.toHaveAttribute('src', /./);
+  await expect(game.locator('[data-seotda-gallery]')).not.toBeVisible();
+  await expect(game.locator('.seotda-body')).not.toContainText(/아귀|고니|타짜|영화/);
   for (const [width, height] of viewports) {
     await page.setViewportSize({ width, height });
     assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
     await layout();
     await expect(game.locator('[data-seotda-close]')).toBeInViewport();
-    await expect(action('story-deal')).toBeInViewport();
+    await expect(action('deal')).toBeInViewport();
     if (width === 1440 || width === 375) await page.screenshot({ path: `.qa/seotda-story-${width}.png` });
   }
   await page.setViewportSize({ width: 1440, height: 1000 });
   let audit = await new AxeBuilder({ page }).include('#member-seotda').analyze();
   assert.deepEqual(audit.violations.map(v => `${v.id} ${v.nodes.map(n => n.target).join(',')}`), []);
+  await openingRounds(true);
+  await fiveCards();
+  await expect(game).toHaveAttribute('data-tension', 'false');
+  await expect(game.locator('[data-seotda-image]')).not.toHaveAttribute('src', /./);
+  await expect(game.locator('.seotda-seat').first()).toContainText('Axii');
+  await choose('story-double'); await phase('stop'); await imageReady();
+  await expect(game).toHaveAttribute('data-tension', 'true');
+  await expect(game.locator('[data-seotda-score]')).toContainText('760');
+  await expect(game.locator('[data-seotda-image]')).toHaveAttribute('src', '/images/tazza/stop.jpg');
+  await page.setViewportSize({ width: 375, height: 812 }); await page.screenshot({ path: '.qa/seotda-turn-375.png' });
+  await page.setViewportSize({ width: 1440, height: 1000 });
   await game.locator('[data-seotda-enlarge]').click();
   await expect(game.locator('#seotda-notes')).toBeVisible();
   await expect(game.locator('[data-seotda-gallery]')).toHaveAttribute('open', '');
   assert((await game.locator('[data-expanded="true"] img').boundingBox()).height > 155);
   await page.keyboard.press('Escape');
   await expect(game.locator('[data-seotda-enlarge]')).toBeFocused();
-  await fiveCards(); await choose('story-double'); await phase('stop'); await imageReady();
-  await expect(game.locator('[data-seotda-image]')).toHaveAttribute('src', '/images/tazza/stop.jpg');
   // Persist the cinematic branch across closing, reload and language switch.
   await page.keyboard.press('Escape'); await expect(trigger).toBeFocused();
   await page.goto(`${base}/en/members/`, { waitUntil: 'networkidle' });
@@ -100,9 +127,9 @@ try {
   await expect(game.locator('.seotda-seat--madam [data-month="3"]')).toBeVisible();
   await expect(game.locator('.seotda-seat--madam [data-card-id="5"] img')).toHaveAttribute('src', '/images/hwatu/m03-02.svg');
   await page.screenshot({ path: '.qa/seotda-sakura.png' });
-  await choose('story-restart'); await fiveCards(); await choose('story-call'); await choose('story-challenge'); await choose('story-maple'); await choose('story-reveal');
+  await choose('story-restart'); await openingRounds(); await fiveCards(); await choose('story-call'); await choose('story-challenge'); await choose('story-maple'); await choose('story-reveal');
   await expect(game.locator('[data-seotda-scene-title]')).toContainText('fooled you');
-  await choose('story-restart'); await fiveCards(); await choose('story-leave');
+  await choose('story-restart'); await openingRounds(); await fiveCards(); await choose('story-call'); await choose('story-leave');
   await expect(game.locator('[data-seotda-scene-title]')).toContainText('Walk away');
   // Tutorial is opt-in, available only after choosing free play, and can be skipped.
   await game.locator('[data-seotda-mode="free"]').click(); await phase('ready');
@@ -150,14 +177,14 @@ try {
   await page.unroute('**/images/tazza/*.jpg'); await game.locator('[data-seotda-image-retry]').click(); await imageReady();
   // Corrupt storage is discarded without affecting the other Easter eggs.
   await page.evaluate(() => localStorage.setItem('dda_com-axii-seotda-v1', '{bad'));
-  await page.reload({ waitUntil: 'networkidle' }); await start(); await phase('intro');
+  await page.reload({ waitUntil: 'networkidle' }); await start(); await phase('ready');
   await expect(page.locator('#member-romance')).not.toBeVisible();
   assert.deepEqual(errors, []);
   const denied = await browser.newContext({ reducedMotion: 'reduce' });
   await denied.addInitScript(() => { Storage.prototype.getItem = () => { throw new Error('blocked'); }; Storage.prototype.setItem = () => { throw new Error('blocked'); }; });
   const deniedPage = await denied.newPage(); await deniedPage.goto(`${base}/members/`); await deniedPage.locator('[data-seotda-open]').first().click();
-  await deniedPage.locator('[data-seotda-action="story-deal"]').click(); await expect(deniedPage.locator('[data-seotda-save]')).toHaveAttribute('data-error', 'true');
-  await deniedPage.keyboard.press('Escape'); await deniedPage.locator('[data-seotda-open]').first().click(); await expect(deniedPage.locator('#member-seotda')).toHaveAttribute('data-phase', 'deal');
+  await deniedPage.locator('[data-seotda-action="deal"]').click(); await expect(deniedPage.locator('[data-seotda-save]')).toHaveAttribute('data-error', 'true');
+  await deniedPage.keyboard.press('Escape'); await deniedPage.locator('[data-seotda-open]').first().click(); await expect(deniedPage.locator('#member-seotda')).toHaveAttribute('data-phase', 'peek');
   await denied.close();
-  console.log('Seotda browser passed: Axii portrait/name, immediate story, all story endings, 21 original Hwatu assets with source checksums and bright/animal mapping, 7 caption-free 1000px film stills, bilingual persistence, free-game betting, optional/skippable tutorial and practice, all phases without gameplay scrolling at nine viewport sizes, accessibility, image retry and blocked/corrupt saves.');
+  console.log('Seotda browser passed: Axii portrait/name, ordinary two-round opening, saved chips across the surprise transition, no early film spoilers, restart from ordinary play, all story endings, 21 original Hwatu assets with source checksums and bright/animal mapping, 7 caption-free 1000px film stills, bilingual persistence, free-game betting, optional/skippable tutorial and practice, all phases without gameplay scrolling at nine viewport sizes, accessibility, image retry and blocked/corrupt saves.');
 } finally { await browser.close(); }
