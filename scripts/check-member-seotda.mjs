@@ -177,6 +177,7 @@ try {
   await expect(game.locator('#seotda-beginner')).not.toHaveAttribute('open', '');
   await game.locator('[data-seotda-help]').click();
   await expect(game.locator('#seotda-beginner')).toHaveAttribute('open', '');
+  for (let lesson = 0; lesson < 4; lesson++) await game.locator('[data-guide-next]').click();
   await game.locator('[data-seotda-practice="left"]').click();
   await expect(game.locator('[data-seotda-practice-result]')).toContainText('Correct');
   await game.locator('[data-seotda-practice-next]').click(); await game.locator('[data-seotda-practice="left"]').click();

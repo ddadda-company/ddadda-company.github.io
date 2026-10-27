@@ -1,3 +1,4 @@
+import { createSeotdaTutorial } from './seotda-tutorial';
 import { createSeotdaEffects } from './seotda-effects';
 import { flowers, seotdaMemes, type MemeId } from '../data/seotda';
 import { animal, applyStory, applyTable, betCost, bright, deal, enterShowdown, openingReady, storyBalance, month, newStory, newTable, rankHand, restoreSeotda, saveSeotda, tableOver, type Bet, type Card, type StoryEvent, type TableEvent } from '../lib/seotda';
@@ -66,40 +67,12 @@ function setupSeotda() {
     image.src = `/images/hwatu/${filename}.svg`; node.append(image);
     return node;
   };
-  let exercise = 0;
-  const examples = [
-    { left: [2, 8], right: [10, 14], answer: 'left', why: text('왼쪽은 2+5=7끗, 오른쪽은 6+8=14라 4끗. 7끗이 더 높아요.', 'Left: 2+5=7 points. Right: 6+8=14, so 4 points. Seven is higher.') },
-    { left: [0, 2], right: [16, 17], answer: 'right', why: text('왼쪽은 1·2 알리, 오른쪽은 9월 두 장이라 9땡. 땡은 알리보다 높아요.', 'Left is Alli (1·2). Right is a pair of 9s. Pairs beat named hands like Alli.') },
-    { left: [4, 14], right: [18, 19], answer: 'left', why: text('왼쪽은 3광·8광이라 삼팔광땡! 가장 높은 패라 오른쪽 장땡도 이겨요.', 'Left has 3 bright + 8 bright, the strongest hand. It beats the pair of 10s on the right.') },
-  ];
-  const practice = () => {
-    const box = find('[data-seotda-practice]'), result = find('[data-seotda-practice-result]');
-    const example = examples[exercise]; box.replaceChildren(); result.textContent = '';
-    box.append(el('p', text(`연습 ${exercise + 1}/3 · 어느 패가 이길까요?`, `Practice ${exercise + 1}/3 · Which hand wins?`)));
-    const hands = el('div', '', 'seotda-practice-hands');
-    for (const side of ['left', 'right'] as const) {
-      const hand = el('div', '', 'seotda-hand'); hand.append(...example[side].map(value => card(value)));
-      const choice = el('button', side === 'left' ? text('왼쪽 승', 'Left wins') : text('오른쪽 승', 'Right wins')); choice.type = 'button'; choice.dataset.seotdaPractice = side;
-      choice.addEventListener('click', () => {
-        result.textContent = `${side === example.answer ? text('정답! ', 'Correct! ') : text('다시 살펴볼까요? ', 'Let’s take a closer look. ')}${example.why}`;
-        box.querySelectorAll<HTMLButtonElement>('[data-seotda-practice]').forEach(b => { b.disabled = true; });
-        next.hidden = false;
-      });
-      const group = el('div'); group.append(hand, choice); hands.append(group);
-    }
-    const next = el('button', exercise < 2 ? text('다음 연습', 'Next example') : text('다시 연습', 'Practice again')); next.type = 'button'; next.hidden = true; next.dataset.seotdaPracticeNext = '';
-    next.addEventListener('click', () => { exercise = (exercise + 1) % examples.length; practice(); find<HTMLButtonElement>('[data-seotda-practice="left"]').focus({ preventScroll: true }); });
-    box.append(hands, next);
-  };
-  // Do not fetch tutorial cards until the optional guide is opened.
-  find<HTMLDetailsElement>('#seotda-beginner').addEventListener('toggle', event => {
-    if ((event.currentTarget as HTMLDetailsElement).open && !find('[data-seotda-practice]').hasChildNodes()) practice();
-  });
   const notes = find('[data-seotda-notes]');
   const panel = find('#seotda-notes');
   let panelOpener: HTMLElement = notes;
   const setPanel = (open: boolean) => {
     panel.hidden = !open; dialog.dataset.panel = String(open);
+    if (!open) find<HTMLDetailsElement>('#seotda-beginner').open = false;
     for (const selector of ['.seotda-modes', '.seotda-score', '.seotda-body', '.seotda-controls']) find(selector).inert = open;
     if (open) find('[data-seotda-notes-close]').focus({ preventScroll: true });
     else panelOpener.focus({ preventScroll: true });
@@ -114,12 +87,10 @@ function setupSeotda() {
   });
   notes.addEventListener('click', () => { panelOpener = notes; setPanel(true); });
   find('[data-seotda-notes-close]').addEventListener('click', () => setPanel(false));
+  const tutorial = createSeotdaTutorial(dialog, locale === 'ko', card, () => { setPanel(false); focus(); });
   find('[data-seotda-help]').addEventListener('click', () => {
-    panelOpener = find('[data-seotda-help]'); setPanel(true);
-    const help = find<HTMLDetailsElement>('#seotda-beginner'); help.open = true;
-    help.querySelector('summary')!.focus({ preventScroll: true }); help.scrollIntoView({ block: 'start' });
+    panelOpener = find('[data-seotda-help]'); setPanel(true); tutorial.open();
   });
-  find('[data-seotda-skip-tutorial]').addEventListener('click', () => { find<HTMLDetailsElement>('#seotda-beginner').open = false; setPanel(false); focus(); });
   dialog.addEventListener('cancel', event => { if (effects.active()) { event.preventDefault(); effects.dismiss(); } else if (!panel.hidden) { event.preventDefault(); setPanel(false); } });
   const seat = (name: string, cards: (Card | null | undefined)[], label: string, className = '') => {
     const box = el('div', '', `seotda-seat ${className}`); box.append(el('h4', name));
