@@ -4,6 +4,7 @@ import MemberCard from '../components/MemberCard.astro';
 import PenguinGuide from '../components/PenguinGuide.astro';
 import MemberSurprise from '../components/MemberSurprise.astro';
 import MemberCollection from '../components/MemberCollection.astro';
+import MemberSeotda from '../components/MemberSeotda.astro';
 import { copy, pageUrl, type Locale } from '../data/i18n';
 import { members } from '../data/team';
 const { locale } = Astro.props as { locale: Locale };
@@ -24,3 +25,5 @@ const disciplines = [...new Set(members.flatMap(m => m.disciplines))];
 <MemberSurprise locale={locale} />
 
 <MemberCollection locale={locale} />
+
+<MemberSeotda locale={locale} />

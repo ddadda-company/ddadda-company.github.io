@@ -8,7 +8,8 @@ const { member, locale, index, compact = false } = Astro.props;
 const profileAnchor = memberAnchor(member.handle);
 const hasPenguinGuide = member.handle === 'sane100400';
 const hasSurprise = !compact && member.handle === '8l4nk' && memberSurprisePhotos.length > 0;
-const Portrait = hasPenguinGuide ? 'a' : hasSurprise ? 'button' : 'div';
+const hasSeotda = !compact && member.handle === 'Axii';
+const Portrait = hasPenguinGuide ? 'a' : hasSurprise || hasSeotda ? 'button' : 'div';
 const guideUrl = `${compact ? pageUrl(locale, 'members') : ''}#penguin-guide`;
 const guideLabel = locale === 'ko' ? 'sane100400의 펭귄 도감 열기' : 'Open sane100400’s penguin guide';
 const githubPath = 'M12 .9a11.1 11.1 0 0 0-3.51 21.63c.55.1.76-.24.76-.54v-2.06c-3.09.67-3.74-1.31-3.74-1.31-.51-1.28-1.23-1.62-1.23-1.62-1.01-.69.08-.68.08-.68 1.12.08 1.7 1.15 1.7 1.15.99 1.69 2.6 1.2 3.23.92.1-.72.39-1.2.71-1.48-2.47-.28-5.07-1.24-5.07-5.49 0-1.21.43-2.2 1.14-2.98-.12-.28-.49-1.41.11-2.94 0 0 .93-.3 3.05 1.14a10.6 10.6 0 0 1 5.55 0c2.11-1.44 3.04-1.14 3.04-1.14.61 1.53.23 2.66.11 2.94.71.78 1.14 1.77 1.14 2.98 0 4.26-2.61 5.2-5.1 5.48.4.35.76 1.02.76 2.06v3.03c0 .3.2.65.77.54A11.1 11.1 0 0 0 12 .9Z';
@@ -18,7 +19,7 @@ const links = [
 ];
 ---
 <article class:list={['member-profile', 'member-card', 'member-gallery-profile', `member-card--${index % 7}`]} id={compact ? undefined : profileAnchor} data-member data-disciplines={member.disciplines.join(',')} aria-labelledby={`${profileAnchor}-name`}>
-  <Portrait class:list={['member-portrait-stage', { 'member-surprise-trigger': hasSurprise }]} type={hasSurprise ? 'button' : undefined} data-surprise-open={hasSurprise ? '' : undefined} aria-haspopup={hasSurprise ? 'dialog' : undefined} aria-controls={hasSurprise ? 'member-surprise' : undefined} data-tilt href={hasPenguinGuide ? guideUrl : undefined} data-penguin-open={hasPenguinGuide ? '' : undefined} aria-label={hasPenguinGuide ? guideLabel : hasSurprise ? '8l4nk' : undefined}>
+  <Portrait class:list={['member-portrait-stage', { 'member-surprise-trigger': hasSurprise || hasSeotda }]} type={hasSurprise || hasSeotda ? 'button' : undefined} data-surprise-open={hasSurprise ? '' : undefined} aria-haspopup={hasSurprise || hasSeotda ? 'dialog' : undefined} aria-controls={hasSurprise ? 'member-surprise' : hasSeotda ? 'member-seotda' : undefined} data-seotda-open={hasSeotda ? '' : undefined} data-tilt href={hasPenguinGuide ? guideUrl : undefined} data-penguin-open={hasPenguinGuide ? '' : undefined} aria-label={hasPenguinGuide ? guideLabel : hasSurprise ? '8l4nk' : hasSeotda ? (locale === 'ko' ? 'Axii의 섯다 열기' : 'Open Axii’s Seotda game') : undefined}>
     <div class:list={['member-photo', { 'member-photo--empty': !member.photo }]}>
       {member.photo ? <img src={member.photo} alt="" width="600" height="600" loading="lazy" /> : <>
         <!-- Replace by setting member.photo in src/data/team.ts; portrait target: 600 × 600. -->
@@ -28,7 +29,7 @@ const links = [
     </div>
     {member.role && <span class="member-gallery-role">{member.role[locale]}</span>}
   </Portrait>
-  <div class="member-info"><h3 id={`${profileAnchor}-name`}>{hasPenguinGuide ? <a href={guideUrl} data-penguin-open aria-label={guideLabel}>{member.handle}<span class="member-penguin-hint" aria-hidden="true">🐧</span></a> : compact ? <a href={`${pageUrl(locale, 'members')}#${profileAnchor}`}>{member.handle}</a> : hasSurprise ? <button type="button" class="member-surprise-trigger" data-surprise-open aria-haspopup="dialog" aria-controls="member-surprise">{member.handle}</button> : member.handle}</h3></div>
+  <div class="member-info"><h3 id={`${profileAnchor}-name`}>{hasPenguinGuide ? <a href={guideUrl} data-penguin-open aria-label={guideLabel}>{member.handle}<span class="member-penguin-hint" aria-hidden="true">🐧</span></a> : compact ? <a href={`${pageUrl(locale, 'members')}#${profileAnchor}`}>{member.handle}</a> : hasSurprise ? <button type="button" class="member-surprise-trigger" data-surprise-open aria-haspopup="dialog" aria-controls="member-surprise">{member.handle}</button> : hasSeotda ? <button type="button" class="member-surprise-trigger" data-seotda-open aria-haspopup="dialog" aria-controls="member-seotda">{member.handle}</button> : member.handle}</h3></div>
   <div class:list={['member-biography', { 'member-biography--empty': !member.bio[locale] }]} aria-hidden={!member.bio[locale] ? 'true' : undefined}>{member.bio[locale] && <p>{member.bio[locale]}</p>}</div>
   {member.disciplines.length > 0 && <p class="member-card-fields">{member.disciplines.join(' · ')}</p>}
   <div class="member-contacts">
