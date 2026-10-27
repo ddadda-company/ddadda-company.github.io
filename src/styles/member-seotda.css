@@ -2,7 +2,7 @@
  * states: default · hover · focus · active · disabled · loading · error · success
  * pre-emit critique: P5 H5 E4 S5 R5 V4 · gameplay first, notes in a separate panel
  */
-.seotda { --card-width: 62px; --card-height: 90px; position: fixed; inset: 0; width: min(920px, calc(100% - 32px)); height: min(690px, calc(100dvh - 32px)); max-width: none; max-height: none; margin: auto; padding: 0; overflow: hidden; border: 6px solid var(--color-table-wood); border-radius: 18px; color: var(--color-table-cream); background: var(--color-table-wood); box-shadow: 0 20px 70px var(--color-puzzle-backdrop); }
+.seotda { --card-height: 90px; position: fixed; inset: 0; width: min(920px, calc(100% - 32px)); height: min(690px, calc(100dvh - 32px)); max-width: none; max-height: none; margin: auto; padding: 0; overflow: hidden; border: 6px solid var(--color-table-wood); border-radius: 18px; color: var(--color-table-cream); background: var(--color-table-wood); box-shadow: 0 20px 70px var(--color-puzzle-backdrop); }
 .seotda[open] { display: grid; grid-template: auto auto auto minmax(0, 1fr) auto / minmax(0, 1fr); }
 .seotda [hidden] { display: none !important; }
 .seotda::backdrop { background: var(--color-puzzle-backdrop); backdrop-filter: blur(5px); }
@@ -36,18 +36,10 @@ html:has(.seotda[open]) { overflow: hidden; }
 .seotda[data-mode="free"] .seotda-seat:not(.seotda-seat--player) { grid-column: 1 / -1; }
 .seotda-pot { grid-column: 1 / -1; grid-row: 2; display: flex; align-items: center; gap: 10px; margin: 8px 0; font-size: .8125rem; font-weight: 800; font-variant-numeric: tabular-nums; }
 .seotda-pot::before { content: ''; width: 22px; height: 22px; border: 3px dashed var(--color-table-cream); border-radius: 50%; background: var(--color-hwatu-red); box-shadow: 0 3px 0 var(--color-hwatu-black), -5px 5px 0 var(--color-table-cream); }
-.seotda-card { position: relative; isolation: isolate; width: var(--card-width); height: var(--card-height); flex: none; overflow: hidden; border: 3px solid var(--color-hwatu-black); border-radius: 3px; background: var(--color-paper); box-shadow: 1px 3px 0 var(--color-hwatu-red), 2px 5px 5px var(--color-shadow); }
-.seotda-card svg { position: absolute; inset: 0; width: 100%; height: 100%; }
-.seotda-card-month { position: relative; z-index: 1; display: block; width: max-content; padding: 0 3px; background: var(--color-paper); color: var(--color-hwatu-black); font-size: .875rem; line-height: 1.25; }
-.seotda-card-mark { position: absolute; bottom: 2px; right: 2px; border-radius: 2px; padding: 1px 3px; color: var(--color-paper); background: var(--color-hwatu-red); font-size: .5625rem; }
-.seotda-card-mark--bright { background: var(--color-paper); color: var(--color-hwatu-red); font-size: 1rem; font-weight: 800; }
-.card-flower { fill: var(--color-hwatu-red); }
-.card-moon { fill: var(--color-gold); }
-.card-ink { fill: var(--color-hwatu-black); }
-.card-stem { fill: none; stroke: var(--color-hwatu-black); stroke-width: 5; }
-.seotda-card--back { display: grid; place-items: center; background: var(--color-hwatu-red); color: var(--color-table-cream); border-color: var(--color-hwatu-red); box-shadow: 1px 3px 0 var(--color-hwatu-black); }
-.seotda-card--back::before { content: ''; position: absolute; inset: 4px; border: 1px solid var(--color-table-cream); opacity: .6; }
-.seotda-card--back > span { font-size: 1.5rem; font-weight: 800; }
+.seotda-card { position: relative; isolation: isolate; width: calc(var(--card-height) * 103 / 168); height: var(--card-height); flex: none; overflow: hidden; border: 0; border-radius: 2px; background: var(--color-paper); box-shadow: 1px 3px 0 var(--color-hwatu-red), 2px 5px 5px var(--color-shadow); }
+.seotda-card img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.seotda-card-fallback { display: grid; place-items: center; height: 100%; padding: 2px; color: var(--color-hwatu-black); font-size: .625rem; text-align: center; }
+.seotda-card--back { background: var(--color-hwatu-red); box-shadow: 1px 3px 0 var(--color-hwatu-black); }
 .seotda-card--empty { display: grid; place-items: center; border: 1px dashed var(--color-table-stitch); background: var(--color-transparent); box-shadow: none; color: var(--color-table-muted); font-size: 1.5rem; }
 .seotda-cinema { grid-column: 2; grid-row: 1; display: flex; flex-direction: column; justify-content: center; gap: 14px; min-width: 0; min-height: 0; }
 .seotda-meme { margin: 0; min-height: 0; text-align: center; }
@@ -96,7 +88,7 @@ html:has(.seotda[open]) { overflow: hidden; }
 .seotda-notes :is(button, summary, a):focus-visible { outline-color: var(--color-focus); }
 @media (hover: hover) { .seotda button:not(:disabled):hover { filter: brightness(1.12); } }
 @media (max-width: 700px) and (min-height: 501px), (max-width: 500px) {
-  .seotda { --card-width: 52px; --card-height: 76px; width: calc(100% - 12px); height: min(760px, calc(100dvh - 12px)); border-width: 4px; border-radius: 12px; }
+  .seotda { --card-height: 76px; width: calc(100% - 12px); height: min(760px, calc(100dvh - 12px)); border-width: 4px; border-radius: 12px; }
   .seotda-header { padding: 2px 8px; }
   .seotda-header span { font-size: .6875rem; }
   .seotda-header h2 { font-size: 1rem; }
@@ -121,13 +113,13 @@ html:has(.seotda[open]) { overflow: hidden; }
   .seotda-ranks > div { grid-template-columns: minmax(0, 1fr); gap: 2px; }
 }
 @media (max-height: 680px) and (min-height: 501px) {
-  .seotda { --card-width: 42px; --card-height: 60px; }
+  .seotda { --card-height: 60px; }
   .seotda-seat p { margin-top: 3px; }
   .seotda-hand { margin-top: 3px; }
   .seotda-pot { margin: 5px 0; }
 }
 @media (max-height: 500px) and (min-width: 501px) {
-  .seotda { --card-width: 40px; --card-height: 58px; width: calc(100% - 12px); height: calc(100dvh - 12px); border-width: 4px; border-radius: 10px; }
+  .seotda { --card-height: 58px; width: calc(100% - 12px); height: calc(100dvh - 12px); border-width: 4px; border-radius: 10px; }
   .seotda[open] { grid-template: 44px 30px minmax(0, 1fr) auto / 165px minmax(0, 1fr); }
   .seotda-header { grid-column: 1; grid-row: 1; padding: 0 4px; gap: 0; }
   .seotda-header > div { display: block; }
@@ -159,7 +151,7 @@ html:has(.seotda[open]) { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) { .seotda button { transition: none; } .seotda button:active { transform: none; } .seotda[data-phase="ending"] .seotda-seat--madam .seotda-card:last-child { animation: none; } }
 /* Short portrait screens keep all three seats in a single row. */
 @media (max-width: 700px) and (min-height: 501px) and (max-height: 680px), (max-width: 500px) and (max-height: 680px) {
-  .seotda { --card-width: 36px; --card-height: 54px; }
+  .seotda { --card-height: 54px; }
   .seotda-table { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: minmax(0, 1fr) auto; padding: 8px 4px; }
   .seotda[data-mode="free"] .seotda-table { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .seotda-seat, .seotda-seat--player, .seotda[data-mode="free"] .seotda-seat:not(.seotda-seat--player) { grid-column: auto; grid-row: 1; }
@@ -170,8 +162,6 @@ html:has(.seotda[open]) { overflow: hidden; }
 }
 .seotda-meme .seotda-scene-photo { display: block; width: 100%; min-height: 44px; padding: 0; background: var(--color-transparent); border: 0; }
 .seotda-meme:has(img[hidden]) .seotda-scene-photo { display: none; }
-.card-ribbon { fill: var(--color-hwatu-red); stroke: var(--color-paper); stroke-width: 2; }
-.card-ribbon-line { fill: none; stroke: var(--color-paper); stroke-width: 3; }
 
 .seotda-meme-grid [data-expanded="true"] { grid-column: 1 / -1; }
 .seotda-meme-grid [data-expanded="true"] img { height: min(400px, 55dvh); }
@@ -179,7 +169,4 @@ html:has(.seotda[open]) { overflow: hidden; }
 @media (max-width: 500px) and (max-height: 550px) {
   .seotda-meme { display: none; }
   .seotda-controls > p { display: none; }
-}
-@media (max-height: 680px) {
-  .seotda-card-mark:not(.seotda-card-mark--bright) { padding: 1px 2px; font-size: .5rem; }
 }

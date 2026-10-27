@@ -1,0 +1,41 @@
+Korean Hwatu card artwork (20 faces and one red back)
+
+Korean-style master design: Marcus Richert
+Based on Hanafuda graphics by Louie Mantia, Jr.
+Individual SVG files and red back: Spenĉjo
+
+Faces: https://commons.wikimedia.org/wiki/Category:SVG_Hwatu
+Master: https://commons.wikimedia.org/wiki/File:Hwatu_overview.svg
+Back: https://commons.wikimedia.org/wiki/File:Hanafuda_card_back_Alt2.svg
+License: Creative Commons Attribution-ShareAlike 4.0 International
+https://creativecommons.org/licenses/by-sa/4.0/
+
+Obtained on 2026-10-27 from Wikimedia Commons and the itsent-lab/hwatu
+mirror pinned at c02db44022b456df75c2e131b5e5cdd91d79764f.
+All files match the recorded original SHA-1 checksums.
+SVG contents are unchanged. Only local filenames differ.
+The CC BY-SA 4.0 license applies to these artwork files independently
+of the site's source code. See sources.json for individual source URLs,
+authors, download URLs and checksums.
+
+Mapping to Seotda engine card IDs:
+ 0 / m01-01: January bright (pine and crane)
+ 1 / m01-02: January red poetry ribbon
+ 2 / m02-01: February animal (plum and bird)
+ 3 / m02-02: February red poetry ribbon
+ 4 / m03-01: March bright (cherry blossom and curtain)
+ 5 / m03-02: March red poetry ribbon
+ 6 / m04-01: April animal (wisteria and cuckoo)
+ 7 / m04-02: April red ribbon
+ 8 / m05-01: May animal (iris and bridge)
+ 9 / m05-02: May red ribbon
+10 / m06-01: June animal (peony and butterflies)
+11 / m06-02: June blue ribbon
+12 / m07-01: July animal (clover and boar)
+13 / m07-02: July red ribbon
+14 / m08-01: August bright (pampas and moon)
+15 / m08-02: August animal (pampas and geese)
+16 / m09-01: September animal (chrysanthemum and sake cup)
+17 / m09-02: September blue ribbon
+18 / m10-01: October animal (maple and deer)
+19 / m10-02: October blue ribbon

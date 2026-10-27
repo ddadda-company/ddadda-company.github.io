@@ -40,33 +40,26 @@ function setupSeotda() {
   photo.addEventListener('error', () => { photo.hidden = true; photoStatus.hidden = false; retry.hidden = false; photoStatus.textContent = text('사진을 못 불러왔어요. 게임은 계속할 수 있어요.', 'Photo unavailable. You can still keep playing.'); find('[data-seotda-meme]').dataset.state = 'error'; });
   retry.addEventListener('click', () => { const id = currentMeme!; currentMeme = null; meme(id); });
 
-  // Original small vector motifs; the film memes above remain separate, unmodified files.
+  // Existing Korean Hwatu artwork, downloaded unchanged from Wikimedia Commons.
+  // Engine IDs alternate each month's two cards; August's second card is geese.
   const card = (value: Card | null | undefined, extra = '') => {
     const node = el('div', '', `seotda-card ${value === null ? 'seotda-card--back' : ''} ${extra}`);
     node.setAttribute('role', 'img');
     if (value === undefined) { node.classList.add('seotda-card--empty'); node.setAttribute('aria-label', text('아직 받지 않은 패', 'Card not dealt yet')); node.append(el('span', '·')); return node; }
-    if (value === null) { node.setAttribute('aria-label', text('뒤집힌 화투', 'Face-down card')); node.append(el('span', '花')); return node; }
-    const m = month(value), isBright = bright(value), isAnimal = animal(value);
-    node.dataset.month = String(m);
-    const kind = isBright ? text('광', 'Bright') : isAnimal ? text('열', 'Animal') : text('띠', 'Ribbon');
-    node.setAttribute('aria-label', `${m}${text('월', '')} ${t(flowers[m - 1])} · ${kind}`);
-    node.append(el('strong', String(m), 'seotda-card-month'));
-    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svg.setAttribute('viewBox', '0 0 100 140'); svg.setAttribute('aria-hidden', 'true');
-    const blossom = `<path class="card-stem" d="M45 137Q70 93 43 30M53 95 22 64M53 75 81 44"/>${[[43,36],[25,65],[75,51]].map(([x,y]) => `<g transform="translate(${x} ${y})"><path class="card-flower" d="M0-15C9-25 20-9 11-3C27 2 13 19 5 12C0 29-17 15-10 8C-28 7-18-14-8-8C-10-23 0-24 0-15Z"/><circle class="card-moon" r="4"/></g>`).join('')}`;
-    const motifs: Record<number, string> = {
-      1: '<path class="card-stem" d="M45 140 55 35M49 100 22 72M51 76 78 49"/><path class="card-ink" d="M8 78Q20 38 40 77ZM38 49Q55 9 75 49ZM60 60Q77 22 95 60Z"/>',
-      4: `<path class="card-stem" d="M0 33Q50 13 100 34"/>${[20,45,70,88].map((x,i) => [0,1,2,3].map(y => `<ellipse class="card-flower" cx="${x}" cy="${39+y*16+i*4}" rx="${10-y*2}" ry="10"/>`).join('')).join('')}`,
-      5: '<path class="card-ink" d="M49 140Q15 88 20 55Q45 77 49 140M50 140Q80 89 85 52Q57 75 50 140"/><path class="card-stem" d="M50 140V55"/><path class="card-flower" d="M50 60Q12 76 20 38Q43 35 50 60Q48 20 70 27Q83 51 50 60Q83 39 89 68Q64 86 50 60"/>',
-      6: '<path class="card-stem" d="M52 140 48 70"/><circle class="card-flower" cx="50" cy="65" r="31"/><circle class="card-moon" cx="50" cy="65" r="23"/><circle class="card-flower" cx="50" cy="65" r="17"/><circle class="card-moon" cx="50" cy="65" r="7"/>',
-      7: `<path class="card-stem" d="M50 140V35M50 95 25 70M50 70 75 48"/>${[[25,70],[75,48],[50,37]].map(([x,y]) => `<g transform="translate(${x} ${y})"><ellipse class="card-flower" cx="-8" cy="0" rx="12" ry="8"/><ellipse class="card-flower" cx="8" cy="0" rx="12" ry="8"/><ellipse class="card-flower" cx="0" cy="-10" rx="8" ry="12"/></g>`).join('')}`,
-      8: '<circle class="card-moon" cx="63" cy="45" r="23"/><path class="card-ink" d="M0 108Q30 63 53 96Q75 59 100 106V140H0Z"/>',
-      9: `<path class="card-stem" d="M50 140 35 64M48 110 73 85"/>${[[35,60],[72,87]].map(([x,y]) => `<g transform="translate(${x} ${y})">${Array.from({length:12},(_,i)=>`<ellipse class="card-flower" rx="4" ry="18" transform="rotate(${i*30})"/>`).join('')}<circle class="card-moon" r="7"/></g>`).join('')}`,
-      10: '<path class="card-flower" d="M50 98 20 70 35 68 27 42 46 58 50 29 58 58 79 42 70 68 86 74 58 98 57 121 49 121Z"/>',
-    };
-    const foliage = motifs[m] || blossom;
-    svg.innerHTML = foliage + (!isBright && !isAnimal ? '<path class="card-ribbon" d="M12 43 65 63 65 112 12 92Z"/><path class="card-ribbon-line" d="M24 66 52 77M24 78 52 89"/>' : ''); node.append(svg);
-    node.append(el('span', isBright ? '光' : kind, `seotda-card-mark ${isBright ? 'seotda-card-mark--bright' : ''}`));
+    let filename = 'back';
+    let label = text('뒤집힌 화투', 'Face-down card');
+    if (value !== null) {
+      const m = month(value);
+      node.dataset.month = String(m); node.dataset.cardId = String(value);
+      const kind = bright(value) ? text('광', 'Bright') : animal(value) ? text('열', 'Animal') : text('띠', 'Ribbon');
+      label = `${m}${text('월', '')} ${t(flowers[m - 1])} · ${kind}`;
+      filename = `m${String(m).padStart(2, '0')}-0${value % 2 + 1}`;
+    }
+    node.setAttribute('aria-label', label); node.title = label;
+    const image = el('img'); image.alt = ''; image.setAttribute('aria-hidden', 'true');
+    image.width = 103; image.height = 168; image.draggable = false;
+    image.addEventListener('error', () => { image.hidden = true; node.append(el('span', label, 'seotda-card-fallback')); }, { once: true });
+    image.src = `/images/hwatu/${filename}.svg`; node.append(image);
     return node;
   };
   let exercise = 0;
@@ -94,7 +87,10 @@ function setupSeotda() {
     next.addEventListener('click', () => { exercise = (exercise + 1) % examples.length; practice(); find<HTMLButtonElement>('[data-seotda-practice="left"]').focus({ preventScroll: true }); });
     box.append(hands, next);
   };
-  practice();
+  // Do not fetch tutorial cards until the optional guide is opened.
+  find<HTMLDetailsElement>('#seotda-beginner').addEventListener('toggle', event => {
+    if ((event.currentTarget as HTMLDetailsElement).open && !find('[data-seotda-practice]').hasChildNodes()) practice();
+  });
   const notes = find('[data-seotda-notes]');
   const panel = find('#seotda-notes');
   let panelOpener: HTMLElement = notes;

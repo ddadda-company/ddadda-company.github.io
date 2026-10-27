@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict';
-import { mkdir } from 'node:fs/promises';
+import { mkdir, readFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
+import { month, bright, animal } from '../src/lib/seotda.ts';
 import { chromium, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 const base = process.env.SITE_URL || 'http://localhost:4321';
@@ -11,6 +13,7 @@ const game = page.locator('#member-seotda'), trigger = page.locator('[data-seotd
 const action = id => game.locator(`[data-seotda-action="${id}"]`);
 const viewports = [[1440,1000], [768,900], [414,844], [375,812], [320,700], [320,568], [320,500], [844,390], [568,320]];
 const layout = async () => {
+  await expect.poll(() => game.locator('.seotda-table .seotda-card img').evaluateAll(images => images.every(img => img.complete && img.naturalWidth > 0))).toBe(true);
   const problem = await game.evaluate(root => {
     const body = root.querySelector('.seotda-body'), table = root.querySelector('.seotda-table');
     const contains = (outer, inner) => inner.left >= outer.left - 1 && inner.top >= outer.top - 1 && inner.right <= outer.right + 1 && inner.bottom <= outer.bottom + 1;
@@ -19,9 +22,11 @@ const layout = async () => {
     for (const node of root.querySelectorAll('.seotda-table .seotda-card, .seotda-table h4, .seotda-table p, .seotda-pot')) {
       if (!contains(table.getBoundingClientRect(), node.getBoundingClientRect())) return `outside table: ${node.className}`;
     }
-    for (const mark of root.querySelectorAll('.seotda-table .seotda-card-mark')) {
-      if (!contains(mark.parentElement.getBoundingClientRect(), mark.getBoundingClientRect())) return 'card label is clipped';
+    for (const img of root.querySelectorAll('.seotda-table .seotda-card img')) {
+      if (!contains(img.parentElement.getBoundingClientRect(), img.getBoundingClientRect())) return 'card image is clipped';
+      if (getComputedStyle(img).objectFit !== 'contain') return 'card art is cropped';
     }
+    if (root.querySelector('.seotda-card svg')) return 'generated card drawing remains';
     for (const node of root.querySelectorAll('.seotda-dialogue, .seotda-table, [data-seotda-actions] button, [data-seotda-close]')) {
       if (!contains(viewport, node.getBoundingClientRect())) return `outside viewport: ${node.className}`;
     }
@@ -43,6 +48,22 @@ try {
     await page.goto(`${base}${route}`); await expect(game).toHaveCount(0); await expect(page.locator('[data-seotda-open]')).toHaveCount(0);
   }
   await page.goto(`${base}/members/`, { waitUntil: 'networkidle' });
+  // Verify the downloaded files, source card types, and browser decoding of all 21 assets.
+  const sources = JSON.parse(await readFile('public/images/hwatu/sources.json', 'utf8')).assets;
+  assert.equal(sources.length, 21);
+  for (const asset of sources) {
+    const data = await readFile(`public/images/hwatu/${asset.cardId}.svg`);
+    assert.equal(createHash('sha256').update(data).digest('hex'), asset.sha256);
+    if (asset.cardId !== 'back') {
+      const id = (Number(asset.cardId.slice(1, 3)) - 1) * 2 + Number(asset.cardId.slice(-2)) - 1;
+      assert.equal(month(id), Number(asset.cardId.slice(1, 3)));
+      assert.equal(bright(id), asset.title.includes('Hikari'));
+      assert.equal(animal(id), asset.title.includes('Tane'));
+    }
+  }
+  await page.evaluate(async ids => {
+    await Promise.all(ids.map(async id => { const img = new Image(); img.src = `/images/hwatu/${id}.svg`; await img.decode(); if (!img.naturalWidth) throw new Error(id); }));
+  }, sources.map(asset => asset.cardId));
   await expect(page.locator('[data-seotda-open]')).toHaveCount(2);
   await expect(game.locator('img[src]')).toHaveCount(0);
   await start(); await phase('intro'); await expect(game).toHaveAttribute('data-mode', 'story');
@@ -77,6 +98,7 @@ try {
   await expect(game.locator('[data-seotda-scene-title]')).toContainText('You read the table');
   await expect(game.locator('[data-seotda-image]')).toHaveAttribute('src', '/images/tazza/sakura.jpg');
   await expect(game.locator('.seotda-seat--madam [data-month="3"]')).toBeVisible();
+  await expect(game.locator('.seotda-seat--madam [data-card-id="5"] img')).toHaveAttribute('src', '/images/hwatu/m03-02.svg');
   await page.screenshot({ path: '.qa/seotda-sakura.png' });
   await choose('story-restart'); await fiveCards(); await choose('story-call'); await choose('story-challenge'); await choose('story-maple'); await choose('story-reveal');
   await expect(game.locator('[data-seotda-scene-title]')).toContainText('fooled you');
@@ -137,5 +159,5 @@ try {
   await deniedPage.locator('[data-seotda-action="story-deal"]').click(); await expect(deniedPage.locator('[data-seotda-save]')).toHaveAttribute('data-error', 'true');
   await deniedPage.keyboard.press('Escape'); await deniedPage.locator('[data-seotda-open]').first().click(); await expect(deniedPage.locator('#member-seotda')).toHaveAttribute('data-phase', 'deal');
   await denied.close();
-  console.log('Seotda browser passed: Axii portrait/name, immediate story, all story endings, 7 caption-free 1000px film stills, bilingual persistence, free-game betting, optional/skippable tutorial and practice, all phases without gameplay scrolling at nine viewport sizes, accessibility, image retry and blocked/corrupt saves.');
+  console.log('Seotda browser passed: Axii portrait/name, immediate story, all story endings, 21 original Hwatu assets with source checksums and bright/animal mapping, 7 caption-free 1000px film stills, bilingual persistence, free-game betting, optional/skippable tutorial and practice, all phases without gameplay scrolling at nine viewport sizes, accessibility, image retry and blocked/corrupt saves.');
 } finally { await browser.close(); }
