@@ -1,3 +1,4 @@
+import { createSeotdaEffects } from './seotda-effects';
 import { flowers, seotdaMemes, type MemeId } from '../data/seotda';
 import { animal, applyStory, applyTable, betCost, bright, deal, enterShowdown, openingReady, storyBalance, month, newStory, newTable, rankHand, restoreSeotda, saveSeotda, tableOver, type Bet, type Card, type StoryEvent, type TableEvent } from '../lib/seotda';
 import type { Localized } from '../data/team';
@@ -20,7 +21,8 @@ function setupSeotda() {
   let opener: HTMLElement | undefined;
   const el = <K extends keyof HTMLElementTagNameMap>(tag: K, content = '', className = '') => { const node = document.createElement(tag); node.textContent = content; node.className = className; return node; };
   const persist = () => { try { localStorage.setItem(key, saveSeotda(save)); storage = true; } catch { storage = false; } };
-  const focus = () => { const target = save.mode === 'free' ? board : dialogue; target.focus({ preventScroll: true }); };
+  const focus = () => { const target = dialog.dataset.cut === 'true' ? find('[data-seotda-cut-next]') : save.mode === 'free' ? board : dialogue; target.focus({ preventScroll: true }); };
+  const effects = createSeotdaEffects(dialog, locale === 'ko', focus);
   const button = (id: string, label: string, action: () => void, disabled = false, note = '') => {
     const b = el('button'); b.type = 'button'; b.dataset.seotdaAction = id; b.disabled = disabled;
     b.append(el('span', label)); if (note) b.append(el('small', note));
@@ -118,17 +120,27 @@ function setupSeotda() {
     help.querySelector('summary')!.focus({ preventScroll: true }); help.scrollIntoView({ block: 'start' });
   });
   find('[data-seotda-skip-tutorial]').addEventListener('click', () => { find<HTMLDetailsElement>('#seotda-beginner').open = false; setPanel(false); focus(); });
-  dialog.addEventListener('cancel', event => { if (!panel.hidden) { event.preventDefault(); setPanel(false); } });
+  dialog.addEventListener('cancel', event => { if (effects.active()) { event.preventDefault(); effects.dismiss(); } else if (!panel.hidden) { event.preventDefault(); setPanel(false); } });
   const seat = (name: string, cards: (Card | null | undefined)[], label: string, className = '') => {
     const box = el('div', '', `seotda-seat ${className}`); box.append(el('h4', name));
     const hand = el('div', '', 'seotda-hand'); hand.append(...cards.map(c => card(c))); box.append(hand, el('p', label)); board.append(box);
   };
   const pot = (label: string) => board.append(el('div', label, 'seotda-pot'));
   const resource = (label: string, value: string) => { const item = el('span'); item.append(el('small', label), el('strong', value)); score.append(item); };
-  const storyAction = (event: StoryEvent) => { const next = applyStory(save.story, event); if (!next) return; save.story = next; persist(); render(); };
-  const tableAction = (event: TableEvent, opening = false) => { const target = opening ? 'opening' : 'table'; const next = applyTable(save[target], event); if (!next) return; save[target] = next; persist(); render(); };
+  const storyAction = (event: StoryEvent) => {
+    const next = applyStory(save.story, event); if (!next) return;
+    save.story = next; persist(); render();
+    if (event === 'call' || event === 'double') effects.show('stop');
+    else if (event === 'reveal') effects.show('reveal');
+    else if (event === 'deal') {
+      const targets = ['.seotda-seat--player .seotda-card', '.seotda-seat--opponent .seotda-card', '.seotda-seat--madam .seotda-card', '.seotda-seat--player .seotda-card:last-child', '.seotda-seat--opponent .seotda-card:last-child'];
+      effects.animateCard(board.querySelector(targets[next.dealt - 1]));
+      if (next.dealt === 4) void effects.cue('tension');
+    } else if (event === 'challenge') void effects.cue('chips');
+  };
+  const tableAction = (event: TableEvent, opening = false) => { const target = opening ? 'opening' : 'table'; const next = applyTable(save[target], event); if (!next) return; save[target] = next; persist(); render(); if (event.type === 'deal' || event.type === 'peek') effects.animateCard(board.querySelector('.seotda-seat--player .seotda-card:last-child')); else if (event.type === 'bet') void effects.cue('chips'); };
   const restart = () => { save.stage = 'opening'; save.opening = newTable(); save.story = newStory(); persist(); render(); };
-  const switchMode = (mode: 'story' | 'free') => { save.mode = mode; persist(); render(); };
+  const switchMode = (mode: 'story' | 'free') => { effects.dismiss(false); save.mode = mode; persist(); render(); };
 
   const renderStory = () => {
     const s = save.story;
@@ -140,35 +152,35 @@ function setupSeotda() {
     resource(text('진행', 'Round'), s.phase === 'ending' ? text('종료', 'Finished') : text(`${save.opening.round + 1}판`, `Round ${save.opening.round + 1}`));
     const end = s.phase === 'ending' && s.outcome !== 'leave';
     const agwiOpen = ['guess', 'reveal', 'ending'].includes(s.phase);
-    seat(tense ? text('아귀', 'Agwi') : 'Axii', [s.dealt >= 2 ? agwiOpen ? 16 : null : undefined, s.dealt >= 5 ? agwiOpen ? 17 : null : undefined], agwiOpen ? text('9땡', 'Pair of 9s') : text('패 비공개', 'Hidden hand'));
+    seat(tense ? text('아귀', 'Agwi') : 'Axii', [s.dealt >= 2 ? agwiOpen ? 16 : null : undefined, s.dealt >= 5 ? agwiOpen ? 17 : null : undefined], agwiOpen ? text('9땡', 'Pair of 9s') : text('패 비공개', 'Hidden hand'), 'seotda-seat--opponent');
     seat(tense ? text('정마담', 'Madam Jeong') : text('새로 온 손님', 'New guest'), [s.dealt >= 3 ? end ? 1 : null : undefined, s.dealt >= 5 ? end ? 5 : null : undefined], end ? text('3월 · 벚꽃', 'March · Cherry') : text('패 비공개', 'Hidden hand'), 'seotda-seat--madam');
     pot(text(`판돈 ${committed ? s.stake * 2 : 0} 칩`, `Pot ${committed ? s.stake * 2 : 0} chips`));
     seat(tense ? text('나 · 고니', 'You · Goni') : text('나', 'You'), [s.dealt >= 1 ? 2 : undefined, s.dealt >= 4 ? 11 : undefined], s.dealt >= 4 ? t(rankHand([2, 11]).name) : text('패를 돌리는 중', 'Dealing'), 'seotda-seat--player');
     if (s.phase === 'intro' || s.phase === 'deal') {
       meme(s.dealt ? 'goni' : 'welcome');
-      const beats = [text('옆자리 손님이 의자를 끌어온다. “나도 한 판.” Axii가 패를 건넨다. 이번에는 내가 돌릴 차례다.', 'A guest pulls up a chair. “Deal me in.” Axii hands you the deck. Your turn to deal.'), text('내 앞에 한 장. Axii가 칩을 정리하며 가볍게 웃는다.', 'One card for you. Axii smiles and stacks the chips.'), text('건너편에 한 장. 잡담이 조금씩 줄어든다.', 'One across the table. The small talk begins to fade.'), text('손님 앞에도 한 장. Axii의 시선이 패에서 내 손목으로 옮겨간다.', 'One for the guest. Axii’s eyes move from the cards to your wrist.'), text('내 패는 8끗. 나쁘지 않다. 그런데 맞은편은 자기 패도 보지 않고 칩을 밀어 넣는다.', 'Eight points. Not bad. Across the table, chips slide forward before a glance at the cards.')];
+      const beats = [text('“자리 있지?” 의자 하나가 끌려온다. Axii가 말없이 패를 건넨다.', '“Room for one more?” A chair scrapes closer. Axii slides the deck across.'), text('탁. 내 앞에 한 장. 맞은편에서 칩 부딪히는 소리가 난다.', 'A card lands. Chips clink across the table.'), text('탁. 건너편에 한 장. 아까까지 웃던 사람이 입을 다문다.', 'Another card lands. The laughter stops.'), text('옆자리까지 한 장. 패를 내려놓는 내 손목에 시선이 꽂힌다.', 'One for the guest. Those eyes are fixed on your wrist now.'), text('8끗. 나쁘지 않다. 그런데 저 사람은 패도 안 보고 판돈을 민다.', 'Eight points. Not bad. Across the table, chips slide forward before a glance at the cards.')];
       status(s.dealt < 3 ? text('한 사람 더', 'Room for one more') : text('왜 손만 보지?', 'Why watch my hands?'), beats[s.dealt]);
       button('story-deal', s.dealt ? text('다음 패 돌리기', 'Deal next card') : text('첫 패 돌리기', 'Deal first card'), () => storyAction('deal'));
     } else if (s.phase === 'bet') {
-      meme('goni'); status(text('이번엔 좀 크게 갈까?', 'Raise the stakes?'), text('마지막 패를 건네려는데 Axii가 칩을 톡 친다. “받을 거지?” 아까부터 손목에서 시선을 떼지 않는다.', 'As you reach to deal the last card, Axii taps the chips. “You’re calling?” Those eyes have not left your wrist.'), text('콜은 맞추기 · 더블은 두 배 · 물러나면 칩을 지켜요.', 'Call to match · Double to raise · Walk away to keep your chips.'));
+      meme('goni'); status(text('받을 거면 받아.', 'Call it, then.'), text('칩이 한꺼번에 밀려온다. 마지막 패를 쥔 손이 멈칫한다. 웃고 있는 건 맞은편뿐이다.', 'A stack of chips slides forward. You pause with the last card in your hand. Only the other side is smiling.'), text('콜은 맞추기 · 더블은 두 배 · 물러나면 칩을 지켜요.', 'Call to match · Double to raise · Walk away to keep your chips.'));
       button('story-call', text(`${s.stake}칩 콜`, `Call ${s.stake}`), () => storyAction('call'));
       const doubled = Math.min(s.stake * 2, s.limit);
       button('story-double', text(`${doubled}칩 더블`, `Double to ${doubled}`), () => storyAction('double'), doubled === s.stake);
       button('story-leave', text('물러나기', 'Walk away'), () => storyAction('leave'));
     } else if (s.phase === 'stop') {
-      meme('stop'); status(text('동작 그만', 'Hold it'), text('갑자기 손목이 잡힌다. “밑에서 뺐지?” 방금까지 Axii였는데… 이 표정, 아귀다. 옆자리 손님은 어느새 정마담. 그냥 섯다 한 판 아니었어?' , 'A hand catches your wrist. “From the bottom?” That was Axii a moment ago… now it is Agwi. The guest is Madam Jeong. Wasn’t this just a casual game?' ), text('아귀의 주장을 확인할까요?', 'Will you challenge his claim?'));
+      meme('stop'); status(text('동작 그만', 'Hold it'), text('“마지막 패, 밑에서 뺐지.” 아귀가 손목을 놓지 않는다. 정마담 앞에 엎어진 패 한 장. 아무도 웃지 않는다.', '“That last card came from the bottom.” Agwi will not let go. One card lies face down in front of Madam Jeong. Nobody is smiling.'), text('손목은 잡혔다. 선택은 아직 내 것이다.', 'Your wrist is caught. The choice is still yours.'));
       button('story-challenge', text('그 패 확인하자', 'Check that card'), () => storyAction('challenge'));
       button('story-leave', text('승부에서 빠지기', 'Walk away'), () => storyAction('leave'));
     } else if (s.phase === 'guess') {
-      meme('yerim'); status(text('마지막 한 장에 건다', 'Bet on the final card'), text('아귀의 패는 9땡. 하지만 그의 패가 좋다는 것과 정마담의 마지막 패를 맞히는 건 다른 문제다. 어느 쪽에 걸까?', 'Agwi has a pair of 9s. But a strong hand does not mean he knows Madam Jeong’s final card. Which side are you on?'), text('그는 마지막 패가 10월 단풍이라고 확신한다.', 'He insists the last card is October maple.'));
+      meme('yerim'); status(text('확실해?', 'You sure?'), text('아귀가 9땡을 깐다. “저건 단풍이야.” 정마담의 패를 가리키는 손끝엔 망설임이 없다.', 'Agwi lays down a pair of nines. “That’s maple.” He points at Madam Jeong’s card without a flicker of doubt.'), text('그는 마지막 패가 10월 단풍이라고 확신한다.', 'He insists the last card is October maple.'));
       button('story-maple', text('10월 단풍이다', 'October maple'), () => storyAction('maple'));
       button('story-cherry', text('단풍이 아니다', 'Not maple'), () => storyAction('cherry'));
     } else if (s.phase === 'reveal') {
-      meme('goni'); status(text('이제 뒤집을 차례', 'Time to turn it over'), text(`${s.pick === 'cherry' ? '단풍이 아니다' : '단풍이다'}에 ${s.stake}칩을 걸었다. 모든 시선이 정마담의 마지막 패로 모인다.`, `You staked ${s.stake} on “${s.pick === 'cherry' ? 'not maple' : 'maple'}.” Every eye turns to Madam Jeong’s final card.`), text('뒤집어서 직접 확인하자.', 'Turn it over and find out.'));
-      button('story-reveal', text('마지막 패 뒤집기', 'Reveal last card'), () => storyAction('reveal'));
+      meme('goni'); status(text('말은 끝났고.', 'Enough talk.'), text(`${s.pick === 'cherry' ? '단풍이 아니다' : '단풍이다'}에 ${s.stake}칩을 걸었다. 모든 시선이 정마담의 마지막 패로 모인다.`, `Your ${s.stake} chips are on “${s.pick === 'cherry' ? 'not maple' : 'maple'}.” No one looks away from that card.`), text('뒤집어서 직접 확인하자.', 'Turn it over and find out.'));
+      button('story-reveal', text('마지막 패 확인', 'See the final card'), () => storyAction('reveal'));
     } else {
       meme(s.outcome === 'leave' ? 'welcome' : 'sakura');
-      status(s.outcome === 'win' ? text('사쿠라! 판을 읽었다', 'Cherry blossom! You read the table') : s.outcome === 'lose' ? text('아귀와 함께 속았다', 'Agwi’s certainty fooled you') : text('오늘은 여기까지', 'Walk away for today'), s.outcome === 'leave' ? tense ? text(`판을 접었다. 이미 건 ${s.stake}칩은 남기고, 나머지를 챙겨 일어선다.`, `You fold, leaving the ${s.stake} committed chips and taking the rest.`) : text('베팅하기 전에 일어섰다. 지금까지 모은 칩은 그대로다.', 'You leave before betting. The chips you collected are yours to keep.') : text(`마지막 패는 10월 단풍이 아닌 3월 벚꽃. ${s.outcome === 'win' ? `이번 승부에서 ${s.stake}칩을 땄다.` : `${s.stake}칩을 잃었다. 상대의 자신감만 믿으면 안 된다.`}`, `The last card is March cherry blossom, not October maple. ${s.outcome === 'win' ? `You won ${s.stake} chips.` : `You lost ${s.stake} chips. Confidence is not proof.`}`));
+      status(s.outcome === 'win' ? text('사쿠라네.', 'Cherry blossom. You read the table') : s.outcome === 'lose' ? text('그 확신이 틀렸다.', 'His certainty fooled you') : text('오늘은 여기까지', 'Walk away for today'), s.outcome === 'leave' ? tense ? text(`판을 접었다. 이미 건 ${s.stake}칩은 남기고, 나머지를 챙겨 일어선다.`, `You fold, leaving the ${s.stake} committed chips and taking the rest.`) : text('베팅하기 전에 일어섰다. 지금까지 모은 칩은 그대로다.', 'You leave before betting. The chips you collected are yours to keep.') : text(`마지막 패는 10월 단풍이 아닌 3월 벚꽃. ${s.outcome === 'win' ? `이번 승부에서 ${s.stake}칩을 땄다.` : `${s.stake}칩을 잃었다. 상대의 자신감만 믿으면 안 된다.`}`, `The last card is March cherry blossom, not October maple. ${s.outcome === 'win' ? `You won ${s.stake} chips.` : `You lost ${s.stake} chips. Confidence is not proof.`}`));
       button('story-restart', text('다시 한 판 앉기', 'Take a seat again'), restart);
       button('play-free', text('자유게임으로', 'Free play'), () => switchMode('free'));
     }
@@ -219,6 +231,7 @@ function setupSeotda() {
     dialog.dataset.mode = opening ? 'free' : save.mode;
     dialog.dataset.stage = save.stage;
     dialog.dataset.tension = String(save.mode === 'story' && tense);
+    dialog.dataset.dread = String(save.mode === 'story' && save.stage === 'showdown' && save.story.dealt >= 3);
     find('#seotda-title').textContent = save.mode === 'story' && tense ? text('마지막 한 장', 'The final card') : text('Axii와 섯다', 'Seotda with Axii');
     find('[data-seotda-gallery]').hidden = !tense;
     find('[data-seotda-help]').hidden = save.mode !== 'free';
@@ -247,7 +260,7 @@ function setupSeotda() {
   }));
   const close = () => { if (dialog.open) dialog.close(); };
   find('[data-seotda-close]').addEventListener('click', close);
-  dialog.addEventListener('close', () => opener?.focus({ preventScroll: true }));
+  dialog.addEventListener('close', () => { effects.close(); opener?.focus({ preventScroll: true }); });
   const outside = (e: MouseEvent) => { const r = dialog.getBoundingClientRect(); return e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom; };
   let backdrop = false;
   dialog.addEventListener('pointerdown', e => { backdrop = e.target === dialog && outside(e); });

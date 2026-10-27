@@ -6,7 +6,7 @@ const { locale } = Astro.props as { locale: Locale };
 const ko = locale === 'ko';
 ---
 <dialog id="member-seotda" class="seotda" aria-labelledby="seotda-title" data-nosnippet>
-  <header class="seotda-header"><div><span>Axii’s table</span><h2 id="seotda-title">{ko ? 'Axii와 섯다' : 'Seotda with Axii'}</h2></div><button type="button" data-seotda-close aria-label={ko ? '섯다 닫기' : 'Close Seotda'}>×</button></header>
+  <header class="seotda-header"><div><span>Axii’s table</span><h2 id="seotda-title">{ko ? 'Axii와 섯다' : 'Seotda with Axii'}</h2></div><div class="seotda-header-actions"><button type="button" data-seotda-sound aria-pressed="true" aria-label={ko ? '효과음 끄기' : 'Mute sound effects'}><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h4l5-4v14l-5-4H4zM17 8a6 6 0 0 1 0 8M20 5a10 10 0 0 1 0 14" /></svg></button><button type="button" data-seotda-close aria-label={ko ? '섯다 닫기' : 'Close Seotda'}>×</button></div></header>
   <nav class="seotda-modes" aria-label={ko ? '게임 모드와 도움말' : 'Modes and help'}><button type="button" data-seotda-mode="story" aria-pressed="false">{ko ? '한 판 앉기' : 'Take a seat'}</button><button type="button" data-seotda-mode="free" aria-pressed="false">{ko ? '자유 섯다' : 'Free play'}</button><button type="button" data-seotda-help hidden aria-controls="seotda-beginner">{ko ? '튜토리얼' : 'Tutorial'}</button><button type="button" data-seotda-notes aria-controls="seotda-notes">{ko ? '더 보기' : 'More'}</button></nav>
   <div class="seotda-score" data-seotda-score></div>
   <div class="seotda-body">
@@ -16,6 +16,13 @@ const ko = locale === 'ko';
     </section>
     <section class="seotda-table" aria-label={ko ? '화투판' : 'Card table'} tabindex="-1" data-seotda-table></section>
   </div>
+  <section class="seotda-cut" data-seotda-cut hidden aria-labelledby="seotda-cut-title">
+    <div class="seotda-cut-stage">
+      <div class="seotda-cut-visual"><img data-seotda-cut-photo width="1000" height="667" alt="" hidden /><img data-seotda-cut-card width="103" height="168" alt="" hidden /><p class="seotda-cut-error">{ko ? '이미지를 못 불러왔어요. 판으로 돌아가서 확인할 수 있어요.' : 'Image unavailable. You can still return to the table.'}</p></div>
+      <div class="seotda-cut-copy" aria-live="polite" aria-atomic="true"><p data-seotda-cut-speaker></p><h3 id="seotda-cut-title" data-seotda-cut-title></h3><p data-seotda-cut-line></p></div>
+    </div>
+    <button type="button" data-seotda-cut-next></button>
+  </section>
   <aside id="seotda-notes" class="seotda-notes" hidden aria-labelledby="seotda-notes-title">
     <header><h3 id="seotda-notes-title">{ko ? '테이블 노트' : 'Table notes'}</h3><button type="button" data-seotda-notes-close>{ko ? '← 게임으로' : '← Back to game'}</button></header>
     <div class="seotda-notebooks">
