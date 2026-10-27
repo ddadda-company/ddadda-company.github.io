@@ -34,7 +34,7 @@ const layout = async () => {
 const allLayouts = async () => { const original = page.viewportSize(); for (const [width,height] of viewports) { await page.setViewportSize({width,height}); await layout(); } await page.setViewportSize(original); };
 const choose = async id => { await action(id).click(); await allLayouts(); };
 const phase = value => expect(game).toHaveAttribute('data-phase', value);
-const imageReady = async () => { await expect(game.locator('[data-seotda-image]')).toBeVisible(); assert(await game.locator('[data-seotda-image]').evaluate(el => el.complete && el.naturalWidth > 0)); };
+const imageReady = async () => { await expect(game.locator('[data-seotda-image]')).toBeVisible(); assert(await game.locator('[data-seotda-image]').evaluate(el => el.complete && el.naturalWidth >= 1000 && el.naturalHeight >= 667)); };
 const start = async () => { await trigger.click(); await expect(game).toBeVisible(); };
 const fiveCards = async () => { for (let i = 0; i < 5; i++) await choose('story-deal'); await phase('bet'); };
 try {
@@ -67,7 +67,7 @@ try {
   await page.keyboard.press('Escape');
   await expect(game.locator('[data-seotda-enlarge]')).toBeFocused();
   await fiveCards(); await choose('story-double'); await phase('stop'); await imageReady();
-  await expect(game.locator('[data-seotda-image]')).toHaveAttribute('src', '/images/tazza/stop.webp');
+  await expect(game.locator('[data-seotda-image]')).toHaveAttribute('src', '/images/tazza/stop.jpg');
   // Persist the cinematic branch across closing, reload and language switch.
   await page.keyboard.press('Escape'); await expect(trigger).toBeFocused();
   await page.goto(`${base}/en/members/`, { waitUntil: 'networkidle' });
@@ -75,7 +75,7 @@ try {
   await choose('story-challenge'); await choose('story-cherry'); await phase('reveal');
   await choose('story-reveal'); await phase('ending'); await imageReady();
   await expect(game.locator('[data-seotda-scene-title]')).toContainText('You read the table');
-  await expect(game.locator('[data-seotda-image]')).toHaveAttribute('src', '/images/tazza/sakura.webp');
+  await expect(game.locator('[data-seotda-image]')).toHaveAttribute('src', '/images/tazza/sakura.jpg');
   await expect(game.locator('.seotda-seat--madam [data-month="3"]')).toBeVisible();
   await page.screenshot({ path: '.qa/seotda-sakura.png' });
   await choose('story-restart'); await fiveCards(); await choose('story-call'); await choose('story-challenge'); await choose('story-maple'); await choose('story-reveal');
@@ -114,7 +114,7 @@ try {
   assert.equal(JSON.parse(await page.evaluate(() => localStorage.getItem('dda_com-axii-seotda-v1'))).table.length, JSON.parse(before).table.length);
   await game.locator('[data-seotda-notes]').click();
   const gallery = game.locator('[data-seotda-gallery]'); await gallery.evaluate(el => { el.open = true; });
-  for (const img of await gallery.locator('img').all()) { await img.scrollIntoViewIfNeeded(); await expect.poll(() => img.evaluate(el => el.complete && el.naturalWidth > 0)).toBe(true); }
+  for (const img of await gallery.locator('img').all()) { await img.scrollIntoViewIfNeeded(); await expect.poll(() => img.evaluate(el => el.complete && el.naturalWidth >= 1000 && el.naturalHeight >= 667)).toBe(true); }
   await expect(gallery.locator('img')).toHaveCount(7);
   audit = await new AxeBuilder({ page }).include('#member-seotda').analyze();
   assert.deepEqual(audit.violations.map(v => `${v.id} ${v.nodes.map(n => n.target).join(',')}`), []);
@@ -122,10 +122,10 @@ try {
   await expect(game).toBeVisible();
   await page.keyboard.press('Escape'); await expect(trigger).toBeFocused();
   // Image failures do not block play and have a real retry action.
-  await page.route('**/images/tazza/*.webp', route => route.abort());
+  await page.route('**/images/tazza/*.jpg', route => route.abort());
   await page.reload({ waitUntil: 'networkidle' }); await start();
   await expect(game.locator('[data-seotda-image-retry]')).toBeVisible();
-  await page.unroute('**/images/tazza/*.webp'); await game.locator('[data-seotda-image-retry]').click(); await imageReady();
+  await page.unroute('**/images/tazza/*.jpg'); await game.locator('[data-seotda-image-retry]').click(); await imageReady();
   // Corrupt storage is discarded without affecting the other Easter eggs.
   await page.evaluate(() => localStorage.setItem('dda_com-axii-seotda-v1', '{bad'));
   await page.reload({ waitUntil: 'networkidle' }); await start(); await phase('intro');
@@ -137,5 +137,5 @@ try {
   await deniedPage.locator('[data-seotda-action="story-deal"]').click(); await expect(deniedPage.locator('[data-seotda-save]')).toHaveAttribute('data-error', 'true');
   await deniedPage.keyboard.press('Escape'); await deniedPage.locator('[data-seotda-open]').first().click(); await expect(deniedPage.locator('#member-seotda')).toHaveAttribute('data-phase', 'deal');
   await denied.close();
-  console.log('Seotda browser passed: Axii portrait/name, immediate story, all story endings, 7 real meme images, bilingual persistence, free-game betting, optional/skippable tutorial and practice, all phases without gameplay scrolling at nine viewport sizes, accessibility, image retry and blocked/corrupt saves.');
+  console.log('Seotda browser passed: Axii portrait/name, immediate story, all story endings, 7 caption-free 1000px film stills, bilingual persistence, free-game betting, optional/skippable tutorial and practice, all phases without gameplay scrolling at nine viewport sizes, accessibility, image retry and blocked/corrupt saves.');
 } finally { await browser.close(); }

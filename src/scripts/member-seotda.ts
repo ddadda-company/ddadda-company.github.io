@@ -34,7 +34,7 @@ function setupSeotda() {
     currentMeme = id; photo.hidden = true; photoStatus.hidden = false; retry.hidden = true;
     photoStatus.textContent = text('장면 불러오는 중…', 'Loading scene…');
     find('[data-seotda-meme]').dataset.state = 'loading';
-    photo.alt = t(seotdaMemes[id].alt); photo.src = `/images/tazza/${id}.webp`;
+    photo.alt = t(seotdaMemes[id].alt); photo.src = `/images/tazza/${id}.jpg`;
   };
   photo.addEventListener('load', () => { photo.hidden = false; photoStatus.hidden = true; retry.hidden = true; find('[data-seotda-meme]').dataset.state = 'success'; });
   photo.addEventListener('error', () => { photo.hidden = true; photoStatus.hidden = false; retry.hidden = false; photoStatus.textContent = text('사진을 못 불러왔어요. 게임은 계속할 수 있어요.', 'Photo unavailable. You can still keep playing.'); find('[data-seotda-meme]').dataset.state = 'error'; });

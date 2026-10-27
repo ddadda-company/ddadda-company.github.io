@@ -1,14 +1,14 @@
 import type { Localized } from './team';
 export const words = (ko: string, en: string): Localized => ({ ko, en });
-export const memeSource = 'https://www.1004work.co.kr/2025/05/korean-movie-tazza-meme-collection.html';
+export const memeSource = 'https://cine21.com/movie/info/?movie_id=14535';
 export const seotdaMemes = {
-  welcome: { title: words('판에 앉는 순간', 'Take your seat'), alt: words('영화 타짜에서 고니를 맞이하는 아귀', 'Agwi greets Goni in Tazza') },
-  stop: { title: words('동작 그만', 'Hold it'), alt: words('밑장빼기를 의심하는 아귀의 타짜 밈', 'Agwi suspects a bottom deal in a Tazza meme') },
-  goni: { title: words('고니의 승부수', 'Goni calls the bluff'), alt: words('마지막 대결에서 아귀와 마주 앉은 고니와 정마담', 'Goni and Madam Jeong face Agwi in the final showdown') },
-  yerim: { title: words('그 패를 확인할 시간', 'Time to check that card'), alt: words('정마담의 패를 가리키는 타짜 속 호구', 'Hogu points toward Madam Jeong’s card in Tazza') },
-  sakura: { title: words('사쿠라 반전', 'The cherry blossom twist'), alt: words('사쿠라 패에 놀란 아귀의 타짜 밈', 'Agwi reacts to the cherry blossom card in a Tazza meme') },
-  double: { title: words('묻고 더블로 가!', 'Double it!'), alt: words('베팅을 올리는 곽철용의 타짜 밈', 'Kwak Cheol-yong raises the stakes in a Tazza meme') },
-  laugh: { title: words('아귀의 웃음', 'Agwi’s laugh'), alt: words('판에서 웃고 있는 아귀의 타짜 밈', 'Agwi laughs at the table in a Tazza meme') },
+  welcome: { title: words('마지막 승부의 테이블', 'The final showdown'), alt: words('화투판을 사이에 두고 마주한 고니와 아귀, 곁에서 지켜보는 정마담', 'Goni and Agwi face each other at the card table as Madam Jeong watches') },
+  stop: { title: words('멈춰 선 손', 'A hand stopped'), alt: words('마지막 대결에서 고니의 손목을 붙잡은 아귀', 'Agwi holds Goni’s wrist during their final showdown') },
+  goni: { title: words('고니의 승부수', 'Goni’s next move'), alt: words('화투판 너머를 손으로 가리키는 고니', 'Goni points across the card table') },
+  yerim: { title: words('패를 두고 맞선 두 사람', 'Across the final table'), alt: words('아귀의 손 너머로 상대를 응시하는 고니', 'Goni looks at his opponent across Agwi’s outstretched hand') },
+  sakura: { title: words('여유를 잃지 않는 고니', 'Goni keeps his composure'), alt: words('아귀에게 손목을 잡힌 채 미소 짓는 고니', 'Goni smiles while Agwi holds his wrist') },
+  table: { title: words('초록 천 위의 화투', 'Hwatu on green felt'), alt: words('초록 화투판에 놓인 붉은 화투 패와 판돈 칩', 'Red hwatu cards and betting chips on green felt') },
+  mentor: { title: words('평경장의 여유', 'Pyeong’s composure'), alt: words('모자를 쓰고 찻잔 앞에 앉아 있는 평경장', 'Pyeong sits at a table wearing a hat, with a teacup in front of him') },
 } as const;
 export type MemeId = keyof typeof seotdaMemes;
 export const flowers = [words('솔', 'Pine'), words('매화', 'Plum'), words('벚꽃', 'Cherry'), words('등나무', 'Wisteria'), words('난초', 'Iris'), words('모란', 'Peony'), words('싸리', 'Clover'), words('공산', 'Pampas'), words('국화', 'Chrysanthemum'), words('단풍', 'Maple')];
